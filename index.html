@@ -873,7 +873,7 @@ function renderRes() {
   document.getElementById('res-slots').innerHTML = STORE.sessions.map(s=>`
     <div class="time-section">
       <div class="time-section-title">${s.title}</div>
-      <div class="time-slots">${s.slots.map(t=>`<div class="slot" data-t="${t}">${t}<div class="slot-sub">有空位</div></div>`).join('')}</div>
+      <div class="time-slots">${s.slots.map(t=>`<div class="slot" data-t="${t}">${t}<div class="slot-sub"></div></div>`).join('')}</div>
     </div>`).join('');
 }
 
@@ -984,7 +984,7 @@ async function fetchCapacity(date) {
     document.querySelectorAll('.slot').forEach(el=>{
       if(!el.classList.contains('manual-full')){
         el.classList.remove('loading');
-        el.querySelector('.slot-sub').textContent='有空位';
+        el.querySelector('.slot-sub').textContent='';
       }
     });
     bindSlots(); return;
@@ -998,7 +998,7 @@ async function fetchCapacity(date) {
     document.querySelectorAll('.slot').forEach(el=>{
       if(!el.classList.contains('manual-full')){
         el.classList.remove('loading','full');
-        el.querySelector('.slot-sub').textContent='有空位';
+        el.querySelector('.slot-sub').textContent='';
         el.querySelector('.slot-sub').style.color='';
       }
     });
@@ -1013,8 +1013,7 @@ function applyCapacity(map) {
     const time=el.dataset.t, booked=map[time]||0, remain=STORE.maxPerSlot-booked;
     const sub=el.querySelector('.slot-sub');
     if(remain<=0){ el.classList.add('full'); el.classList.remove('selected'); if(S.time===time){S.time=null;syncConfirm();} sub.textContent='已額滿'; sub.style.color=''; }
-    else if(remain<=4){ el.classList.remove('full'); sub.textContent=`僅剩 ${remain} 位`; sub.style.color='#ffaa44'; }
-    else { el.classList.remove('full'); sub.textContent=`剩 ${remain} 位`; sub.style.color=''; }
+    else { el.classList.remove('full'); sub.textContent=''; sub.style.color=''; }
   });
   bindSlots();
 }
