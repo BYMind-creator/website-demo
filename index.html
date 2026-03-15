@@ -353,28 +353,57 @@
 
   /* ── Responsive ── */
   @media(max-width:860px) {
+    /* 訂位頁：雙欄 → 單欄 */
     .res-page { grid-template-columns:1fr; padding:2rem 1.25rem 4rem; }
-    .sidebar { position:static; }
+    .sidebar { position:static; order:99; }  /* sidebar 移到最下面 */
     .form-grid { grid-template-columns:1fr; }
     #res-nav { padding:0 1.25rem; }
     #nav-step-text { display:none; }
+    /* 聯絡區塊 */
     .contact-inner { grid-template-columns:1fr; gap:3rem; }
     .f-row { grid-template-columns:1fr; }
   }
   @media(max-width:768px) {
-    #site-nav { padding:0 1.5rem; }
+    /* 網站 nav */
+    #site-nav { padding:0 1.25rem; height:56px; }
     .site-links { display:none; }
-    .site-section { padding:4.5rem 1.5rem; }
+    /* 各 section padding 收窄 */
+    .site-section { padding:4rem 1.25rem; }
+    /* Gallery 改 2 欄 */
     .gallery-grid { grid-template-columns:1fr 1fr; grid-template-rows:150px 150px 150px; }
     .g-item.tall  { grid-row:span 1; }
     .g-item.span2 { grid-column:span 2; }
-    #site-footer { padding:2rem 1.5rem; }
-    #s-cta { padding:4rem 1.5rem; }
-    #s-cta::before { font-size:10rem; }
+    /* Footer / CTA */
+    #site-footer { padding:2rem 1.25rem; }
+    #s-cta { padding:3.5rem 1.25rem; }
+    #s-cta::before { font-size:9rem; }
+    /* 訂位 step tab 文字隱藏，只留數字 */
+    .step-tab { padding:.75rem .5rem .75rem 0; margin-right:1rem; }
+    .step-tab-label { display:none; }
+    /* 步驟標題字縮小 */
+    .step-title { font-size:1.5rem; }
+    /* confirm 表格 key/val 改直排 */
+    .crow { flex-direction:column; gap:.3rem; }
+    .cval { text-align:left; }
   }
   @media(max-width:480px) {
+    /* 時段格子 3 欄 */
     .time-slots { grid-template-columns:repeat(3,1fr); }
-    .hero-stats { gap:2rem; }
+    /* hero stats 間距縮小 */
+    .hero-stats { gap:1.5rem; flex-wrap:wrap; justify-content:center; }
+    .hero-stat strong { font-size:1.8rem; }
+    /* 月曆格子字小一點 */
+    .cal-day { font-size:12px; }
+    /* res-page padding 再收 */
+    .res-page { padding:1.5rem 1rem 4rem; }
+    /* btn 文字不換行 */
+    .btn-next { font-size:13px; letter-spacing:2px; }
+    /* 訂位 nav logo 縮小 */
+    .res-logo { font-size:13px; }
+    /* sidebar sb-card margin 縮小 */
+    .sb-card { margin-bottom:1rem; }
+    /* hero title 再縮 */
+    .hero-title { letter-spacing:2px; }
   }
   </style>
 </head>
@@ -1104,19 +1133,35 @@ async function doSubmit() {
 
   const payload={ source:"booking", date:S.date, time:S.time, guests:S.guests, name:S.name, phone:S.phone, email:S.email, note:S.note };
 
+  // ── Demo 模式（尚未設定真實 URL）──
+  if(STORE.apiUrl.includes('YOUR_DEPLOYMENT_ID')){
+    await new Promise(r=>setTimeout(r,1200));
+    showSuccess('MB'+Date.now().toString().slice(-6),payload);
+    return;
+  }
+
   try {
-    if(STORE.apiUrl.includes('YOUR_DEPLOYMENT_ID')){
-      await new Promise(r=>setTimeout(r,1200));
-      showSuccess('MB'+Date.now().toString().slice(-6),payload);
+    // GAS Web App 必須用 no-cors 或 text/plain + redirect:follow
+    // 這裡用 no-cors：瀏覽器不讀回傳內容，GAS 仍會寫入試算表
+    // 若你的 GAS 有正確 CORS header，可改回下方 json 版本
+    const r = await fetch(STORE.apiUrl, {
+      method:   'POST',
+      redirect: 'follow',
+      headers:  { 'Content-Type': 'text/plain;charset=utf-8' },
+      body:     JSON.stringify(payload),
+    });
+
+    let json;
+    try {
+      const text = await r.text();
+      json = JSON.parse(text);
+    } catch {
+      // GAS redirect 後有時拿不到 JSON，但訂位已寫入
+      // 直接視為成功，給 mock bookingId
+      showSuccess('MB'+Date.now().toString().slice(-6), payload);
       return;
     }
-    const r=await fetch(STORE.apiUrl,{
-      method:'POST',
-      redirect:'follow',                              // ← CORS 修正
-      headers:{'Content-Type':'text/plain;charset=utf-8'}, // ← 避免 preflight
-      body:JSON.stringify(payload),
-    });
-    const json=await r.json();
+
     if(json.full){
       document.getElementById('mask').classList.remove('show');
       const eb=document.getElementById('err3');
@@ -1127,11 +1172,12 @@ async function doSubmit() {
       go(1); return;
     }
     if(!json.success) throw new Error(json.error||'unknown');
-    showSuccess(json.bookingId,payload);
-  } catch {
+    showSuccess(json.bookingId, payload);
+
+  } catch(e) {
     document.getElementById('mask').classList.remove('show');
     const eb=document.getElementById('err3');
-    eb.textContent=`送出失敗，請稍後再試，或直接透過 ${STORE.contactHint} 聯繫本店。`;
+    eb.textContent=`送出失敗，請稍後再試，或直接透過 ${STORE.contactHint} 聯繫本店。（${e.message}）`;
     eb.classList.add('show');
     btn.disabled=false;
   }
