@@ -352,70 +352,32 @@
   .notice-list li::before { content:'·'; position:absolute; left:0; color:var(--gold); }
 
   /* ── Responsive ── */
-  /* ── RWD：tablet ≤ 860px ── */
   @media(max-width:860px) {
-    /* 訂位頁 layout */
     .res-page { grid-template-columns:1fr; padding:2rem 1.25rem 4rem; }
-    .sidebar  { position:static; }
+    .sidebar { position:static; }
     .form-grid { grid-template-columns:1fr; }
-    /* 訂位 nav */
     #res-nav { padding:0 1.25rem; }
     #nav-step-text { display:none; }
-    /* 首頁 */
     .contact-inner { grid-template-columns:1fr; gap:3rem; }
     .f-row { grid-template-columns:1fr; }
   }
-
-  /* ── RWD：mobile ≤ 768px ── */
   @media(max-width:768px) {
-    /* 首頁 nav */
     #site-nav { padding:0 1.5rem; }
     .site-links { display:none; }
     .site-section { padding:4.5rem 1.5rem; }
-    /* 圖庫 */
     .gallery-grid { grid-template-columns:1fr 1fr; grid-template-rows:150px 150px 150px; }
     .g-item.tall  { grid-row:span 1; }
     .g-item.span2 { grid-column:span 2; }
-    #site-footer  { padding:2rem 1.5rem; }
-    #s-cta        { padding:4rem 1.5rem; }
+    #site-footer { padding:2rem 1.5rem; }
+    #s-cta { padding:4rem 1.5rem; }
     #s-cta::before { font-size:10rem; }
-    /* 訂位頁標題縮小 */
-    .step-title { font-size:1.45rem; }
-    /* 訂位 nav：返回鍵+logo 縮排，步驟文字隱藏已在上方 */
-    .res-logo { font-size:13px; }
   }
-
-  /* ── RWD：small mobile ≤ 480px ── */
   @media(max-width:480px) {
-    /* 時段格：3欄 */
     .time-slots { grid-template-columns:repeat(3,1fr); }
-    /* hero */
     .hero-stats { gap:2rem; }
-    /* 訂位 nav：更緊湊 */
-    #res-nav { padding:0 1rem; height:52px; }
-    .res-logo { display:none; }
-    .res-back { font-size:11px; }
-    /* 月曆格子在最小螢幕稍微縮字 */
-    .cal-day  { font-size:12px; }
-    .cal-dow  { font-size:9px; }
-    /* 確認表格 key 縮小 */
-    .ckey { min-width:64px; font-size:10px; }
-    .cval { font-size:12px; }
-    /* 步驟 tab 縮小 */
-    .step-tab { margin-right:1rem; padding-right:1rem; }
-    .step-tab-label { font-size:11px; }
-    /* 成功頁 */
-    #panel-success { padding:2rem 0; }
-    /* 訂位頁整體 padding */
-    .res-page { padding:1.5rem 1rem 4rem; }
   }
   </style>
 </head>
-<body>
-
-<!-- ════════════════════════════════════════════════════════════
-  ██  VIEW 1：WEBSITE
-════════════════════════════════════════════════════════════ -->
 <body>
 
 <!-- ══════════════════════════════════════════════════════════
@@ -980,17 +942,15 @@ async function pickDate(ds) {
 }
 
 // ════════════════════════════════════════════════════════
-//  RESERVATION：名額查詢
-//  JSONP 方式 → 完全繞過 CORS，不需要任何 header
+//  RESERVATION：名額查詢（CORS 修正）
 // ════════════════════════════════════════════════════════
-function fetchCapacity(date) {
+async function fetchCapacity(date) {
   document.querySelectorAll('.slot').forEach(el=>{
     if(!el.classList.contains('manual-full')){
       el.classList.add('loading');
       el.querySelector('.slot-sub').textContent='查詢中…';
     }
   });
-
   if(STORE.apiUrl.includes('YOUR_DEPLOYMENT_ID')){
     document.querySelectorAll('.slot').forEach(el=>{
       if(!el.classList.contains('manual-full')){
@@ -998,36 +958,23 @@ function fetchCapacity(date) {
         el.querySelector('.slot-sub').textContent='有空位';
       }
     });
-    bindSlots(); return Promise.resolve();
+    bindSlots(); return;
   }
-
-  return new Promise(resolve=>{
-    const cbName = '_gcap_' + Date.now();
-    const script  = document.createElement('script');
-    const fallback = ()=>{
-      delete window[cbName]; script.remove();
-      document.querySelectorAll('.slot').forEach(el=>{
-        if(!el.classList.contains('manual-full')){
-          el.classList.remove('loading','full');
-          el.querySelector('.slot-sub').textContent='有空位';
-          el.querySelector('.slot-sub').style.color='';
-        }
-      });
-      bindSlots(); resolve();
-    };
-    const timer = setTimeout(fallback, 6000);
-
-    window[cbName] = function(json){
-      clearTimeout(timer);
-      delete window[cbName]; script.remove();
-      applyCapacity(json.capacity||{});
-      resolve();
-    };
-
-    script.onerror = ()=>{ clearTimeout(timer); fallback(); };
-    script.src = `${STORE.apiUrl}?action=capacity&date=${date}&callback=${cbName}`;
-    document.head.appendChild(script);
-  });
+  try {
+    const r = await fetch(`${STORE.apiUrl}?action=capacity&date=${date}`,{
+      method:'GET', redirect:'follow'   // ← CORS 修正
+    });
+    applyCapacity((await r.json()).capacity||{});
+  } catch {
+    document.querySelectorAll('.slot').forEach(el=>{
+      if(!el.classList.contains('manual-full')){
+        el.classList.remove('loading','full');
+        el.querySelector('.slot-sub').textContent='有空位';
+        el.querySelector('.slot-sub').style.color='';
+      }
+    });
+    bindSlots();
+  }
 }
 
 function applyCapacity(map) {
