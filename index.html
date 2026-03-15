@@ -383,259 +383,93 @@
 <!-- ════════════════════════════════════════════════════════════
   ██  VIEW 1：WEBSITE
 ════════════════════════════════════════════════════════════ -->
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     VIEW 1：WEBSITE
+══════════════════════════════════════════════════════════ -->
 <div id="view-website" class="view active">
 
   <nav id="site-nav">
     <a href="#" class="site-logo" onclick="scrollToTop()">
-      叁星燒肉重飯
-      <span>ミツボシ 南港本店</span>
+      <span id="nav-store-name">叁星燒肉重飯</span>
+      <span id="nav-store-sub">ミツボシ 南港本店</span>
     </a>
     <ul class="site-links">
-      <li><a href="#s-menu" onclick="siteScroll('#s-menu')">菜單</a></li>
-      <li><a href="#s-why"  onclick="siteScroll('#s-why')">特色</a></li>
+      <li><a href="#s-menu"    onclick="siteScroll('#s-menu')">菜單</a></li>
+      <li><a href="#s-why"     onclick="siteScroll('#s-why')">特色</a></li>
       <li><a href="#s-gallery" onclick="siteScroll('#s-gallery')">圖庫</a></li>
-      <li><a href="#s-faq" onclick="siteScroll('#s-faq')">常見問題</a></li>
+      <li><a href="#s-faq"     onclick="siteScroll('#s-faq')">常見問題</a></li>
       <li><button class="nav-cta" onclick="showRes()">立即訂位</button></li>
     </ul>
   </nav>
 
-  <!-- HERO -->
   <section id="s-hero">
     <div class="hero-grid"></div>
-    <div class="hero-content">
-      <div class="hero-badge">南港 · 拉拉 PORT 5F · 日式燒肉</div>
-      <h1 class="hero-title">叁星燒肉<br>重飯</h1>
-      <span class="hero-title-jp">ミツボシ 燒肉重飯</span>
-      <p class="hero-sub">炭火燒烤 × 和牛丼飯 × 職人之味</p>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <strong>4.6</strong>
-          <span><span class="rating-stars">★★★★★</span><br>881 則評論</span>
-        </div>
-        <div class="hero-stat">
-          <strong>$200</strong>
-          <span>均消起價<br>每人 $200–400</span>
-        </div>
-        <div class="hero-stat">
-          <strong>287</strong>
-          <span>位顧客<br>回報光顧</span>
-        </div>
-      </div>
-      <div class="hero-btns">
-        <button class="btn-primary" onclick="siteScroll('#s-menu')">查看菜單</button>
-        <button class="btn-outline" onclick="showRes()">立即訂位</button>
-      </div>
-    </div>
+    <div class="hero-content" id="hero-content"></div>
   </section>
 
-  <!-- MENU -->
   <section class="site-section" id="s-menu">
-    <div class="sec-header">
-      <p class="sec-label">Menu — 菜單</p>
-      <h2 class="sec-title">職人精選餐點</h2>
-      <div class="sec-line"></div>
-    </div>
-    <div class="menu-grid">
-      <div class="menu-card">
-        <div class="menu-card-img beef">🥩</div>
-        <div class="menu-card-body">
-          <span class="menu-tag">人氣 No.1</span>
-          <div class="menu-name">叁星和牛燒肉丼</div>
-          <div class="menu-desc">頂級和牛腹肉，炭火慢烤鎖住油脂精華，搭配特製醬汁與珍珠米飯，牛肉鮮嫩入口即化，油脂豐富不澀。</div>
-          <div class="menu-price">NT$ 300 – 450</div>
-        </div>
-      </div>
-      <div class="menu-card">
-        <div class="menu-card-img pork">🍖</div>
-        <div class="menu-card-body">
-          <span class="menu-tag">招牌</span>
-          <div class="menu-name">叁星豬五花重飯</div>
-          <div class="menu-desc">油花分佈均勻的豬五花，鹹甜醬汁醃漬後炭烤，米飯Q彈爽口，份量扎實，CP值極高。</div>
-          <div class="menu-price">NT$ 250 – 300</div>
-        </div>
-      </div>
-      <div class="menu-card">
-        <div class="menu-card-img eel">🐟</div>
-        <div class="menu-card-body">
-          <span class="menu-tag">新品</span>
-          <div class="menu-name">蒲燒鰻魚丼</div>
-          <div class="menu-desc">嚴選日式鰻魚以蒲燒手法製作，醬香撲鼻，鰻魚油脂豐厚，搭配蔥花與芝麻，風味絕佳。</div>
-          <div class="menu-price">NT$ 280 – 350</div>
-        </div>
-      </div>
-      <div class="menu-card">
-        <div class="menu-card-img combo">🍱</div>
-        <div class="menu-card-body">
-          <span class="menu-tag">家庭套餐</span>
-          <div class="menu-name">1號套餐分享組合</div>
-          <div class="menu-desc">適合 2–3 人的家庭套餐，多種口味組合，附小朋友分享餐，份量充足，一家人吃得飽足。</div>
-          <div class="menu-price">NT$ 600 – 800</div>
-        </div>
-      </div>
-    </div>
+    <div class="sec-header" id="menu-header"></div>
+    <div class="menu-grid"   id="menu-grid"></div>
   </section>
 
-  <!-- WHY -->
   <section class="site-section" id="s-why">
-    <div class="sec-header">
-      <p class="sec-label">Why Us — 我們的特色</p>
-      <h2 class="sec-title">為什麼選擇叁星</h2>
-      <div class="sec-line"></div>
-    </div>
-    <div class="why-grid">
-      <div class="why-item"><span class="why-icon">🔥</span><div class="why-title-t">炭火職人燒烤</div><div class="why-desc">採用傳統炭火燒烤技法，讓每片肉都擁有獨特的炭香風味，油脂在高溫下完美釋放，層次豐富。</div></div>
-      <div class="why-item"><span class="why-icon">🥩</span><div class="why-title-t">嚴選頂級食材</div><div class="why-desc">和牛直送、每日新鮮進貨，確保肉質的鮮嫩度與油花分佈，讓每一口都是極致享受。</div></div>
-      <div class="why-item"><span class="why-icon">⭐</span><div class="why-title-t">4.6 高評分口碑</div><div class="why-desc">881 位顧客真實評價，超過 4.6 星好評。CP 值合理、出餐快速，深受各地饕客喜愛。</div></div>
-      <div class="why-item"><span class="why-icon">🍚</span><div class="why-title-t">職人特製醬汁</div><div class="why-desc">秘製鹹甜醬汁搭配珍珠米飯，Q彈爽口的口感與醬汁完美融合，讓主食香氣全面升級。</div></div>
-      <div class="why-item"><span class="why-icon">🏯</span><div class="why-title-t">日式精緻環境</div><div class="why-desc">位於拉拉 PORT 5 樓，結合日式燒肉氛圍與現代設計美學，提供舒適愉快的用餐體驗。</div></div>
-      <div class="why-item"><span class="why-icon">⚡</span><div class="why-title-t">快速出餐服務</div><div class="why-desc">避開餐時可馬上入座，出餐效率極高，讓你在最短時間享用到最美味的燒肉丼飯。</div></div>
-    </div>
+    <div class="sec-header" id="why-header"></div>
+    <div class="why-grid"   id="why-grid"></div>
   </section>
 
-  <!-- GALLERY -->
   <section class="site-section" id="s-gallery">
-    <div class="sec-header">
-      <p class="sec-label">Gallery — 圖庫</p>
-      <h2 class="sec-title">饕客照片精選</h2>
-      <div class="sec-line"></div>
-    </div>
-    <div class="gallery-grid">
-      <div class="g-item tall g1">🥩<span class="g-label">和牛燒肉丼</span></div>
-      <div class="g-item g2">🍱<span class="g-label">精選套餐</span></div>
-      <div class="g-item g3">🔥<span class="g-label">炭火職人</span></div>
-      <div class="g-item span2 g4">🍚<span class="g-label">職人炒飯</span></div>
-      <div class="g-item g5">🏯<span class="g-label">用餐環境</span></div>
-    </div>
+    <div class="sec-header"  id="gallery-header"></div>
+    <div class="gallery-grid" id="gallery-grid"></div>
   </section>
 
-  <!-- FAQ -->
   <section class="site-section" id="s-faq">
-    <div class="sec-header">
-      <p class="sec-label">FAQ — 常見問題</p>
-      <h2 class="sec-title">常見問題解答</h2>
-      <div class="sec-line"></div>
-    </div>
-    <div class="faq-list">
-      <div class="faq-item open">
-        <button class="faq-q">需要事先訂位嗎？<span class="faq-arrow">▼</span></button>
-        <div class="faq-a">建議避開午餐（12:00–13:30）與晚餐（18:00–20:00）尖峰時段，非餐時通常可直接入座。如有特殊需求，歡迎透過訂位系統提前留言。</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q">有提供外帶與外送嗎？<span class="faq-arrow">▼</span></button>
-        <div class="faq-a">有的！叁星燒肉重飯提供內用、外帶與外送三種服務，讓你隨時隨地都能享用職人燒肉美食。外送請透過常用外送平台訂購。</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q">如何前往南港本店？<span class="faq-arrow">▼</span></button>
-        <div class="faq-a">本店位於台北市南港區經貿二路 131 號，拉拉 PORT 5 樓（51100 舖）。鄰近捷運南港展覽館站，步行約 8–10 分鐘。開車可使用拉拉 PORT 停車場。</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q">份量對一個人來說夠嗎？<span class="faq-arrow">▼</span></button>
-        <div class="faq-a">單人套餐份量飽足。建議點選 1 號套餐或加點小菜，家庭套餐適合 2–3 人共享。</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q">營業時間是什麼時候？<span class="faq-arrow">▼</span></button>
-        <div class="faq-a">本店每日營業，打烊時間為晚上 22:00。節假日或特殊期間營業時間可能有所調整，建議前往前查看 Google 地圖最新資訊。</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q">座位要怎麼找？<span class="faq-arrow">▼</span></button>
-        <div class="faq-a">有顧客提示「座位區位置不好找，建議要先找到座位再點餐」。入店後請先環顧餐廳找到喜歡的座位，確認位置後再前往點餐。</div>
-      </div>
-    </div>
+    <div class="sec-header" id="faq-header"></div>
+    <div class="faq-list"   id="faq-list"></div>
   </section>
 
-  <!-- CONTACT -->
   <section class="site-section" id="s-contact">
     <div class="contact-glow"></div>
-    <div class="sec-header" style="position:relative;z-index:2">
-      <p class="sec-label">Contact — 聯絡我們</p>
-      <h2 class="sec-title">預約與詢問</h2>
-      <div class="sec-line"></div>
-    </div>
-    <div class="contact-inner">
-      <div>
-        <h3 class="contact-h3">餐廳資訊</h3>
-        <div class="info-row"><span class="info-icon">📍</span><div><span class="info-label">地址</span><span class="info-value">115 台北市南港區<br>經貿二路 131 號<br>拉拉 PORT 5F（51100 舖）</span></div></div>
-        <div class="info-row"><span class="info-icon">🕐</span><div><span class="info-label">營業時間</span><div class="hrs-grid"><span class="hrs-day">週一至週五</span><span class="hrs-time">11:00 – 22:00</span><span class="hrs-day">週六至週日</span><span class="hrs-time">10:30 – 22:00</span></div></div></div>
-        <div class="info-row"><span class="info-icon">💰</span><div><span class="info-label">平均消費</span><span class="info-value">每人 NT$200 – 400</span></div></div>
-        <div class="info-row"><span class="info-icon">📱</span><div><span class="info-label">Instagram</span><span class="info-value">instagram.com（詳見 Google 地圖）</span></div></div>
-        <div class="info-row"><span class="info-icon">🍽️</span><div><span class="info-label">服務方式</span><span class="info-value">內用 · 外帶 · 外送</span></div></div>
-      </div>
-      <div>
-        <h3 class="contact-h3">留下訊息</h3>
-        <div id="contact-form-wrap">
-          <div class="f-row">
-            <div class="f-group"><label class="f-label">姓名</label><input type="text" class="f-input" id="cf-name" placeholder="您的姓名" /></div>
-            <div class="f-group"><label class="f-label">人數</label><input type="number" class="f-input" id="cf-guests" placeholder="用餐人數" min="1" max="20" /></div>
-          </div>
-          <div class="f-group"><label class="f-label">電話 / Email</label><input type="text" class="f-input" id="cf-contact" placeholder="聯絡方式" /></div>
-          <div class="f-row">
-            <div class="f-group"><label class="f-label">用餐日期</label><input type="date" class="f-input" id="cf-date" /></div>
-            <div class="f-group"><label class="f-label">用餐時段</label>
-              <select class="f-select" id="cf-time">
-                <option value="">請選擇</option>
-                <option>午餐 11:00–14:00</option><option>下午茶 14:00–17:00</option><option>晚餐 17:00–22:00</option>
-              </select>
-            </div>
-          </div>
-          <div class="f-group"><label class="f-label">備註 / 特殊需求</label><textarea class="f-textarea" id="cf-msg" placeholder="請輸入任何特殊需求或問題…"></textarea></div>
-          <button class="f-submit" onclick="submitContact()">送出預約申請 →</button>
-        </div>
-        <div class="f-success" id="contact-success">
-          <div class="f-success-icon">✓</div>
-          <div class="f-success-title">感謝您的預約申請</div>
-          <div class="f-success-sub">我們將於 24 小時內與您聯繫確認</div>
-        </div>
-      </div>
-    </div>
+    <div class="sec-header" id="contact-header" style="position:relative;z-index:2"></div>
+    <div class="contact-inner" id="contact-inner"></div>
   </section>
 
-  <!-- CTA -->
   <section id="s-cta">
-    <h2 class="cta-title">今日就來品嚐叁星滋味</h2>
-    <p class="cta-sub">炭火燒肉 · 職人丼飯 · 每日新鮮</p>
-    <div class="cta-btns">
-      <button class="btn-white" onclick="showRes()">立即訂位</button>
-      <a href="https://www.google.com/maps" target="_blank" class="btn-outline-white">Google 地圖導航</a>
-    </div>
+    <h2 class="cta-title" id="cta-title"></h2>
+    <p  class="cta-sub"   id="cta-sub"></p>
+    <div class="cta-btns" id="cta-btns"></div>
   </section>
 
-  <footer id="site-footer">
-    <div class="footer-logo">叁星燒肉重飯 ミツボシ</div>
-    <div class="footer-text">115 台北市南港區經貿二路 131 號，拉拉 PORT 5F &nbsp;|&nbsp; 每日 11:00 – 22:00</div>
-    <div class="footer-text">© 2025 叁星燒肉重飯 ミツボシ 南港本店. All rights reserved.</div>
-  </footer>
+  <footer id="site-footer"></footer>
 
 </div><!-- /view-website -->
 
 
-<!-- ════════════════════════════════════════════════════════════
-  ██  VIEW 2：RESERVATION
-════════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════════
+     VIEW 2：RESERVATION
+══════════════════════════════════════════════════════════ -->
 <div id="view-res" class="view">
 
-  <!-- Mask -->
   <div class="res-mask" id="mask">
     <div class="spinner"></div>
     <div class="mask-text">正在送出訂位…</div>
   </div>
 
-  <!-- Nav -->
   <nav id="res-nav">
     <button class="res-back" onclick="showSite()">
       <span class="res-back-arrow">←</span>返回首頁
     </button>
-    <div class="res-logo">叁星燒肉重飯<span>ミツボシ 南港本店</span></div>
+    <div class="res-logo">
+      <span id="res-store-name">叁星燒肉重飯</span>
+      <span id="res-store-sub">ミツボシ 南港本店</span>
+    </div>
     <div id="nav-step-text">步驟 <strong>1</strong> / 3</div>
   </nav>
   <div class="prog-bar"><div class="prog-fill" id="pf" style="width:33%"></div></div>
 
   <div class="res-page">
     <div>
-      <div class="conn-badge">
-        <span class="conn-dot"></span>
-        已串接 Google 試算表 × Email × LINE 通知
-      </div>
-
       <div class="steps-nav">
         <div class="step-tab active" id="tab-1"><div class="step-num">1</div><div class="step-tab-label">日期時段</div></div>
         <div class="step-tab"        id="tab-2"><div class="step-num">2</div><div class="step-tab-label">填寫資料</div></div>
@@ -646,7 +480,7 @@
       <div class="panel active" id="panel-1">
         <div class="step-label">STEP 01 — 選擇訂位資訊</div>
         <h2 class="step-title">請選擇日期與時段</h2>
-        <p class="step-desc">選擇日期後，系統將即時顯示各時段剩餘名額。建議避開 12:00–13:30 及 18:00–20:00 尖峰時段。</p>
+        <p class="step-desc" id="step1-desc">選擇日期後，系統將即時顯示各時段剩餘名額。</p>
 
         <div class="cal-wrap">
           <div class="cal-header">
@@ -654,38 +488,10 @@
             <div class="cal-month" id="cal-title"></div>
             <button class="cal-nav" id="cal-next">&#8250;</button>
           </div>
-          <div class="cal-grid" id="cal-grid">
-            <div class="cal-dow">日</div><div class="cal-dow">一</div><div class="cal-dow">二</div>
-            <div class="cal-dow">三</div><div class="cal-dow">四</div><div class="cal-dow">五</div><div class="cal-dow">六</div>
-          </div>
+          <div class="cal-grid" id="cal-grid"></div>
         </div>
 
-        <div class="time-section">
-          <div class="time-section-title">午餐時段</div>
-          <div class="time-slots">
-            <div class="slot" data-t="11:00">11:00<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="11:30">11:30<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="12:00">12:00<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="12:30">12:30<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="13:00">13:00<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="13:30">13:30<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="14:00">14:00<div class="slot-sub">有空位</div></div>
-          </div>
-        </div>
-        <div class="time-section">
-          <div class="time-section-title">晚餐時段</div>
-          <div class="time-slots">
-            <div class="slot" data-t="17:00">17:00<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="17:30">17:30<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="18:00">18:00<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="18:30">18:30<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="19:00">19:00<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="19:30">19:30<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="20:00">20:00<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="20:30">20:30<div class="slot-sub">有空位</div></div>
-            <div class="slot" data-t="21:00">21:00<div class="slot-sub">有空位</div></div>
-          </div>
-        </div>
+        <div id="res-slots"></div><!-- 時段由 JS 動態產生 -->
 
         <div class="form-sec-title" style="margin-top:1.5rem">用餐人數</div>
         <div class="guest-row">
@@ -693,10 +499,7 @@
           <div class="g-count"><strong id="g-num">2</strong><span>位</span></div>
           <button class="g-btn" id="g-plus"  onclick="chg(1)">+</button>
         </div>
-        <div class="guest-note">
-          ● 6 人以上大型訂位，請先致電或 Instagram 私訊確認。<br>
-          ● 小朋友亦請計入人數，方便安排座位。
-        </div>
+        <div class="guest-note" id="guest-note"></div>
         <button class="btn-next" onclick="go(2)">下一步：填寫聯絡資料 →</button>
       </div>
 
@@ -704,7 +507,8 @@
       <div class="panel" id="panel-2">
         <div class="step-label">STEP 02 — 填寫訂位資料</div>
         <h2 class="step-title">聯絡與通知資訊</h2>
-        <p class="step-desc">請填寫聯絡資料。標示 <span style="color:#ff6b6b">✱</span> 為必填。Email 與 LINE 選填，填寫後將收到訂位確認通知。</p>
+        <p class="step-desc">請填寫聯絡資料。標示 <span style="color:#ff6b6b">✱</span> 為必填。</p>
+
         <div style="margin-bottom:1.5rem">
           <div class="form-sec-title">基本資料</div>
           <div class="form-grid">
@@ -720,20 +524,21 @@
             </div>
           </div>
         </div>
+
         <div style="margin-bottom:1.5rem">
-          <div class="form-sec-title">訂位確認通知（選填）</div>
+          <div class="form-sec-title">通知方式（選填）</div>
           <div class="fgrp" id="fg-email">
-            <label class="flabel">📧 Email</label>
+            <label class="flabel">Email</label>
             <input type="email" class="finput" id="f-email" placeholder="your@email.com" />
             <div class="ferr">Email 格式不正確</div>
-            <div class="field-hint">填寫後將收到 HTML 格式訂位確認信，內含訂位編號。</div>
+            <div class="field-hint">填寫後將寄送訂位確認信，內含訂位編號。</div>
           </div>
           <div class="fgrp">
-            <label class="flabel">💬 LINE userId</label>
-            <input type="text" class="finput" id="f-line" placeholder="Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
-            <div class="field-hint">填寫後將收到 LINE 訂位確認卡片。取得方式：加本店 LINE Official Account 好友後傳訊一則，系統即可取得您的 userId（U 開頭 33 碼）。</div>
+            <label class="flabel">LINE 確認通知</label>
+            <div class="field-hint" id="line-hint"></div>
           </div>
         </div>
+
         <div style="margin-bottom:1.5rem">
           <div class="form-sec-title">備註（選填）</div>
           <div class="fgrp">
@@ -741,6 +546,7 @@
             <div class="char-note"><span>有任何飲食需求請在此說明</span><span id="cc">0 / 100</span></div>
           </div>
         </div>
+
         <div class="err-box" id="err2">請確認所有必填欄位填寫正確後再繼續。</div>
         <button class="btn-next" onclick="go(3)">下一步：確認訂位資訊 →</button>
         <button class="btn-back"  onclick="go(1)">← 返回上一步</button>
@@ -750,7 +556,8 @@
       <div class="panel" id="panel-3">
         <div class="step-label">STEP 03 — 確認訂位資訊</div>
         <h2 class="step-title">請確認以下資訊</h2>
-        <p class="step-desc">確認無誤後按「確認送出」，資料將自動寫入 Google 試算表，並發送 Email / LINE 通知。</p>
+        <p class="step-desc">確認無誤後，請按「確認送出」完成訂位。</p>
+
         <div class="conf-table">
           <div class="crow"><span class="ckey">用餐日期</span><span class="cval" id="c-date">—</span></div>
           <div class="crow"><span class="ckey">用餐時段</span><span class="cval" id="c-time">—</span></div>
@@ -758,17 +565,15 @@
           <div class="crow"><span class="ckey">訂位姓名</span><span class="cval" id="c-name">—</span></div>
           <div class="crow"><span class="ckey">聯絡電話</span><span class="cval" id="c-phone">—</span></div>
           <div class="crow"><span class="ckey">Email</span>    <span class="cval" id="c-email">—</span></div>
-          <div class="crow"><span class="ckey">LINE userId</span><span class="cval" id="c-line">—</span></div>
           <div class="crow"><span class="ckey">備註</span>     <span class="cval" id="c-note">無</span></div>
         </div>
+
         <div class="terms">
           <div class="terms-title">訂位注意事項</div>
-          ● 遲到 15 分鐘以上，訂位將自動釋出。<br>
-          ● 如需取消或更改，請於用餐前 2 小時通知。<br>
-          ● 6 人以上大型訂位，請另行電話確認。<br>
-          ● 訂位資料記錄於本店 Google 試算表，僅供內部使用。
+          <span id="terms-content"></span>
         </div>
-        <div class="err-box" id="err3">送出失敗，請稍後再試，或直接透過 Instagram 聯繫本店。</div>
+
+        <div class="err-box" id="err3"></div>
         <button class="btn-next" id="btn-submit" onclick="doSubmit()">確認送出訂位 ✓</button>
         <button class="btn-back"  onclick="go(2)">← 返回修改資料</button>
       </div>
@@ -777,18 +582,13 @@
       <div class="panel" id="panel-success">
         <div class="success-ring">✓</div>
         <h2 class="success-title">訂位成功！</h2>
-        <p class="success-sub">感謝您選擇叁星燒肉重飯 ミツボシ</p>
+        <p class="success-sub" id="success-sub"></p>
         <div class="bid-box">
           <div class="bid-label">訂位編號</div>
           <div class="bid-val" id="bid">—</div>
         </div>
         <div class="sdetails" id="sdetails"></div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:2rem;letter-spacing:1px;line-height:2">
-          訂位資料已寫入本店 Google 試算表。<br>
-          如有填寫 Email，確認信將在幾分鐘內送達。<br>
-          如有填寫 LINE userId，確認卡片將在幾分鐘內送達。<br>
-          如需更改請透過 Instagram 聯繫本店。
-        </p>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:2rem;letter-spacing:1px;line-height:2" id="success-note"></p>
         <button class="btn-home" onclick="showSite()">返回餐廳首頁</button>
       </div>
     </div>
@@ -796,7 +596,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="sb-card">
-        <div class="sb-head">📋 訂位摘要</div>
+        <div class="sb-head">訂位摘要</div>
         <div class="sb-body">
           <div class="si"><div class="si-icon">📅</div><div><div class="si-lbl">日期</div><div class="si-val" id="s-date"><span class="empty">尚未選擇</span></div></div></div>
           <div class="si"><div class="si-icon">🕐</div><div><div class="si-lbl">時段</div><div class="si-val" id="s-time"><span class="empty">尚未選擇</span></div></div></div>
@@ -805,14 +605,8 @@
         </div>
       </div>
       <div class="notice-card">
-        <div class="notice-title">📍 餐廳資訊</div>
-        <ul class="notice-list">
-          <li>南港區經貿二路 131 號 拉拉PORT 5F</li>
-          <li>每日 11:00 – 22:00</li>
-          <li>內用 · 外帶 · 外送</li>
-          <li>均消 NT$200–400 / 人</li>
-          <li>⭐ 4.6（881 則 Google 評論）</li>
-        </ul>
+        <div class="notice-title">餐廳資訊</div>
+        <ul class="notice-list" id="sidebar-info"></ul>
       </div>
     </div>
   </div>
@@ -821,17 +615,251 @@
 
 <script>
 // ════════════════════════════════════════════════════════════
-//  APPS SCRIPT URL（部署後填入）
+//  🔧 換店設定區（只需改這裡）
 // ════════════════════════════════════════════════════════════
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZtu65lBXGIh7mVV1e5ihEg-8RmBEBQC0HyJAGfMe4pPjZlQ1ojyPFs2DWSUvR0hqu/exec";
-const MAX_PER_SLOT = 20;
+const STORE = {
+  name:    "叁星燒肉重飯",
+  nameSub: "ミツボシ 南港本店",
 
-// ── VIEW ROUTING ─────────────────────────────────────────────
+  // ── 訂位後端 URL ──
+  apiUrl:     "https://script.google.com/macros/s/AKfycbwAIGfWfTYI02KbbEgB-Snhsk0NBEc1oY45xAglxCiAUcnvkhHEOsLU8YBsdR3kzYzo/exec",
+  maxPerSlot: 20,
+
+  // ── HERO ──
+  hero: {
+    badge:   "南港 · 拉拉 PORT 5F · 日式燒肉",
+    title:   "叁星燒肉<br>重飯",
+    titleJp: "ミツボシ 燒肉重飯",
+    sub:     "炭火燒烤 × 和牛丼飯 × 職人之味",
+    stats: [
+      { value:"4.6",  label:"★★★★★<br>881 則評論" },
+      { value:"$200", label:"均消起價<br>每人 $200–400" },
+      { value:"287",  label:"位顧客<br>回報光顧" },
+    ],
+  },
+
+  // ── 菜單（img 填圖片路徑，留空用 emoji）──
+  menu: {
+    sectionTitle: "職人精選餐點",
+    items: [
+      { tag:"人氣 No.1", name:"叁星和牛燒肉丼",  desc:"頂級和牛腹肉，炭火慢烤鎖住油脂精華，搭配特製醬汁與珍珠米飯，牛肉鮮嫩入口即化。", price:"NT$ 300 – 450", img:"", emoji:"🥩", imgClass:"beef"  },
+      { tag:"招牌",      name:"叁星豬五花重飯",  desc:"油花分佈均勻的豬五花，鹹甜醬汁醃漬後炭烤，米飯Q彈爽口，份量扎實，CP值極高。",     price:"NT$ 250 – 300", img:"", emoji:"🍖", imgClass:"pork"  },
+      { tag:"新品",      name:"蒲燒鰻魚丼",      desc:"嚴選日式鰻魚以蒲燒手法製作，醬香撲鼻，鰻魚油脂豐厚，搭配蔥花與芝麻，風味絕佳。", price:"NT$ 280 – 350", img:"", emoji:"🐟", imgClass:"eel"   },
+      { tag:"家庭套餐",  name:"1號套餐分享組合", desc:"適合 2–3 人的家庭套餐，多種口味組合，附小朋友分享餐，份量充足，一家人吃得飽足。", price:"NT$ 600 – 800", img:"", emoji:"🍱", imgClass:"combo" },
+    ],
+  },
+
+  // ── 特色 ──
+  why: {
+    sectionTitle: "為什麼選擇叁星",
+    items: [
+      { icon:"🔥", title:"炭火職人燒烤",   desc:"採用傳統炭火燒烤技法，讓每片肉都擁有獨特的炭香風味，油脂在高溫下完美釋放，層次豐富。" },
+      { icon:"🥩", title:"嚴選頂級食材",   desc:"和牛直送、每日新鮮進貨，確保肉質的鮮嫩度與油花分佈，讓每一口都是極致享受。" },
+      { icon:"⭐", title:"4.6 高評分口碑", desc:"881 位顧客真實評價，超過 4.6 星好評。CP 值合理、出餐快速，深受各地饕客喜愛。" },
+      { icon:"🍚", title:"職人特製醬汁",   desc:"秘製鹹甜醬汁搭配珍珠米飯，Q彈爽口的口感與醬汁完美融合，讓主食香氣全面升級。" },
+      { icon:"🏯", title:"日式精緻環境",   desc:"位於拉拉 PORT 5 樓，結合日式燒肉氛圍與現代設計美學，提供舒適愉快的用餐體驗。" },
+      { icon:"⚡", title:"快速出餐服務",   desc:"避開餐時可馬上入座，出餐效率極高，讓你在最短時間享用到最美味的燒肉丼飯。" },
+    ],
+  },
+
+  // ── 圖庫（img 填圖片路徑，留空用 emoji / gradient）──
+  gallery: {
+    sectionTitle: "饕客照片精選",
+    items: [
+      { img:"", emoji:"🥩", label:"和牛燒肉丼", layout:"tall"  },
+      { img:"", emoji:"🍱", label:"精選套餐",   layout:""      },
+      { img:"", emoji:"🔥", label:"炭火職人",   layout:""      },
+      { img:"", emoji:"🍚", label:"職人炒飯",   layout:"span2" },
+      { img:"", emoji:"🏯", label:"用餐環境",   layout:""      },
+    ],
+  },
+
+  // ── FAQ ──
+  faq: {
+    sectionTitle: "常見問題解答",
+    items: [
+      { q:"需要事先訂位嗎？",       a:"建議避開午餐（12:00–13:30）與晚餐（18:00–20:00）尖峰時段，非餐時通常可直接入座。" },
+      { q:"有提供外帶與外送嗎？",   a:"有的！本店提供內用、外帶與外送三種服務。外送請透過常用外送平台訂購。" },
+      { q:"如何前往南港本店？",     a:"本店位於台北市南港區經貿二路 131 號，拉拉 PORT 5 樓（51100 舖）。鄰近捷運南港展覽館站，步行約 8–10 分鐘。" },
+      { q:"份量對一個人來說夠嗎？", a:"單人套餐份量飽足。建議點選 1 號套餐，家庭套餐適合 2–3 人共享。" },
+      { q:"營業時間是什麼時候？",   a:"本店每日營業，打烊時間為晚上 22:00。節假日可能調整，建議查看 Google 地圖最新資訊。" },
+    ],
+  },
+
+  // ── 聯絡資訊 ──
+  contact: {
+    address:  "115 台北市南港區<br>經貿二路 131 號<br>拉拉 PORT 5F（51100 舖）",
+    hours: [
+      { day:"週一至週五", time:"11:00 – 22:00" },
+      { day:"週六至週日", time:"10:30 – 22:00" },
+      { day:"例假日",     time:"請以 Google 地圖為準" },
+    ],
+    priceRange: "每人 NT$200 – 400",
+    instagram:  "instagram.com（詳見 Google 地圖）",
+    services:   "內用 · 外帶 · 外送",
+  },
+
+  // ── CTA ──
+  cta: {
+    title: "今日就來品嚐叁星滋味",
+    sub:   "炭火燒肉 · 職人丼飯 · 每日新鮮",
+  },
+
+  // ── Footer ──
+  footer: {
+    addressLine: "115 台北市南港區經貿二路 131 號，拉拉 PORT 5F &nbsp;|&nbsp; 每日 11:00 – 22:00",
+    copyright:   "© 2025 叁星燒肉重飯 ミツボシ 南港本店. All rights reserved.",
+  },
+
+  // ── 訂位頁設定 ──
+  sessions: [
+    { title:"午餐時段", slots:["11:00","11:30","12:00","12:30","13:00","13:30","14:00"] },
+    { title:"晚餐時段", slots:["17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"] },
+  ],
+  sidebarInfo:  ["南港區經貿二路 131 號 拉拉PORT 5F","每日 11:00 – 22:00","內用 · 外帶 · 外送","均消 NT$200–400 / 人","⭐ 4.6（881 則 Google 評論）"],
+  guestNote:    "● 6 人以上大型訂位，請先致電或 Instagram 私訊確認。<br>● 小朋友亦請計入人數，方便安排座位。",
+  terms:        ["遲到 15 分鐘以上，訂位將自動釋出。","如需取消或更改，請於用餐前 2 小時通知。","6 人以上大型訂位，請另行電話確認。"],
+  lineHint:     "已加入本店 LINE 官方帳號並完成電話綁定者，訂位後將自動收到 LINE 確認通知。",
+  successNote:  "如需更改或取消，請透過電話或 Instagram 聯繫本店。",
+  contactHint:  "Instagram",
+  googleMapsUrl:"https://www.google.com/maps/search/叁星燒肉重飯",
+};
+// ════════════════════════════════════════════════════════════
+
+// ── 工具 ──────────────────────────────────────────────────
+function secHeader(label, title) {
+  return `<p class="sec-label">${label}</p><h2 class="sec-title">${title}</h2><div class="sec-line"></div>`;
+}
+
+// ── 渲染 WEBSITE ─────────────────────────────────────────
+function renderSite() {
+  document.title = `${STORE.name} ${STORE.nameSub}`;
+  document.getElementById('nav-store-name').textContent = STORE.name;
+  document.getElementById('nav-store-sub').textContent  = STORE.nameSub;
+
+  // Hero
+  document.getElementById('hero-content').innerHTML = `
+    <div class="hero-badge">${STORE.hero.badge}</div>
+    <h1 class="hero-title">${STORE.hero.title}</h1>
+    <span class="hero-title-jp">${STORE.hero.titleJp}</span>
+    <p class="hero-sub">${STORE.hero.sub}</p>
+    <div class="hero-stats">${STORE.hero.stats.map(s=>`<div class="hero-stat"><strong>${s.value}</strong><span>${s.label}</span></div>`).join('')}</div>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="siteScroll('#s-menu')">查看菜單</button>
+      <button class="btn-outline" onclick="showRes()">立即訂位</button>
+    </div>`;
+
+  // Menu
+  document.getElementById('menu-header').innerHTML = secHeader('Menu — 菜單', STORE.menu.sectionTitle);
+  document.getElementById('menu-grid').innerHTML   = STORE.menu.items.map(i=>`
+    <div class="menu-card">
+      <div class="menu-card-img ${i.imgClass}" style="${i.img?`background-image:url('${i.img}');background-size:cover;background-position:center;font-size:0`:''}">
+        ${i.img?'':i.emoji}</div>
+      <div class="menu-card-body">
+        <span class="menu-tag">${i.tag}</span>
+        <div class="menu-name">${i.name}</div>
+        <div class="menu-desc">${i.desc}</div>
+        <div class="menu-price">${i.price}</div>
+      </div>
+    </div>`).join('');
+
+  // Why
+  document.getElementById('why-header').innerHTML = secHeader('Why Us — 我們的特色', STORE.why.sectionTitle);
+  document.getElementById('why-grid').innerHTML   = STORE.why.items.map(i=>`
+    <div class="why-item"><span class="why-icon">${i.icon}</span><div class="why-title-t">${i.title}</div><div class="why-desc">${i.desc}</div></div>`).join('');
+
+  // Gallery
+  document.getElementById('gallery-header').innerHTML = secHeader('Gallery — 圖庫', STORE.gallery.sectionTitle);
+  document.getElementById('gallery-grid').innerHTML   = STORE.gallery.items.map((i,idx)=>`
+    <div class="g-item ${i.layout} g${idx+1}" style="${i.img?`background-image:url('${i.img}');background-size:cover;background-position:center;font-size:0`:''}">
+      ${i.img?'':i.emoji}<span class="g-label">${i.label}</span></div>`).join('');
+
+  // FAQ
+  document.getElementById('faq-header').innerHTML = secHeader('FAQ — 常見問題', STORE.faq.sectionTitle);
+  document.getElementById('faq-list').innerHTML   = STORE.faq.items.map((i,idx)=>`
+    <div class="faq-item ${idx===0?'open':''}">
+      <button class="faq-q">${i.q}<span class="faq-arrow">▼</span></button>
+      <div class="faq-a">${i.a}</div>
+    </div>`).join('');
+
+  // Contact
+  document.getElementById('contact-header').innerHTML = secHeader('Contact — 聯絡我們', '預約與詢問');
+  document.getElementById('contact-inner').innerHTML  = `
+    <div>
+      <h3 class="contact-h3">餐廳資訊</h3>
+      <div class="info-row"><span class="info-icon">📍</span><div><span class="info-label">地址</span><span class="info-value">${STORE.contact.address}</span></div></div>
+      <div class="info-row"><span class="info-icon">🕐</span><div><span class="info-label">營業時間</span><div class="hrs-grid">${STORE.contact.hours.map(h=>`<span class="hrs-day">${h.day}</span><span class="hrs-time">${h.time}</span>`).join('')}</div></div></div>
+      <div class="info-row"><span class="info-icon">💰</span><div><span class="info-label">平均消費</span><span class="info-value">${STORE.contact.priceRange}</span></div></div>
+      <div class="info-row"><span class="info-icon">📱</span><div><span class="info-label">Instagram</span><span class="info-value">${STORE.contact.instagram}</span></div></div>
+      <div class="info-row"><span class="info-icon">🍽️</span><div><span class="info-label">服務方式</span><span class="info-value">${STORE.contact.services}</span></div></div>
+    </div>
+    <div>
+      <h3 class="contact-h3">留下訊息</h3>
+      <div id="contact-form-wrap">
+        <div class="f-row">
+          <div class="f-group"><label class="f-label">姓名</label><input type="text" class="f-input" id="cf-name" placeholder="您的姓名" /></div>
+          <div class="f-group"><label class="f-label">人數</label><input type="number" class="f-input" id="cf-guests" placeholder="用餐人數" min="1" max="20" /></div>
+        </div>
+        <div class="f-group"><label class="f-label">電話 / Email</label><input type="text" class="f-input" id="cf-contact" placeholder="聯絡方式" /></div>
+        <div class="f-row">
+          <div class="f-group"><label class="f-label">用餐日期</label><input type="date" class="f-input" id="cf-date" /></div>
+          <div class="f-group"><label class="f-label">用餐時段</label>
+            <select class="f-select" id="cf-time">
+              <option value="">請選擇</option>
+              <option>午餐 11:00–14:00</option><option>下午茶 14:00–17:00</option><option>晚餐 17:00–22:00</option>
+            </select>
+          </div>
+        </div>
+        <div class="f-group"><label class="f-label">備註 / 特殊需求</label><textarea class="f-textarea" id="cf-msg" placeholder="請輸入任何特殊需求或問題…"></textarea></div>
+        <button class="f-submit" onclick="submitContact()">送出預約申請 →</button>
+      </div>
+      <div class="f-success" id="contact-success" style="display:none">
+        <div class="f-success-icon">✓</div>
+        <div class="f-success-title">感謝您的預約申請</div>
+        <div class="f-success-sub">我們將於 24 小時內與您聯繫確認</div>
+      </div>
+    </div>`;
+
+  // CTA
+  document.getElementById('cta-title').textContent = STORE.cta.title;
+  document.getElementById('cta-sub').textContent   = STORE.cta.sub;
+  document.getElementById('cta-btns').innerHTML    = `
+    <button class="btn-white" onclick="showRes()">立即訂位</button>
+    <a href="${STORE.googleMapsUrl}" target="_blank" class="btn-outline-white">Google 地圖導航</a>`;
+
+  // Footer
+  document.getElementById('site-footer').innerHTML = `
+    <div class="footer-logo">${STORE.name} ${STORE.nameSub}</div>
+    <div class="footer-text">${STORE.footer.addressLine}</div>
+    <div class="footer-text">${STORE.footer.copyright}</div>`;
+}
+
+// ── 渲染 RESERVATION ────────────────────────────────────
+function renderRes() {
+  document.getElementById('res-store-name').textContent = STORE.name;
+  document.getElementById('res-store-sub').textContent  = STORE.nameSub;
+  document.getElementById('guest-note').innerHTML       = STORE.guestNote;
+  document.getElementById('line-hint').textContent      = STORE.lineHint;
+  document.getElementById('terms-content').innerHTML    = STORE.terms.map(t=>`● ${t}`).join('<br>');
+  document.getElementById('success-sub').textContent    = `感謝您選擇 ${STORE.name}`;
+  document.getElementById('success-note').textContent   = STORE.successNote;
+  document.getElementById('sidebar-info').innerHTML     = STORE.sidebarInfo.map(s=>`<li>${s}</li>`).join('');
+
+  // 時段
+  document.getElementById('res-slots').innerHTML = STORE.sessions.map(s=>`
+    <div class="time-section">
+      <div class="time-section-title">${s.title}</div>
+      <div class="time-slots">${s.slots.map(t=>`<div class="slot" data-t="${t}">${t}<div class="slot-sub">有空位</div></div>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  VIEW 切換
+// ════════════════════════════════════════════════════════
 function showRes() {
   document.getElementById('view-website').classList.remove('active');
   document.getElementById('view-res').classList.add('active');
   window.scrollTo({ top:0, behavior:'smooth' });
-  // reset wizard state on each open
   resetWizard();
 }
 function showSite() {
@@ -846,17 +874,18 @@ function siteScroll(sel) {
   return false;
 }
 
-// ── WEBSITE: FAQ ──────────────────────────────────────────────
-document.querySelectorAll('.faq-q').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const item = btn.parentElement;
-    const wasOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!wasOpen) item.classList.add('open');
-  });
+// ════════════════════════════════════════════════════════
+//  WEBSITE：FAQ / Contact
+// ════════════════════════════════════════════════════════
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.faq-q');
+  if (!btn) return;
+  const item = btn.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
 });
 
-// ── WEBSITE: Contact form ─────────────────────────────────────
 function submitContact() {
   const name    = document.getElementById('cf-name').value.trim();
   const contact = document.getElementById('cf-contact').value.trim();
@@ -865,50 +894,20 @@ function submitContact() {
   document.getElementById('contact-success').style.display   = 'block';
 }
 
-// ── WEBSITE: Smooth nav links ─────────────────────────────────
-document.querySelectorAll('.site-links a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const t = document.querySelector(a.getAttribute('href'));
-    if (t) t.scrollIntoView({ behavior:'smooth' });
-  });
-});
-
-// ════════════════════════════════════════════════════════════
-//  RESERVATION WIZARD
-// ════════════════════════════════════════════════════════════
-
-const S = { date:null, time:null, guests:2, name:'', phone:'', email:'', lineUserId:'', note:'' };
+// ════════════════════════════════════════════════════════
+//  RESERVATION：月曆
+// ════════════════════════════════════════════════════════
+const S = { date:null, time:null, guests:2, name:'', phone:'', email:'', note:'' };
 let calY, calM;
 
-function resetWizard() {
-  Object.assign(S, { date:null, time:null, guests:2, name:'', phone:'', email:'', lineUserId:'', note:'' });
-  go(1, true);
-  document.getElementById('g-num').textContent = 2;
-  document.getElementById('g-minus').disabled  = true;
-  document.getElementById('g-plus').disabled   = false;
-  ['f-name','f-phone','f-email','f-line','f-note'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  document.getElementById('s-date').innerHTML  = '<span class="empty">尚未選擇</span>';
-  document.getElementById('s-time').innerHTML  = '<span class="empty">尚未選擇</span>';
-  document.getElementById('s-guests').textContent = '2 位';
-  document.getElementById('s-name').innerHTML  = '<span class="empty">尚未填寫</span>';
-  document.getElementById('cc').textContent    = '0 / 100';
-  document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
-  initCal();
-}
-
-// ── Calendar ─────────────────────────────────────────────────
 function initCal() {
   const n = new Date(); calY = n.getFullYear(); calM = n.getMonth();
   renderCal();
 }
 function renderCal() {
-  const MN = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-  document.getElementById('cal-title').textContent = `${calY} 年 ${MN[calM]}`;
-  const DOWS  = ['日','一','二','三','四','五','六'];
+  const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  document.getElementById('cal-title').textContent = `${calY} 年 ${MONTHS[calM]}`;
+  const DOWS = ['日','一','二','三','四','五','六'];
   const heads = DOWS.map(d=>`<div class="cal-dow">${d}</div>`).join('');
   const first = new Date(calY,calM,1).getDay();
   const days  = new Date(calY,calM+1,0).getDate();
@@ -916,9 +915,9 @@ function renderCal() {
   let c = '';
   for(let i=0;i<first;i++) c+=`<div class="cal-day empty"></div>`;
   for(let d=1;d<=days;d++){
-    const ds = `${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const dt = new Date(calY,calM,d);
-    let cls  = 'cal-day';
+    const ds=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dt=new Date(calY,calM,d);
+    let cls='cal-day';
     if(dt<today) cls+=' past';
     if(dt.getTime()===today.getTime()) cls+=' today';
     if(S.date===ds) cls+=' selected';
@@ -927,7 +926,16 @@ function renderCal() {
   }
   document.getElementById('cal-grid').innerHTML = heads+c;
 }
-async function pickDate(ds){
+document.getElementById('cal-prev').addEventListener('click',()=>{
+  const n=new Date();
+  if(calY===n.getFullYear()&&calM===n.getMonth()) return;
+  calM--; if(calM<0){calM=11;calY--;} renderCal();
+});
+document.getElementById('cal-next').addEventListener('click',()=>{
+  calM++; if(calM>11){calM=0;calY++;} renderCal();
+});
+
+async function pickDate(ds) {
   S.date=ds; S.time=null;
   document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
   renderCal();
@@ -935,60 +943,75 @@ async function pickDate(ds){
   document.getElementById('s-date').textContent=`${p[0]}年 ${parseInt(p[1])}月 ${parseInt(p[2])}日（週${wds[new Date(ds).getDay()]}）`;
   document.getElementById('s-time').innerHTML='<span class="empty">尚未選擇</span>';
   syncConfirm();
-  await fetchCap(ds);
+  await fetchCapacity(ds);
 }
-document.getElementById('cal-prev').addEventListener('click',()=>{
-  const n=new Date(); if(calY===n.getFullYear()&&calM===n.getMonth()) return;
-  calM--; if(calM<0){calM=11;calY--;} renderCal();
-});
-document.getElementById('cal-next').addEventListener('click',()=>{
-  calM++; if(calM>11){calM=0;calY++;} renderCal();
-});
 
-// ── Capacity ──────────────────────────────────────────────────
-async function fetchCap(date){
+// ════════════════════════════════════════════════════════
+//  RESERVATION：名額查詢（CORS 修正）
+// ════════════════════════════════════════════════════════
+async function fetchCapacity(date) {
   document.querySelectorAll('.slot').forEach(el=>{
-    if(!el.classList.contains('manual-full')){ el.classList.add('loading'); el.querySelector('.slot-sub').textContent='查詢中…'; el.querySelector('.slot-sub').style.color=''; }
+    if(!el.classList.contains('manual-full')){
+      el.classList.add('loading');
+      el.querySelector('.slot-sub').textContent='查詢中…';
+    }
   });
-  if(APPS_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')){
-    document.querySelectorAll('.slot').forEach(el=>{ if(!el.classList.contains('manual-full')){ el.classList.remove('loading'); el.querySelector('.slot-sub').textContent='有空位'; }});
+  if(STORE.apiUrl.includes('YOUR_DEPLOYMENT_ID')){
+    document.querySelectorAll('.slot').forEach(el=>{
+      if(!el.classList.contains('manual-full')){
+        el.classList.remove('loading');
+        el.querySelector('.slot-sub').textContent='有空位';
+      }
+    });
     bindSlots(); return;
   }
-  try{
-    const r=await fetch(`${APPS_SCRIPT_URL}?action=capacity&date=${date}`);
-    const j=await r.json();
-    applyCapacity(j.capacity||{});
-  }catch{
-    document.querySelectorAll('.slot').forEach(el=>{ if(!el.classList.contains('manual-full')){ el.classList.remove('loading','full'); el.querySelector('.slot-sub').textContent='有空位'; el.querySelector('.slot-sub').style.color=''; }});
+  try {
+    const r = await fetch(`${STORE.apiUrl}?action=capacity&date=${date}`,{
+      method:'GET', redirect:'follow'   // ← CORS 修正
+    });
+    applyCapacity((await r.json()).capacity||{});
+  } catch {
+    document.querySelectorAll('.slot').forEach(el=>{
+      if(!el.classList.contains('manual-full')){
+        el.classList.remove('loading','full');
+        el.querySelector('.slot-sub').textContent='有空位';
+        el.querySelector('.slot-sub').style.color='';
+      }
+    });
     bindSlots();
   }
 }
-function applyCapacity(map){
+
+function applyCapacity(map) {
   document.querySelectorAll('.slot').forEach(el=>{
     el.classList.remove('loading');
     if(el.classList.contains('manual-full')) return;
-    const t=el.dataset.t, booked=map[t]||0, remain=MAX_PER_SLOT-booked;
+    const time=el.dataset.t, booked=map[time]||0, remain=STORE.maxPerSlot-booked;
     const sub=el.querySelector('.slot-sub');
-    if(remain<=0){ el.classList.add('full'); el.classList.remove('selected'); if(S.time===t){S.time=null;syncConfirm();} sub.textContent='已額滿'; sub.style.color=''; }
+    if(remain<=0){ el.classList.add('full'); el.classList.remove('selected'); if(S.time===time){S.time=null;syncConfirm();} sub.textContent='已額滿'; sub.style.color=''; }
     else if(remain<=4){ el.classList.remove('full'); sub.textContent=`僅剩 ${remain} 位`; sub.style.color='#ffaa44'; }
-    else{ el.classList.remove('full'); sub.textContent=`剩 ${remain} 位`; sub.style.color=''; }
+    else { el.classList.remove('full'); sub.textContent=`剩 ${remain} 位`; sub.style.color=''; }
   });
   bindSlots();
 }
-function bindSlots(){
+
+function bindSlots() {
   document.querySelectorAll('.slot').forEach(el=>{ el.onclick=null; });
   document.querySelectorAll('.slot:not(.full):not(.loading)').forEach(el=>{
     el.onclick=()=>{
       document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
-      el.classList.add('selected'); S.time=el.dataset.t;
+      el.classList.add('selected');
+      S.time=el.dataset.t;
       document.getElementById('s-time').textContent=el.dataset.t;
       syncConfirm();
     };
   });
 }
 
-// ── Guests ────────────────────────────────────────────────────
-function chg(d){
+// ════════════════════════════════════════════════════════
+//  RESERVATION：人數 / 字數
+// ════════════════════════════════════════════════════════
+function chg(d) {
   S.guests=Math.max(1,Math.min(20,S.guests+d));
   document.getElementById('g-num').textContent=S.guests;
   document.getElementById('g-minus').disabled=S.guests<=1;
@@ -996,103 +1019,136 @@ function chg(d){
   document.getElementById('s-guests').textContent=S.guests+' 位';
   syncConfirm();
 }
-
-// ── Char count ────────────────────────────────────────────────
-function updCC(){
+function updCC() {
   const v=document.getElementById('f-note').value;
   if(v.length>100) document.getElementById('f-note').value=v.slice(0,100);
   document.getElementById('cc').textContent=`${Math.min(v.length,100)} / 100`;
 }
 
-// ── Validate step 2 ───────────────────────────────────────────
-function validate2(){
+// ════════════════════════════════════════════════════════
+//  RESERVATION：驗證 / 同步
+// ════════════════════════════════════════════════════════
+function validate2() {
   let ok=true;
-  const se=(id,v)=>{ document.getElementById('fg-'+id).classList.toggle('err',!v); return v; };
+  const setErr=(id,valid)=>{ document.getElementById('fg-'+id).classList.toggle('err',!valid); return valid; };
   const name=document.getElementById('f-name').value.trim();
   const phone=document.getElementById('f-phone').value.trim();
   const email=document.getElementById('f-email').value.trim();
-  ok=se('name',name.length>0)&&ok;
-  ok=se('phone',/^[\d\s\-\+]{8,15}$/.test(phone))&&ok;
-  if(email) ok=se('email',/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))&&ok;
+  ok=setErr('name',name.length>0)&&ok;
+  ok=setErr('phone',/^[\d\s\-\+]{8,15}$/.test(phone))&&ok;
+  if(email) ok=setErr('email',/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))&&ok;
   else document.getElementById('fg-email').classList.remove('err');
-  if(ok){
-    S.name=name; S.phone=phone; S.email=email;
-    S.lineUserId=document.getElementById('f-line').value.trim();
-    S.note=document.getElementById('f-note').value.trim();
-    document.getElementById('s-name').textContent=name;
-    document.getElementById('err2').classList.remove('show');
-  } else { document.getElementById('err2').classList.add('show'); }
+  if(ok){ S.name=name; S.phone=phone; S.email=email; S.note=document.getElementById('f-note').value.trim(); document.getElementById('s-name').textContent=name; document.getElementById('err2').classList.remove('show'); }
+  else { document.getElementById('err2').classList.add('show'); }
   return ok;
 }
-
-// ── Sync confirm ──────────────────────────────────────────────
-function syncConfirm(){
-  const fmt=ds=>{ if(!ds) return '—'; const p=ds.split('-'),wds=['日','一','二','三','四','五','六']; return `${p[0]}年 ${parseInt(p[1])}月 ${parseInt(p[2])}日（週${wds[new Date(ds).getDay()]}）`; };
-  document.getElementById('c-date').innerHTML  = S.date   ? fmt(S.date) : '<span style="color:var(--muted)">尚未選擇</span>';
-  document.getElementById('c-time').innerHTML  = S.time   ? `<strong>${S.time}</strong>` : '<span style="color:var(--muted)">尚未選擇</span>';
+function syncConfirm() {
+  const fmt=ds=>{ if(!ds)return'—'; const p=ds.split('-'),wds=['日','一','二','三','四','五','六']; return `${p[0]}年 ${parseInt(p[1])}月 ${parseInt(p[2])}日（週${wds[new Date(ds).getDay()]}）`; };
+  document.getElementById('c-date').innerHTML  = S.date?fmt(S.date):'<span style="color:var(--muted)">尚未選擇</span>';
+  document.getElementById('c-time').innerHTML  = S.time?`<strong>${S.time}</strong>`:'<span style="color:var(--muted)">尚未選擇</span>';
   document.getElementById('c-guests').innerHTML= `<strong>${S.guests}</strong> 位`;
-  document.getElementById('c-name').textContent = S.name       || '—';
-  document.getElementById('c-phone').textContent= S.phone      || '—';
-  document.getElementById('c-email').textContent= S.email      || '（未填寫）';
-  document.getElementById('c-line').textContent = S.lineUserId  || '（未填寫）';
-  document.getElementById('c-note').textContent = S.note        || '無';
+  document.getElementById('c-name').textContent = S.name  ||'—';
+  document.getElementById('c-phone').textContent= S.phone ||'—';
+  document.getElementById('c-email').textContent= S.email ||'（未填寫）';
+  document.getElementById('c-note').textContent = S.note  ||'無';
 }
 
-// ── Step navigation ───────────────────────────────────────────
-function go(n, silent){
-  if(!silent){
-    if(n===2){ if(!S.date){alert('請先選擇用餐日期');return;} if(!S.time){alert('請先選擇用餐時段');return;} }
-    if(n===3){ if(!validate2()) return; syncConfirm(); }
-  }
+// ════════════════════════════════════════════════════════
+//  RESERVATION：步驟切換
+// ════════════════════════════════════════════════════════
+function go(n) {
+  if(n===2){if(!S.date){alert('請先選擇用餐日期');return;} if(!S.time){alert('請先選擇用餐時段');return;}}
+  if(n===3){if(!validate2())return; syncConfirm();}
   const pct={1:'33%',2:'66%',3:'100%'};
   document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
-  for(let i=1;i<=3;i++){ const t=document.getElementById('tab-'+i); t.classList.remove('active','done'); if(i<n)t.classList.add('done'); if(i===n)t.classList.add('active'); }
+  for(let i=1;i<=3;i++){
+    const t=document.getElementById('tab-'+i);
+    t.classList.remove('active','done');
+    if(i<n) t.classList.add('done');
+    if(i===n) t.classList.add('active');
+  }
   document.getElementById('pf').style.width=pct[n]||'33%';
   document.getElementById('nav-step-text').innerHTML=`步驟 <strong>${n}</strong> / 3`;
-  if(!silent) window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ── Submit ────────────────────────────────────────────────────
-async function doSubmit(){
+function resetWizard() {
+  S.date=null; S.time=null; S.guests=2; S.name=''; S.phone=''; S.email=''; S.note='';
+  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+  for(let i=1;i<=3;i++){const t=document.getElementById('tab-'+i); t.classList.remove('active','done'); if(i===1)t.classList.add('active');}
+  document.getElementById('pf').style.width='33%';
+  document.getElementById('nav-step-text').innerHTML='步驟 <strong>1</strong> / 3';
+  document.getElementById('g-num').textContent='2';
+  document.getElementById('g-minus').disabled=true;
+  document.getElementById('g-plus').disabled=false;
+  document.getElementById('s-date').innerHTML='<span class="empty">尚未選擇</span>';
+  document.getElementById('s-time').innerHTML='<span class="empty">尚未選擇</span>';
+  document.getElementById('s-guests').textContent='2 位';
+  document.getElementById('s-name').innerHTML='<span class="empty">尚未填寫</span>';
+  document.getElementById('f-name').value='';
+  document.getElementById('f-phone').value='';
+  document.getElementById('f-email').value='';
+  document.getElementById('f-note').value='';
+  document.getElementById('cc').textContent='0 / 100';
+  document.getElementById('err2').classList.remove('show');
+  document.getElementById('err3').classList.remove('show');
+  document.getElementById('btn-submit').disabled=false;
+  document.querySelectorAll('.slot').forEach(el=>{el.classList.remove('selected','full','loading'); el.querySelector('.slot-sub').textContent='有空位'; el.querySelector('.slot-sub').style.color='';});
+  bindSlots();
+  initCal();
+}
+
+// ════════════════════════════════════════════════════════
+//  RESERVATION：送出（CORS 修正）
+// ════════════════════════════════════════════════════════
+async function doSubmit() {
   const btn=document.getElementById('btn-submit');
   btn.disabled=true;
   document.getElementById('mask').classList.add('show');
   document.getElementById('err3').classList.remove('show');
-  const payload={ date:S.date, time:S.time, guests:S.guests, name:S.name, phone:S.phone, email:S.email, lineUserId:S.lineUserId, note:S.note };
-  try{
-    if(APPS_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')){
+
+  const payload={ source:"booking", date:S.date, time:S.time, guests:S.guests, name:S.name, phone:S.phone, email:S.email, note:S.note };
+
+  try {
+    if(STORE.apiUrl.includes('YOUR_DEPLOYMENT_ID')){
       await new Promise(r=>setTimeout(r,1200));
-      showSuccess('MB'+Date.now().toString().slice(-6), payload);
+      showSuccess('MB'+Date.now().toString().slice(-6),payload);
       return;
     }
-    const r=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
-    const j=await r.json();
-    if(j.full){
+    const r=await fetch(STORE.apiUrl,{
+      method:'POST',
+      redirect:'follow',                              // ← CORS 修正
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, // ← 避免 preflight
+      body:JSON.stringify(payload),
+    });
+    const json=await r.json();
+    if(json.full){
       document.getElementById('mask').classList.remove('show');
-      document.getElementById('err3').textContent=`抱歉，${S.time} 時段在您送出前已額滿，請重新選擇其他時段。`;
-      document.getElementById('err3').classList.add('show');
+      const eb=document.getElementById('err3');
+      eb.textContent=`抱歉，${S.time} 時段在您送出前已額滿，請重新選擇其他時段。`;
+      eb.classList.add('show');
       btn.disabled=false;
-      await fetchCap(S.date);
-      go(1);
-      return;
+      await fetchCapacity(S.date);
+      go(1); return;
     }
-    if(!j.success) throw new Error(j.error||'unknown');
-    showSuccess(j.bookingId, payload);
-  }catch{
+    if(!json.success) throw new Error(json.error||'unknown');
+    showSuccess(json.bookingId,payload);
+  } catch {
     document.getElementById('mask').classList.remove('show');
-    document.getElementById('err3').textContent='送出失敗，請稍後再試，或直接透過 Instagram 聯繫本店。';
-    document.getElementById('err3').classList.add('show');
+    const eb=document.getElementById('err3');
+    eb.textContent=`送出失敗，請稍後再試，或直接透過 ${STORE.contactHint} 聯繫本店。`;
+    eb.classList.add('show');
     btn.disabled=false;
   }
 }
 
-// ── Success ───────────────────────────────────────────────────
-function showSuccess(bookingId, data){
+function showSuccess(bookingId,data) {
   document.getElementById('mask').classList.remove('show');
   document.getElementById('bid').textContent=bookingId;
-  const fmt=ds=>{ if(!ds) return '—'; const p=ds.split('-'),wds=['日','一','二','三','四','五','六']; return `${p[0]}/${parseInt(p[1])}/${parseInt(p[2])}（週${wds[new Date(ds).getDay()]}）`; };
-  const rows=[['用餐日期',fmt(data.date)],['用餐時段',data.time],['用餐人數',data.guests+' 位'],['訂位姓名',data.name],['聯絡電話',data.phone],['Email',data.email||'未填寫'],['LINE',data.lineUserId||'未填寫']];
-  if(data.note) rows.push(['備註',data.note]);
+  const fmt=ds=>{ if(!ds)return'—'; const p=ds.split('-'),wds=['日','一','二','三','四','五','六']; return `${p[0]}/${parseInt(p[1])}/${parseInt(p[2])}（週${wds[new Date(ds).getDay()]}）`; };
+  const rows=[['用餐日期',fmt(data.date)],['用餐時段',data.time],['用餐人數',data.guests+' 位'],['訂位姓名',data.name],['聯絡電話',data.phone]];
+  if(data.email) rows.push(['Email',data.email]);
+  if(data.note)  rows.push(['備註',data.note]);
   document.getElementById('sdetails').innerHTML=rows.map(([k,v])=>`<div class="srow"><span class="sdk">${k}</span><span class="sdv">${v}</span></div>`).join('');
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-success').classList.add('active');
@@ -1102,13 +1158,16 @@ function showSuccess(bookingId, data){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ── Live name preview ─────────────────────────────────────────
 document.getElementById('f-name').addEventListener('input',function(){
   const v=this.value.trim();
   document.getElementById('s-name').innerHTML=v||'<span class="empty">尚未填寫</span>';
 });
 
-// ── Init ──────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  初始化
+// ════════════════════════════════════════════════════════
+renderSite();
+renderRes();
 document.querySelectorAll('.slot.full').forEach(el=>el.classList.add('manual-full'));
 bindSlots();
 initCal();
