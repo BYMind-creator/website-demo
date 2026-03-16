@@ -75,10 +75,6 @@
   .hero-title { font-family:'Noto Serif JP',serif; font-size:clamp(3.5rem,9vw,7rem); font-weight:700; line-height:1.05; color:var(--cream); letter-spacing:4px; margin-bottom:.5rem; }
   .hero-title-jp { font-family:'Noto Serif JP',serif; font-size:clamp(1rem,2.5vw,1.6rem); font-weight:300; color:var(--gold); letter-spacing:10px; margin-bottom:1.5rem; display:block; }
   .hero-sub { font-size:13px; color:rgba(245,237,214,.45); letter-spacing:3px; margin-bottom:3.5rem; }
-  .hero-stats { display:flex; gap:3.5rem; justify-content:center; margin-bottom:3rem; }
-  .hero-stat strong { display:block; font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--gold); font-weight:700; line-height:1.1; }
-  .hero-stat span { font-size:10px; color:rgba(245,237,214,.45); letter-spacing:2px; line-height:1.8; }
-  .rating-stars { color:var(--gold); }
   .hero-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
 
   /* ── Buttons ── */
@@ -97,30 +93,15 @@
   .sec-title { font-family:'Noto Serif JP',serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:700; color:var(--cream); margin-bottom:1.25rem; }
   .sec-line { width:60px; height:1px; background:var(--gold); margin:0 auto; opacity:.5; }
 
-  /* ── Menu ── */
-  #s-menu { background:var(--smoke); }
-  .menu-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; max-width:1100px; margin:0 auto; }
-  .menu-card { background:var(--charcoal); border:1px solid rgba(201,168,76,.12); overflow:hidden; transition:transform .25s,border-color .25s; }
-  .menu-card:hover { transform:translateY(-6px); border-color:rgba(201,168,76,.4); }
-  .menu-card-img { width:100%; height:190px; display:flex; align-items:center; justify-content:center; font-size:3.8rem; }
-  .menu-card-img.beef  { background:linear-gradient(135deg,#2d1a0e,#4a2010); }
-  .menu-card-img.pork  { background:linear-gradient(135deg,#1a2010,#2a3a15); }
-  .menu-card-img.eel   { background:linear-gradient(135deg,#1a1a2d,#12122a); }
-  .menu-card-img.combo { background:linear-gradient(135deg,#2d1a1a,#1a0e0e); }
-  .menu-card-body { padding:1.4rem; }
-  .menu-tag { display:inline-block; background:rgba(139,26,26,.25); border:1px solid rgba(139,26,26,.5); color:#ff9999; font-size:10px; padding:2px 10px; letter-spacing:1px; margin-bottom:10px; }
-  .menu-name { font-family:'Noto Serif JP',serif; font-size:1.1rem; color:var(--cream); margin-bottom:6px; font-weight:700; }
-  .menu-desc { font-size:12px; color:rgba(245,237,214,.5); line-height:1.9; margin-bottom:1rem; }
-  .menu-price { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--gold); }
+  /* ── About ── */
+  #s-about { background:var(--charcoal); }
+  .about-inner { max-width:780px; margin:0 auto; text-align:center; }
+  .about-text { font-size:15px; color:rgba(245,237,214,.7); line-height:2.2; letter-spacing:.5px; }
 
-  /* ── Why ── */
-  #s-why { background:var(--charcoal); }
-  .why-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; max-width:1080px; margin:0 auto; }
-  .why-item { text-align:center; padding:2.5rem 2rem; border:1px solid rgba(201,168,76,.1); background:rgba(45,32,21,.25); transition:border-color .2s,background .2s; }
-  .why-item:hover { border-color:rgba(201,168,76,.3); background:rgba(45,32,21,.5); }
-  .why-icon { font-size:2.6rem; margin-bottom:1.2rem; display:block; }
-  .why-title-t { font-family:'Noto Serif JP',serif; font-size:1.05rem; color:var(--gold); margin-bottom:.75rem; font-weight:700; letter-spacing:1px; }
-  .why-desc { font-size:13px; color:rgba(245,237,214,.5); line-height:1.9; }
+  /* ── Menu Image ── */
+  #s-menu { background:var(--smoke); padding:0; }
+  .menu-img-wrap { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .menu-img-wrap img { display:block; width:100%; max-width:100%; height:auto; }
 
   /* ── Gallery ── */
   #s-gallery { background:var(--smoke); }
@@ -215,11 +196,6 @@
 
   /* ── Layout ── */
   .res-page { max-width:1100px; margin:0 auto; padding:3rem 2rem 5rem; display:grid; grid-template-columns:1fr 360px; gap:2.5rem; align-items:start; }
-
-  /* ── Conn badge ── */
-  .conn-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(34,197,94,.1); border:1px solid rgba(34,197,94,.3); padding:4px 14px; font-size:11px; color:#86efac; letter-spacing:1px; margin-bottom:1.5rem; }
-  .conn-dot { width:6px; height:6px; border-radius:50%; background:#22c55e; animation:cpulse 2s infinite; }
-  @keyframes cpulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
   /* ── Step tabs ── */
   .steps-nav { display:flex; border-bottom:1px solid var(--border); margin-bottom:2.5rem; overflow-x:auto; }
@@ -420,9 +396,9 @@
       <span id="nav-store-sub">ミツボシ 南港本店</span>
     </a>
     <ul class="site-links">
+      <li><a href="#s-about"   onclick="siteScroll('#s-about')">關於我們</a></li>
       <li><a href="#s-menu"    onclick="siteScroll('#s-menu')">菜單</a></li>
-      <li><a href="#s-why"     onclick="siteScroll('#s-why')">特色</a></li>
-      <li><a href="#s-gallery" onclick="siteScroll('#s-gallery')">圖庫</a></li>
+      <li><a href="#s-gallery" onclick="siteScroll('#s-gallery')">宣傳區</a></li>
       <li><a href="#s-faq"     onclick="siteScroll('#s-faq')">常見問題</a></li>
       <li><button class="nav-cta" onclick="showRes()">立即訂位</button></li>
     </ul>
@@ -433,14 +409,16 @@
     <div class="hero-content" id="hero-content"></div>
   </section>
 
-  <section class="site-section" id="s-menu">
-    <div class="sec-header" id="menu-header"></div>
-    <div class="menu-grid"   id="menu-grid"></div>
+  <section class="site-section" id="s-about">
+    <div class="about-inner">
+      <div class="sec-header" id="about-header"></div>
+      <p class="about-text" id="about-text"></p>
+    </div>
   </section>
 
-  <section class="site-section" id="s-why">
-    <div class="sec-header" id="why-header"></div>
-    <div class="why-grid"   id="why-grid"></div>
+  <section id="s-menu">
+    <div class="sec-header" id="menu-header" style="padding:4rem 3rem 2rem"></div>
+    <div id="menu-img-container"></div>
   </section>
 
   <section class="site-section" id="s-gallery">
@@ -504,7 +482,7 @@
       <div class="panel active" id="panel-1">
         <div class="step-label">STEP 01 — 選擇訂位資訊</div>
         <h2 class="step-title">請選擇日期與時段</h2>
-        <p class="step-desc" id="step1-desc">選擇日期後，系統將即時顯示各時段剩餘名額。</p>
+        <p class="step-desc" id="step1-desc">請選擇用餐日期與時段。</p>
 
         <div class="cal-wrap">
           <div class="cal-header">
@@ -655,46 +633,28 @@ const STORE = {
     title:   "叁星燒肉<br>重飯",
     titleJp: "ミツボシ 燒肉重飯",
     sub:     "炭火燒烤 × 和牛丼飯 × 職人之味",
-    stats: [
-      { value:"4.6",  label:"★★★★★<br>881 則評論" },
-      { value:"$200", label:"均消起價<br>每人 $200–400" },
-      { value:"287",  label:"位顧客<br>回報光顧" },
-    ],
   },
 
-  // ── 菜單（img 填圖片路徑，留空用 emoji）──
+  // ── 餐廳簡介 ──
+  about: "叁星燒肉重飯，位於台北南港拉拉 PORT 5 樓，以炭火職人燒烤與和牛丼飯為核心，堅持每日新鮮食材直送、秘製醬汁手工調配。自開業以來累積超過 881 則 Google 好評，均消 NT$200–400，是南港在地饕客與上班族的聚餐首選。無論內用、外帶或外送，每一餐都是職人精心呈現的滋味。",
+
+  // ── 菜單圖片（填入圖片路徑，可多張）──
   menu: {
-    sectionTitle: "職人精選餐點",
-    items: [
-      { tag:"人氣 No.1", name:"叁星和牛燒肉丼",  desc:"頂級和牛腹肉，炭火慢烤鎖住油脂精華，搭配特製醬汁與珍珠米飯，牛肉鮮嫩入口即化。", price:"NT$ 300 – 450", img:"", emoji:"🥩", imgClass:"beef"  },
-      { tag:"招牌",      name:"叁星豬五花重飯",  desc:"油花分佈均勻的豬五花，鹹甜醬汁醃漬後炭烤，米飯Q彈爽口，份量扎實，CP值極高。",     price:"NT$ 250 – 300", img:"", emoji:"🍖", imgClass:"pork"  },
-      { tag:"新品",      name:"蒲燒鰻魚丼",      desc:"嚴選日式鰻魚以蒲燒手法製作，醬香撲鼻，鰻魚油脂豐厚，搭配蔥花與芝麻，風味絕佳。", price:"NT$ 280 – 350", img:"", emoji:"🐟", imgClass:"eel"   },
-      { tag:"家庭套餐",  name:"1號套餐分享組合", desc:"適合 2–3 人的家庭套餐，多種口味組合，附小朋友分享餐，份量充足，一家人吃得飽足。", price:"NT$ 600 – 800", img:"", emoji:"🍱", imgClass:"combo" },
+    sectionTitle: "菜單",
+    images: [
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&q=80",
     ],
   },
 
-  // ── 特色 ──
-  why: {
-    sectionTitle: "為什麼選擇叁星",
-    items: [
-      { icon:"🔥", title:"炭火職人燒烤",   desc:"採用傳統炭火燒烤技法，讓每片肉都擁有獨特的炭香風味，油脂在高溫下完美釋放，層次豐富。" },
-      { icon:"🥩", title:"嚴選頂級食材",   desc:"和牛直送、每日新鮮進貨，確保肉質的鮮嫩度與油花分佈，讓每一口都是極致享受。" },
-      { icon:"⭐", title:"4.6 高評分口碑", desc:"881 位顧客真實評價，超過 4.6 星好評。CP 值合理、出餐快速，深受各地饕客喜愛。" },
-      { icon:"🍚", title:"職人特製醬汁",   desc:"秘製鹹甜醬汁搭配珍珠米飯，Q彈爽口的口感與醬汁完美融合，讓主食香氣全面升級。" },
-      { icon:"🏯", title:"日式精緻環境",   desc:"位於拉拉 PORT 5 樓，結合日式燒肉氛圍與現代設計美學，提供舒適愉快的用餐體驗。" },
-      { icon:"⚡", title:"快速出餐服務",   desc:"避開餐時可馬上入座，出餐效率極高，讓你在最短時間享用到最美味的燒肉丼飯。" },
-    ],
-  },
-
-  // ── 圖庫（img 填圖片路徑，留空用 emoji / gradient）──
+  // ── 宣傳區（img 填圖片路徑，留空用 emoji / gradient）──
   gallery: {
-    sectionTitle: "饕客照片精選",
+    sectionTitle: "品牌宣傳",
     items: [
-      { img:"", emoji:"🥩", label:"和牛燒肉丼", layout:"tall"  },
-      { img:"", emoji:"🍱", label:"精選套餐",   layout:""      },
-      { img:"", emoji:"🔥", label:"炭火職人",   layout:""      },
-      { img:"", emoji:"🍚", label:"職人炒飯",   layout:"span2" },
-      { img:"", emoji:"🏯", label:"用餐環境",   layout:""      },
+      { img:"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&q=80", emoji:"", label:"和牛燒肉", layout:"tall"  },
+      { img:"https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80", emoji:"", label:"精選套餐", layout:""      },
+      { img:"https://images.unsplash.com/photo-1534482421-64566f976cfa?w=800&q=80", emoji:"", label:"炭火職人", layout:""      },
+      { img:"https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=800&q=80", emoji:"", label:"丼飯料理", layout:"span2" },
+      { img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80", emoji:"", label:"用餐環境", layout:""      },
     ],
   },
 
@@ -746,7 +706,14 @@ const STORE = {
   lineHint:     "已加入本店 LINE 官方帳號並完成電話綁定者，訂位後將自動收到 LINE 確認通知。",
   successNote:  "如需更改或取消，請透過電話或 Instagram 聯繫本店。",
   contactHint:  "Instagram",
-  googleMapsUrl:"https://www.google.com/maps/search/叁星燒肉重飯",
+
+  // ── 社群連結 ──
+  social: {
+    googleMaps: "https://www.google.com/maps/search/叁星燒肉重飯",
+    instagram:  "https://instagram.com/",   // ← 填入 IG 連結
+    facebook:   "https://facebook.com/",    // ← 填入 FB 連結
+    line:       "https://line.me/R/ti/p/",  // ← 填入 LINE 官方帳號連結
+  },
 };
 // ════════════════════════════════════════════════════════════
 
@@ -767,33 +734,22 @@ function renderSite() {
     <h1 class="hero-title">${STORE.hero.title}</h1>
     <span class="hero-title-jp">${STORE.hero.titleJp}</span>
     <p class="hero-sub">${STORE.hero.sub}</p>
-    <div class="hero-stats">${STORE.hero.stats.map(s=>`<div class="hero-stat"><strong>${s.value}</strong><span>${s.label}</span></div>`).join('')}</div>
     <div class="hero-btns">
       <button class="btn-primary" onclick="siteScroll('#s-menu')">查看菜單</button>
       <button class="btn-outline" onclick="showRes()">立即訂位</button>
     </div>`;
 
-  // Menu
+  // About
+  document.getElementById('about-header').innerHTML = secHeader('About — 關於我們', STORE.name);
+  document.getElementById('about-text').textContent = STORE.about;
+
+  // Menu — 全寬圖片
   document.getElementById('menu-header').innerHTML = secHeader('Menu — 菜單', STORE.menu.sectionTitle);
-  document.getElementById('menu-grid').innerHTML   = STORE.menu.items.map(i=>`
-    <div class="menu-card">
-      <div class="menu-card-img ${i.imgClass}" style="${i.img?`background-image:url('${i.img}');background-size:cover;background-position:center;font-size:0`:''}">
-        ${i.img?'':i.emoji}</div>
-      <div class="menu-card-body">
-        <span class="menu-tag">${i.tag}</span>
-        <div class="menu-name">${i.name}</div>
-        <div class="menu-desc">${i.desc}</div>
-        <div class="menu-price">${i.price}</div>
-      </div>
-    </div>`).join('');
+  document.getElementById('menu-img-container').innerHTML = STORE.menu.images.map(src=>`
+    <div class="menu-img-wrap"><img src="${src}" alt="菜單" loading="lazy"></div>`).join('');
 
-  // Why
-  document.getElementById('why-header').innerHTML = secHeader('Why Us — 我們的特色', STORE.why.sectionTitle);
-  document.getElementById('why-grid').innerHTML   = STORE.why.items.map(i=>`
-    <div class="why-item"><span class="why-icon">${i.icon}</span><div class="why-title-t">${i.title}</div><div class="why-desc">${i.desc}</div></div>`).join('');
-
-  // Gallery
-  document.getElementById('gallery-header').innerHTML = secHeader('Gallery — 圖庫', STORE.gallery.sectionTitle);
+  // Gallery → 宣傳區
+  document.getElementById('gallery-header').innerHTML = secHeader('Promo — 宣傳區', STORE.gallery.sectionTitle);
   document.getElementById('gallery-grid').innerHTML   = STORE.gallery.items.map((i,idx)=>`
     <div class="g-item ${i.layout} g${idx+1}" style="${i.img?`background-image:url('${i.img}');background-size:cover;background-position:center;font-size:0`:''}">
       ${i.img?'':i.emoji}<span class="g-label">${i.label}</span></div>`).join('');
@@ -814,7 +770,7 @@ function renderSite() {
       <div class="info-row"><span class="info-icon">📍</span><div><span class="info-label">地址</span><span class="info-value">${STORE.contact.address}</span></div></div>
       <div class="info-row"><span class="info-icon">🕐</span><div><span class="info-label">營業時間</span><div class="hrs-grid">${STORE.contact.hours.map(h=>`<span class="hrs-day">${h.day}</span><span class="hrs-time">${h.time}</span>`).join('')}</div></div></div>
       <div class="info-row"><span class="info-icon">💰</span><div><span class="info-label">平均消費</span><span class="info-value">${STORE.contact.priceRange}</span></div></div>
-      <div class="info-row"><span class="info-icon">📱</span><div><span class="info-label">Instagram</span><span class="info-value">${STORE.contact.instagram}</span></div></div>
+      <div class="info-row"><span class="info-icon">📱</span><div><span class="info-label">Instagram</span><span class="info-value"><a href="${STORE.social.instagram}" target="_blank" style="color:var(--mid);text-decoration:none">${STORE.contact.instagram}</a></span></div></div>
       <div class="info-row"><span class="info-icon">🍽️</span><div><span class="info-label">服務方式</span><span class="info-value">${STORE.contact.services}</span></div></div>
     </div>
     <div>
@@ -848,8 +804,10 @@ function renderSite() {
   document.getElementById('cta-title').textContent = STORE.cta.title;
   document.getElementById('cta-sub').textContent   = STORE.cta.sub;
   document.getElementById('cta-btns').innerHTML    = `
-    <button class="btn-white" onclick="showRes()">立即訂位</button>
-    <a href="${STORE.googleMapsUrl}" target="_blank" class="btn-outline-white">Google 地圖導航</a>`;
+    <a href="${STORE.social.googleMaps}" target="_blank" class="btn-outline-white">📍 Google 地圖</a>
+    <a href="${STORE.social.instagram}"  target="_blank" class="btn-outline-white">📷 Instagram</a>
+    <a href="${STORE.social.facebook}"   target="_blank" class="btn-outline-white">👤 Facebook</a>
+    <a href="${STORE.social.line}"       target="_blank" class="btn-white">💬 LINE 官方帳號</a>`;
 
   // Footer
   document.getElementById('site-footer').innerHTML = `
