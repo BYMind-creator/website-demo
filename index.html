@@ -751,14 +751,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
           <li>週一至週日，預約制</li>
           <li>AI 開發 · 課程 · 行銷 · 網站</li>
           <li>諮詢時間約 30–60 分鐘</li>
-          <li><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cdafb4a0a4a3a9a0a6b98daaa0aca4a1e3aea2a0">[email&#160;protected]</a></li>
+          <li>bymindmkt@gmail.com</li>
         </ul>
       </div>
     </div>
   </div>
 </div><!-- /view-res -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ── View 切換 ─────────────────────────
 function showRes(){
   document.getElementById('view-website').classList.remove('active');
@@ -796,32 +796,19 @@ async function submitCF(){
   const service = document.getElementById('cf-service').value;
   const msg     = document.getElementById('cf-msg').value.trim();
   if(!name||!contact){alert('請填寫姓名與聯絡方式');return;}
-
-  const btn = document.querySelector('.f-btn');
-  btn.disabled = true;
-  btn.textContent = '送出中…';
-
-  const payload = {
-    source: 'contact',
-    name, company, contact, service, msg,
-    time: new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})
-  };
-
-  try {
-    await fetch(API, {
-      method:'POST', redirect:'follow',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload)
-    });
-  } catch(e) {
-    // 即使 CORS 擋住回應，GAS 仍會收到並發送 LINE 通知
-  }
-
+  const btn=document.querySelector('.f-btn');
+  btn.disabled=true; btn.textContent='送出中…';
+  const payload={source:'contact',name,company,contact,service,msg,
+    time:new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})};
+  try{
+    await fetch('https://script.google.com/macros/s/AKfycbzZ0oAzmxksC-uZlE4mzCMf2znmNYpmwtwjJXORqnb7Uy_G1_lowymR_u-5Eb7rmOrC/exec',
+      {method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+  }catch(e){}
   document.getElementById('cf-wrap').style.display='none';
   document.getElementById('cf-ok').style.display='block';
 }
 
-// ── Calendar ──────────────────────────
+// ── Calendar & Reservation ────────────
 const S={date:null,time:null,guests:1,name:'',phone:'',email:'',note:''};
 let calY,calM;
 const SESSIONS=[
@@ -833,23 +820,23 @@ const API='https://script.google.com/macros/s/AKfycbzZ0oAzmxksC-uZlE4mzCMf2znmNY
 function initCal(){ const n=new Date(); calY=n.getFullYear(); calM=n.getMonth(); renderCal(); }
 function renderCal(){
   const M=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-  document.getElementById('cal-title').textContent=`${calY} 年 ${M[calM]}`;
+  document.getElementById('cal-title').textContent=calY+' 年 '+M[calM];
   const D=['日','一','二','三','四','五','六'];
-  const heads=D.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  const heads=D.map(d=>'<div class="cal-dow">'+d+'</div>').join('');
   const first=new Date(calY,calM,1).getDay();
   const days=new Date(calY,calM+1,0).getDate();
   const today=new Date(); today.setHours(0,0,0,0);
   let c='';
-  for(let i=0;i<first;i++) c+=`<div class="cal-day empty"></div>`;
+  for(let i=0;i<first;i++) c+='<div class="cal-day empty"></div>';
   for(let d=1;d<=days;d++){
-    const ds=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const ds=calY+'-'+String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     const dt=new Date(calY,calM,d);
     let cls='cal-day';
     if(dt<today) cls+=' past';
     if(dt.getTime()===today.getTime()) cls+=' today';
     if(S.date===ds) cls+=' selected';
-    const click=dt>=today?`onclick="pickDate('${ds}')"` :'';
-    c+=`<div class="${cls}" ${click}>${d}</div>`;
+    const click=dt>=today?'onclick="pickDate(\''+ds+'\')"' :'';
+    c+='<div class="'+cls+'" '+click+'>'+d+'</div>';
   }
   document.getElementById('cal-grid').innerHTML=heads+c;
 }
@@ -867,17 +854,16 @@ async function pickDate(ds){
   document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
   renderCal();
   const p=ds.split('-'),wds=['日','一','二','三','四','五','六'];
-  document.getElementById('s-date').textContent=`${p[0]}年${parseInt(p[1])}月${parseInt(p[2])}日（週${wds[new Date(ds).getDay()]}）`;
+  document.getElementById('s-date').textContent=p[0]+'年'+parseInt(p[1])+'月'+parseInt(p[2])+'日（週'+wds[new Date(ds).getDay()]+'）';
   document.getElementById('s-time').innerHTML='<span class="empty">尚未選擇</span>';
   syncConf();
 }
 
 function renderSlots(){
-  document.getElementById('res-slots').innerHTML=SESSIONS.map(s=>`
-    <div class="time-sec">
-      <div class="time-sec-title">${s.title}</div>
-      <div class="time-slots">${s.slots.map(t=>`<div class="slot" data-t="${t}">${t}<div class="slot-sub"></div></div>`).join('')}</div>
-    </div>`).join('');
+  document.getElementById('res-slots').innerHTML=SESSIONS.map(s=>
+    '<div class="time-sec"><div class="time-sec-title">'+s.title+'</div><div class="time-slots">'+
+    s.slots.map(t=>'<div class="slot" data-t="'+t+'">'+t+'<div class="slot-sub"></div></div>').join('')+
+    '</div></div>').join('');
   bindSlots();
 }
 function bindSlots(){
@@ -903,7 +889,7 @@ function chg(d){
 function updCC(){
   const v=document.getElementById('f-note').value;
   if(v.length>100) document.getElementById('f-note').value=v.slice(0,100);
-  document.getElementById('cc').textContent=`${Math.min(v.length,100)} / 100`;
+  document.getElementById('cc').textContent=Math.min(v.length,100)+' / 100';
 }
 
 function validate2(){
@@ -921,10 +907,10 @@ function validate2(){
   return ok;
 }
 function syncConf(){
-  const fmt=ds=>{if(!ds)return'—';const p=ds.split('-'),wds=['日','一','二','三','四','五','六'];return`${p[0]}年${parseInt(p[1])}月${parseInt(p[2])}日（週${wds[new Date(ds).getDay()]}）`;};
+  const fmt=ds=>{if(!ds)return'—';const p=ds.split('-'),wds=['日','一','二','三','四','五','六'];return p[0]+'年'+parseInt(p[1])+'月'+parseInt(p[2])+'日（週'+wds[new Date(ds).getDay()]+'）';};
   document.getElementById('c-date').innerHTML=S.date?fmt(S.date):'<span style="color:var(--muted)">尚未選擇</span>';
-  document.getElementById('c-time').innerHTML=S.time?`<strong>${S.time}</strong>`:'<span style="color:var(--muted)">尚未選擇</span>';
-  document.getElementById('c-guests').innerHTML=`<strong>${S.guests}</strong> 位`;
+  document.getElementById('c-time').innerHTML=S.time?'<strong>'+S.time+'</strong>':'<span style="color:var(--muted)">尚未選擇</span>';
+  document.getElementById('c-guests').innerHTML='<strong>'+S.guests+'</strong> 位';
   document.getElementById('c-name').textContent=S.name||'—';
   document.getElementById('c-phone').textContent=S.phone||'—';
   document.getElementById('c-email').textContent=S.email||'（未填寫）';
@@ -964,6 +950,41 @@ function resetWizard(){
   initCal();
 }
 
+async function doSubmit(){
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true;
+  document.getElementById('mask').classList.add('show');
+  document.getElementById('err3').classList.remove('show');
+  const payload={source:'booking',date:S.date,time:S.time,guests:S.guests,name:S.name,phone:S.phone,email:S.email,note:S.note};
+  try{
+    const r=await fetch(API,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    let json; try{json=JSON.parse(await r.text());}catch{showSuccess('BM'+Date.now().toString().slice(-6),payload);return;}
+    if(!json.success) throw new Error(json.error||'unknown');
+    showSuccess(json.bookingId,payload);
+  }catch(e){
+    document.getElementById('mask').classList.remove('show');
+    const eb=document.getElementById('err3');
+    eb.textContent='送出失敗，請透過 LINE 或 Email 聯繫我們。（'+e.message+'）';
+    eb.classList.add('show');
+    btn.disabled=false;
+  }
+}
+
+function showSuccess(bookingId,data){
+  document.getElementById('mask').classList.remove('show');
+  document.getElementById('bid').textContent=bookingId;
+  const fmt=ds=>{const p=ds.split('-'),wds=['日','一','二','三','四','五','六'];return p[0]+'/'+parseInt(p[1])+'/'+parseInt(p[2])+'（週'+wds[new Date(ds).getDay()]+'）';};
+  const rows=[['日期',fmt(data.date)],['時段',data.time],['人數',data.guests+' 位'],['姓名',data.name],['電話',data.phone]];
+  if(data.email) rows.push(['Email',data.email]);
+  if(data.note)  rows.push(['需求',data.note]);
+  document.getElementById('sdetails').innerHTML=rows.map(function(r){return '<div class="srow"><span class="sdk">'+r[0]+'</span><span class="sdv">'+r[1]+'</span></div>';}).join('');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-success').classList.add('active');
+  document.querySelectorAll('.step-tab').forEach(t=>{t.classList.remove('active');t.classList.add('done');});
+  document.getElementById('pf').style.width='100%';
+  document.getElementById('snum').textContent='✓';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
 document.getElementById('f-name').addEventListener('input',function(){
   const v=this.value.trim();
@@ -979,7 +1000,7 @@ initCal();
 <div id="demo-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(8,12,18,0.97);flex-direction:column;">
   <div style="height:52px;background:rgba(13,18,25,0.98);border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;flex-shrink:0;">
     <span style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(96,165,250,0.7);letter-spacing:2px;">DEMO — 網站建置範例</span>
-    <button onclick="closeDemo()" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:rgba(240,244,255,0.6);width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;border-radius:2px;">×</button>
+    <button onclick="closeDemo()" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:rgba(240,244,255,0.7);width:32px;height:32px;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;border-radius:2px;line-height:1;">×</button>
   </div>
   <iframe id="demo-frame" style="flex:1;width:100%;border:none;"></iframe>
 </div>
