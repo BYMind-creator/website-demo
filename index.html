@@ -95,6 +95,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
    ABOUT
 ════════════════════════════════ */
 #s-about{background:var(--bg2);}
+#s-about .sec-label,#s-about .sec-title,#s-about .sec-sub{text-align:left;}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;max-width:1080px;margin:0 auto;}
 .about-right{display:grid;grid-template-columns:1fr;gap:2px;background:var(--line);}
 .about-card{position:relative;overflow:hidden;cursor:default;height:90px;transition:height .4s cubic-bezier(.4,0,.2,1);}
@@ -142,10 +143,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
 #s-faq{background:var(--bg);}
 .faq-wrap{max-width:720px;margin:4rem auto 0;}
 .faq-item{border-bottom:1px solid var(--line);}
+.faq-item{border-bottom:1px solid var(--line);}
 .faq-q{width:100%;background:transparent;border:none;color:var(--white);font-family:var(--sans);font-size:15px;text-align:left;padding:1.4rem 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;transition:color .2s;}
 .faq-q:hover,.faq-item.open .faq-q{color:var(--blue2);}
-.faq-icon{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--blue2);flex-shrink:0;transition:transform .25s,border-color .2s;}
-.faq-item.open .faq-icon{transform:rotate(45deg);border-color:var(--blue);}
+.faq-icon{width:26px;height:26px;border:1px solid var(--line2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--blue2);flex-shrink:0;transition:transform .25s,border-color .2s;line-height:1;font-style:normal;}
+.faq-item.open .faq-icon{border-color:var(--blue);}
 .faq-a{font-size:13px;color:var(--mid);line-height:2;padding-bottom:1.4rem;display:none;}
 .faq-item.open .faq-a{display:block;}
 
@@ -382,7 +384,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
     <li><a href="#s-services" onclick="goto('#s-services');return false;">服務項目</a></li>
     <li><a href="#s-process"  onclick="goto('#s-process');return false;">服務流程</a></li>
     <li><a href="#s-faq"      onclick="goto('#s-faq');return false;">FAQ</a></li>
-    <li><button class="nav-cta" onclick="showRes()">預約諮詢</button></li>
+    <li><button class="nav-cta" onclick="goto('#s-contact')">預約諮詢</button></li>
   </ul>
 </nav>
 
@@ -395,7 +397,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
     <h1 class="hero-title">讓每個想法<br><em>落地為成果</em></h1>
     <p class="hero-sub">心創智誠，協助企業導入 AI 工具、打造高效能網站、規劃精準行銷策略，從策略到執行，一站到位。</p>
     <div class="hero-btns">
-      <button class="btn-primary" onclick="showRes()">預約諮詢</button>
+      <button class="btn-primary" onclick="goto('#s-contact')">預約諮詢</button>
       <a href="#s-services" class="btn-ghost" onclick="goto('#s-services');return false;">了解服務項目</a>
     </div>
 
@@ -538,7 +540,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
     <p class="sec-label">FAQ</p>
     <h2 class="sec-title">常見問題</h2>
     <div class="faq-wrap">
-      <div class="faq-item open">
+      <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">你們提供哪些主要服務？<span class="faq-icon">+</span></button>
         <div class="faq-a">BY Mind 提供四大服務：AI 應用開發（聊天機器人、LINE OA 整合）、課程設計與系統訓練（企業內訓、AI 應用教學工作坊）、行銷推廣與數據分析（SEO、社群經營、GA4 整合），以及完整網站建置服務。</div>
       </div>
@@ -570,7 +572,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
     <div class="contact-grid">
       <div>
         <div class="contact-info-title">讓我們開始對話</div>
-        <div class="info-item"><span class="info-dot"></span><div><span class="info-label">EMAIL</span><span class="info-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4e2c372327202a23253a0e29232f2722602d2123">[email&#160;protected]</a></span></div></div>
+        <div class="info-item"><span class="info-dot"></span><div><span class="info-label">EMAIL</span><span class="info-val">bymindmkt@gmail.com</span></div></div>
         <div class="info-item"><span class="info-dot"></span><div><span class="info-label">PHONE / LINE</span><span class="info-val">+886 0985-541-896</span></div></div>
         <div class="info-item"><span class="info-dot"></span><div><span class="info-label">服務時間</span><span class="info-val">週一至週日，預約制</span></div></div>
         <div class="info-item"><span class="info-dot"></span><div><span class="info-label">諮詢方式</span><span class="info-val">線上視訊或面對面皆可</span></div></div>
@@ -609,15 +611,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
   <h2 class="cta-title">今天就讓想法<br>開始落地</h2>
   <p class="cta-sub">AI 應用 · 數位課程 · 行銷策略 · 網站建置</p>
   <div class="cta-btns">
-    <button class="btn-primary" onclick="showRes()">預約諮詢</button>
+    <button class="btn-primary" onclick="goto('#s-contact')">預約諮詢</button>
     <a href="https://line.me/R/ti/p/@607ysroc" target="_blank" class="btn-line">💬 LINE 官方帳號</a>
-    <a href="/cdn-cgi/l/email-protection#4a28332723242e27213e0a2d272b232664292527" class="btn-line">📧 Email 聯繫</a>
+    <a href="mailto:bymindmkt@gmail.com" class="btn-line">📧 Email 聯繫</a>
   </div>
 </section>
 
 <footer id="site-footer">
   <div class="footer-brand">BY Mind · 心創智誠</div>
-  <div class="footer-copy">© 2025 BY Mind. All rights reserved. &nbsp;|&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="36544f5b5f58525b5d4276515b575f5a1855595b">[email&#160;protected]</a></div>
+  <div class="footer-copy">© 2025 BY Mind. All rights reserved. &nbsp;|&nbsp; bymindmkt@gmail.com</div>
 </footer>
 
 </div><!-- /view-website -->
@@ -776,15 +778,45 @@ function goto(sel){ const el=document.querySelector(sel); if(el) el.scrollIntoVi
 function toggleFaq(btn){
   const item=btn.closest('.faq-item');
   const wasOpen=item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
-  if(!wasOpen) item.classList.add('open');
+  document.querySelectorAll('.faq-item').forEach(i=>{
+    i.classList.remove('open');
+    i.querySelector('.faq-icon').textContent='+';
+  });
+  if(!wasOpen){
+    item.classList.add('open');
+    btn.querySelector('.faq-icon').textContent='×';
+  }
 }
 
 // ── Contact form ──────────────────────
-function submitCF(){
-  const name=document.getElementById('cf-name').value.trim();
-  const contact=document.getElementById('cf-contact').value.trim();
+async function submitCF(){
+  const name    = document.getElementById('cf-name').value.trim();
+  const company = document.getElementById('cf-company').value.trim();
+  const contact = document.getElementById('cf-contact').value.trim();
+  const service = document.getElementById('cf-service').value;
+  const msg     = document.getElementById('cf-msg').value.trim();
   if(!name||!contact){alert('請填寫姓名與聯絡方式');return;}
+
+  const btn = document.querySelector('.f-btn');
+  btn.disabled = true;
+  btn.textContent = '送出中…';
+
+  const payload = {
+    source: 'contact',
+    name, company, contact, service, msg,
+    time: new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})
+  };
+
+  try {
+    await fetch(API, {
+      method:'POST', redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+  } catch(e) {
+    // 即使 CORS 擋住回應，GAS 仍會收到並發送 LINE 通知
+  }
+
   document.getElementById('cf-wrap').style.display='none';
   document.getElementById('cf-ok').style.display='block';
 }
