@@ -572,7 +572,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
     <div class="contact-grid">
       <div>
         <div class="contact-info-title">讓我們開始對話</div>
-        <div class="info-item"><span class="info-dot"></span><div><span class="info-label">EMAIL</span><span class="info-val">bymindmkt@gmail.com</span></div></div>
+        <div class="info-item"><span class="info-dot"></span><div><span class="info-label">EMAIL</span><span class="info-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="593b203430373d34322d193e34383035773a3634">[email&#160;protected]</a></span></div></div>
         <div class="info-item"><span class="info-dot"></span><div><span class="info-label">PHONE / LINE</span><span class="info-val">+886 0985-541-896</span></div></div>
         <div class="info-item"><span class="info-dot"></span><div><span class="info-label">服務時間</span><span class="info-val">週一至週日，預約制</span></div></div>
         <div class="info-item"><span class="info-dot"></span><div><span class="info-label">諮詢方式</span><span class="info-val">線上視訊或面對面皆可</span></div></div>
@@ -613,13 +613,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
   <div class="cta-btns">
     <button class="btn-primary" onclick="showRes()">預約諮詢</button>
     <a href="https://line.me/R/ti/p/@607ysroc" target="_blank" class="btn-line">💬 LINE 官方帳號</a>
-    <a href="mailto:bymindmkt@gmail.com" class="btn-line">📧 Email 聯繫</a>
+    <a href="/cdn-cgi/l/email-protection#8ae8f3e7e3e4eee7e1fecaede7ebe3e6a4e9e5e7" class="btn-line">📧 Email 聯繫</a>
   </div>
 </section>
 
 <footer id="site-footer">
   <div class="footer-brand">BY Mind · 心創智誠</div>
-  <div class="footer-copy">© 2025 BY Mind. All rights reserved. &nbsp;|&nbsp; bymindmkt@gmail.com</div>
+  <div class="footer-copy">© 2025 BY Mind. All rights reserved. &nbsp;|&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="83e1faeeeaede7eee8f7c3e4eee2eaefade0ecee">[email&#160;protected]</a></div>
 </footer>
 
 </div><!-- /view-website -->
@@ -634,101 +634,67 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
   <nav id="res-nav">
     <button class="res-back" onclick="showSite()">← 返回首頁</button>
     <div class="res-logo">BY Mind</div>
-    <div class="res-step-txt">步驟 <strong id="snum">1</strong> / 3</div>
+    <div style="width:80px;"></div>
   </nav>
-  <div class="prog-bar"><div class="prog-fill" id="pf" style="width:33%"></div></div>
+  <div class="prog-bar"><div class="prog-fill" id="pf" style="width:0%"></div></div>
 
   <div class="res-page">
     <div>
-      <div class="steps-nav">
-        <div class="step-tab active" id="tab-1"><div class="step-num">1</div><div class="step-tab-label">選擇時間</div></div>
-        <div class="step-tab"        id="tab-2"><div class="step-num">2</div><div class="step-tab-label">填寫資料</div></div>
-        <div class="step-tab"        id="tab-3"><div class="step-num">3</div><div class="step-tab-label">確認送出</div></div>
-      </div>
+      <!-- FORM -->
+      <div id="res-form-wrap">
+        <div class="step-label">CONTACT</div>
+        <h2 class="step-title">諮詢申請</h2>
+        <p class="step-desc">填寫以下資料，我們將於 24 小時內與您聯繫。</p>
 
-      <!-- STEP 1 -->
-      <div class="panel active" id="panel-1">
-        <div class="step-label">STEP 01</div>
-        <h2 class="step-title">選擇諮詢日期與時段</h2>
-        <p class="step-desc">請選擇希望諮詢的日期與時段，我們將安排專人與您確認。</p>
-        <div class="cal-wrap">
-          <div class="cal-header">
-            <button class="cal-nav" id="cal-prev">‹</button>
-            <div class="cal-month" id="cal-title"></div>
-            <button class="cal-nav" id="cal-next">›</button>
+        <div class="fsec-title">基本資料</div>
+        <div class="fgrid2">
+          <div class="rfg" id="fg-name">
+            <label class="rfl">姓名 <span class="req">✱</span></label>
+            <input type="text" class="rfi" id="f-name" placeholder="您的姓名" oninput="syncSidebar()"/>
+            <div class="ferr">請輸入姓名</div>
           </div>
-          <div class="cal-grid" id="cal-grid"></div>
-        </div>
-        <div id="res-slots"></div>
-        <div class="fsec-title" style="margin-top:1.5rem">諮詢人數</div>
-        <div class="guest-row">
-          <button class="g-btn" id="g-minus" onclick="chg(-1)" disabled>−</button>
-          <div class="g-count"><strong id="g-num">1</strong><span>位</span></div>
-          <button class="g-btn" id="g-plus"  onclick="chg(1)">+</button>
-        </div>
-        <div class="guest-note">● 3 人以上團隊諮詢，請於備註說明，方便安排合適空間。<br>● 可選擇線上視訊或面對面諮詢，歡迎備註偏好方式。</div>
-        <button class="btn-next" onclick="go(2)">下一步：填寫資料 →</button>
-      </div>
-
-      <!-- STEP 2 -->
-      <div class="panel" id="panel-2">
-        <div class="step-label">STEP 02</div>
-        <h2 class="step-title">聯絡與需求資訊</h2>
-        <p class="step-desc">標示 <span style="color:#f87171">✱</span> 為必填欄位。</p>
-        <div style="margin-bottom:1.5rem">
-          <div class="fsec-title">基本資料</div>
-          <div class="fgrid2">
-            <div class="rfg" id="fg-name"><label class="rfl">姓名 <span class="req">✱</span></label><input type="text" class="rfi" id="f-name" placeholder="您的姓名"/><div class="ferr">請輸入姓名</div></div>
-            <div class="rfg" id="fg-phone"><label class="rfl">電話 <span class="req">✱</span></label><input type="tel" class="rfi" id="f-phone" placeholder="09xx-xxx-xxx"/><div class="ferr">請輸入有效電話</div></div>
+          <div class="rfg" id="fg-company">
+            <label class="rfl">公司 / 單位</label>
+            <input type="text" class="rfi" id="f-company" placeholder="公司或單位名稱" oninput="syncSidebar()"/>
           </div>
         </div>
-        <div style="margin-bottom:1.5rem">
-          <div class="fsec-title">通知方式（選填）</div>
-          <div class="rfg" id="fg-email"><label class="rfl">Email</label><input type="email" class="rfi" id="f-email" placeholder="your@email.com"/><div class="ferr">Email 格式不正確</div><div class="field-hint">填寫後將寄送預約確認信。</div></div>
-          <div class="rfg"><label class="rfl">LINE 通知</label><div class="field-hint">已加入 BY Mind LINE 官方帳號者，完成預約後將自動收到確認通知。</div></div>
-        </div>
-        <div style="margin-bottom:1.5rem">
-          <div class="fsec-title">需求說明（選填）</div>
-          <div class="rfg"><textarea class="rft" id="f-note" placeholder="例如：想了解網站建置、AI 導入、行銷方案，或諮詢偏好（線上/面對面）…" oninput="updCC()"></textarea><div class="char-note"><span>簡述需求有助我們提前準備</span><span id="cc">0 / 100</span></div></div>
-        </div>
-        <div class="err-box" id="err2">請確認所有必填欄位填寫正確。</div>
-        <button class="btn-next" onclick="go(3)">下一步：確認資訊 →</button>
-        <button class="btn-back-res" onclick="go(1)">← 返回上一步</button>
-      </div>
 
-      <!-- STEP 3 -->
-      <div class="panel" id="panel-3">
-        <div class="step-label">STEP 03</div>
-        <h2 class="step-title">確認諮詢資訊</h2>
-        <p class="step-desc">確認無誤後按「確認送出」完成預約。</p>
-        <div class="conf-table">
-          <div class="crow"><span class="ckey">日期</span><span class="cval" id="c-date">—</span></div>
-          <div class="crow"><span class="ckey">時段</span><span class="cval" id="c-time">—</span></div>
-          <div class="crow"><span class="ckey">人數</span><span class="cval" id="c-guests">—</span></div>
-          <div class="crow"><span class="ckey">姓名</span><span class="cval" id="c-name">—</span></div>
-          <div class="crow"><span class="ckey">電話</span><span class="cval" id="c-phone">—</span></div>
-          <div class="crow"><span class="ckey">Email</span><span class="cval" id="c-email">—</span></div>
-          <div class="crow"><span class="ckey">需求說明</span><span class="cval" id="c-note">無</span></div>
+        <div class="rfg" id="fg-contact">
+          <label class="rfl">聯絡方式 <span class="req">✱</span></label>
+          <input type="text" class="rfi" id="f-contact" placeholder="電話 或 Email" oninput="syncSidebar()"/>
+          <div class="ferr">請輸入聯絡方式</div>
         </div>
-        <div class="terms-box">
-          <div class="terms-title">諮詢注意事項</div>
-          ● 預約後如需取消或更改，請於 24 小時前告知。<br>
-          ● 諮詢時間約 30–60 分鐘。<br>
-          ● 正式提案與報價將於諮詢後 3 個工作天內提供。
+
+        <div class="rfg" id="fg-service">
+          <label class="rfl">感興趣的服務</label>
+          <select class="rfi" id="f-service" onchange="syncSidebar()" style="appearance:none;cursor:pointer;">
+            <option value="">請選擇</option>
+            <option>AI 應用 / 程式開發</option>
+            <option>課程設計 / 系統訓練</option>
+            <option>行銷推廣 / 數據分析</option>
+            <option>網站建置</option>
+            <option>綜合諮詢</option>
+          </select>
         </div>
-        <div class="err-box" id="err3"></div>
-        <button class="btn-next" id="btn-submit" onclick="doSubmit()">確認送出預約 ✓</button>
-        <button class="btn-back-res" onclick="go(2)">← 返回修改</button>
+
+        <div class="rfg">
+          <label class="rfl">需求說明</label>
+          <textarea class="rft" id="f-note" placeholder="請簡述您的需求或想了解的方向…" oninput="updCC();syncSidebar()"></textarea>
+          <div class="char-note"><span>簡述需求有助我們提前準備</span><span id="cc">0 / 100</span></div>
+        </div>
+
+        <div class="err-box" id="err-form">請填寫姓名與聯絡方式。</div>
+        <button class="btn-next" onclick="submitRes()">送出諮詢申請 ✓</button>
       </div>
 
       <!-- SUCCESS -->
-      <div class="panel" id="panel-success">
+      <div id="res-success" style="display:none;text-align:center;padding:3rem 1.5rem;">
         <div class="success-ring">✓</div>
-        <h2 class="success-title">預約成功！</h2>
+        <h2 class="success-title">申請成功！</h2>
         <p class="success-sub">感謝您選擇 BY Mind，我們將盡快與您聯繫。</p>
-        <div class="bid-box"><div class="bid-label">預約編號</div><div class="bid-val" id="bid">—</div></div>
+        <div class="bid-box"><div class="bid-label">申請編號</div><div class="bid-val" id="bid">—</div></div>
         <div class="sdetails" id="sdetails"></div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:2rem;letter-spacing:1px;line-height:2">如需更改或取消，請透過 LINE 或 Email 聯繫我們。</p>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:2rem;letter-spacing:1px;line-height:2">如有任何問題，請透過 LINE 或 Email 聯繫我們。</p>
         <button class="btn-home" onclick="showSite()">返回 BY Mind 首頁</button>
       </div>
     </div>
@@ -736,12 +702,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="sb-card">
-        <div class="sb-head">預約摘要</div>
+        <div class="sb-head">申請摘要</div>
         <div class="sb-body">
-          <div class="si"><span class="si-dot"></span><div><div class="si-lbl">日期</div><div class="si-val" id="s-date"><span class="empty">尚未選擇</span></div></div></div>
-          <div class="si"><span class="si-dot"></span><div><div class="si-lbl">時段</div><div class="si-val" id="s-time"><span class="empty">尚未選擇</span></div></div></div>
-          <div class="si"><span class="si-dot"></span><div><div class="si-lbl">人數</div><div class="si-val" id="s-guests">1 位</div></div></div>
           <div class="si"><span class="si-dot"></span><div><div class="si-lbl">姓名</div><div class="si-val" id="s-name"><span class="empty">尚未填寫</span></div></div></div>
+          <div class="si"><span class="si-dot"></span><div><div class="si-lbl">公司 / 單位</div><div class="si-val" id="s-company"><span class="empty">尚未填寫</span></div></div></div>
+          <div class="si"><span class="si-dot"></span><div><div class="si-lbl">聯絡方式</div><div class="si-val" id="s-contact"><span class="empty">尚未填寫</span></div></div></div>
+          <div class="si"><span class="si-dot"></span><div><div class="si-lbl">服務項目</div><div class="si-val" id="s-service"><span class="empty">尚未選擇</span></div></div></div>
         </div>
       </div>
       <div class="notice-card">
@@ -758,13 +724,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
   </div>
 </div><!-- /view-res -->
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── View 切換 ─────────────────────────
 function showRes(){
   document.getElementById('view-website').classList.remove('active');
   document.getElementById('view-res').classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
-  resetWizard();
+  resetRes();
 }
 function showSite(){
   document.getElementById('view-res').classList.remove('active');
@@ -808,192 +774,96 @@ async function submitCF(){
   document.getElementById('cf-ok').style.display='block';
 }
 
-// ── Calendar & Reservation ────────────
-const S={date:null,time:null,guests:1,name:'',phone:'',email:'',note:''};
-let calY,calM;
-const SESSIONS=[
-  {title:'上午時段',slots:['09:00','09:30','10:00','10:30','11:00','11:30']},
-  {title:'下午時段',slots:['13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30']},
-];
+// ── Reservation form ─────────────────
 const API='https://script.google.com/macros/s/AKfycbzZ0oAzmxksC-uZlE4mzCMf2znmNYpmwtwjJXORqnb7Uy_G1_lowymR_u-5Eb7rmOrC/exec';
 
-function initCal(){ const n=new Date(); calY=n.getFullYear(); calM=n.getMonth(); renderCal(); }
-function renderCal(){
-  const M=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-  document.getElementById('cal-title').textContent=calY+' 年 '+M[calM];
-  const D=['日','一','二','三','四','五','六'];
-  const heads=D.map(d=>'<div class="cal-dow">'+d+'</div>').join('');
-  const first=new Date(calY,calM,1).getDay();
-  const days=new Date(calY,calM+1,0).getDate();
-  const today=new Date(); today.setHours(0,0,0,0);
-  let c='';
-  for(let i=0;i<first;i++) c+='<div class="cal-day empty"></div>';
-  for(let d=1;d<=days;d++){
-    const ds=calY+'-'+String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-    const dt=new Date(calY,calM,d);
-    let cls='cal-day';
-    if(dt<today) cls+=' past';
-    if(dt.getTime()===today.getTime()) cls+=' today';
-    if(S.date===ds) cls+=' selected';
-    const click=dt>=today?'onclick="pickDate(\''+ds+'\')"' :'';
-    c+='<div class="'+cls+'" '+click+'>'+d+'</div>';
-  }
-  document.getElementById('cal-grid').innerHTML=heads+c;
-}
-document.getElementById('cal-prev').addEventListener('click',()=>{
-  const n=new Date();
-  if(calY===n.getFullYear()&&calM===n.getMonth()) return;
-  calM--; if(calM<0){calM=11;calY--;} renderCal();
-});
-document.getElementById('cal-next').addEventListener('click',()=>{
-  calM++; if(calM>11){calM=0;calY++;} renderCal();
-});
-
-async function pickDate(ds){
-  S.date=ds; S.time=null;
-  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
-  renderCal();
-  const p=ds.split('-'),wds=['日','一','二','三','四','五','六'];
-  document.getElementById('s-date').textContent=p[0]+'年'+parseInt(p[1])+'月'+parseInt(p[2])+'日（週'+wds[new Date(ds).getDay()]+'）';
-  document.getElementById('s-time').innerHTML='<span class="empty">尚未選擇</span>';
-  syncConf();
+function syncSidebar(){
+  const name    = document.getElementById('f-name').value.trim();
+  const company = document.getElementById('f-company').value.trim();
+  const contact = document.getElementById('f-contact').value.trim();
+  const service = document.getElementById('f-service').value;
+  const set=(id,val)=>{
+    document.getElementById(id).innerHTML = val
+      ? val
+      : '<span class="empty">尚未填寫</span>';
+  };
+  set('s-name',    name);
+  set('s-company', company);
+  set('s-contact', contact);
+  document.getElementById('s-service').innerHTML = service
+    ? service
+    : '<span class="empty">尚未選擇</span>';
+  // progress bar
+  const filled = [name,contact].filter(Boolean).length;
+  document.getElementById('pf').style.width = (filled/2*100)+'%';
 }
 
-function renderSlots(){
-  document.getElementById('res-slots').innerHTML=SESSIONS.map(s=>
-    '<div class="time-sec"><div class="time-sec-title">'+s.title+'</div><div class="time-slots">'+
-    s.slots.map(t=>'<div class="slot" data-t="'+t+'">'+t+'<div class="slot-sub"></div></div>').join('')+
-    '</div></div>').join('');
-  bindSlots();
-}
-function bindSlots(){
-  document.querySelectorAll('.slot:not(.full)').forEach(el=>{
-    el.onclick=()=>{
-      document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
-      el.classList.add('selected');
-      S.time=el.dataset.t;
-      document.getElementById('s-time').textContent=el.dataset.t;
-      syncConf();
-    };
-  });
-}
-
-function chg(d){
-  S.guests=Math.max(1,Math.min(10,S.guests+d));
-  document.getElementById('g-num').textContent=S.guests;
-  document.getElementById('g-minus').disabled=S.guests<=1;
-  document.getElementById('g-plus').disabled=S.guests>=10;
-  document.getElementById('s-guests').textContent=S.guests+' 位';
-  syncConf();
-}
 function updCC(){
   const v=document.getElementById('f-note').value;
   if(v.length>100) document.getElementById('f-note').value=v.slice(0,100);
   document.getElementById('cc').textContent=Math.min(v.length,100)+' / 100';
 }
 
-function validate2(){
-  let ok=true;
-  const se=(id,valid)=>{document.getElementById('fg-'+id).classList.toggle('err',!valid);return valid;};
-  const name=document.getElementById('f-name').value.trim();
-  const phone=document.getElementById('f-phone').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  ok=se('name',name.length>0)&&ok;
-  ok=se('phone',/^[\d\s\-\+]{8,15}$/.test(phone))&&ok;
-  if(email) ok=se('email',/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))&&ok;
-  else document.getElementById('fg-email').classList.remove('err');
-  if(ok){S.name=name;S.phone=phone;S.email=email;S.note=document.getElementById('f-note').value.trim();document.getElementById('s-name').textContent=name;document.getElementById('err2').classList.remove('show');}
-  else{document.getElementById('err2').classList.add('show');}
-  return ok;
-}
-function syncConf(){
-  const fmt=ds=>{if(!ds)return'—';const p=ds.split('-'),wds=['日','一','二','三','四','五','六'];return p[0]+'年'+parseInt(p[1])+'月'+parseInt(p[2])+'日（週'+wds[new Date(ds).getDay()]+'）';};
-  document.getElementById('c-date').innerHTML=S.date?fmt(S.date):'<span style="color:var(--muted)">尚未選擇</span>';
-  document.getElementById('c-time').innerHTML=S.time?'<strong>'+S.time+'</strong>':'<span style="color:var(--muted)">尚未選擇</span>';
-  document.getElementById('c-guests').innerHTML='<strong>'+S.guests+'</strong> 位';
-  document.getElementById('c-name').textContent=S.name||'—';
-  document.getElementById('c-phone').textContent=S.phone||'—';
-  document.getElementById('c-email').textContent=S.email||'（未填寫）';
-  document.getElementById('c-note').textContent=S.note||'無';
-}
-
-function go(n){
-  if(n===2){if(!S.date){alert('請先選擇日期');return;}if(!S.time){alert('請先選擇時段');return;}}
-  if(n===3){if(!validate2())return;syncConf();}
-  const pct={1:'33%',2:'66%',3:'100%'};
-  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
-  for(let i=1;i<=3;i++){const t=document.getElementById('tab-'+i);t.classList.remove('active','done');if(i<n)t.classList.add('done');if(i===n)t.classList.add('active');}
-  document.getElementById('pf').style.width=pct[n]||'33%';
-  document.getElementById('snum').textContent=n;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function resetWizard(){
-  S.date=null;S.time=null;S.guests=1;S.name='';S.phone='';S.email='';S.note='';
-  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===0));
-  for(let i=1;i<=3;i++){const t=document.getElementById('tab-'+i);t.classList.remove('active','done');if(i===1)t.classList.add('active');}
-  document.getElementById('pf').style.width='33%';
-  document.getElementById('snum').textContent='1';
-  document.getElementById('g-num').textContent='1';
-  document.getElementById('g-minus').disabled=true;
-  document.getElementById('g-plus').disabled=false;
-  document.getElementById('s-date').innerHTML='<span class="empty">尚未選擇</span>';
-  document.getElementById('s-time').innerHTML='<span class="empty">尚未選擇</span>';
-  document.getElementById('s-guests').textContent='1 位';
-  document.getElementById('s-name').innerHTML='<span class="empty">尚未填寫</span>';
-  ['f-name','f-phone','f-email','f-note'].forEach(id=>document.getElementById(id).value='');
+function resetRes(){
+  ['f-name','f-company','f-contact','f-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-service').selectedIndex=0;
   document.getElementById('cc').textContent='0 / 100';
-  document.getElementById('err2').classList.remove('show');
-  document.getElementById('err3').classList.remove('show');
-  document.getElementById('btn-submit').disabled=false;
-  renderSlots();
-  initCal();
+  document.getElementById('err-form').classList.remove('show');
+  document.getElementById('pf').style.width='0%';
+  document.getElementById('res-form-wrap').style.display='block';
+  document.getElementById('res-success').style.display='none';
+  syncSidebar();
 }
 
-async function doSubmit(){
-  const btn=document.getElementById('btn-submit');
-  btn.disabled=true;
-  document.getElementById('mask').classList.add('show');
-  document.getElementById('err3').classList.remove('show');
-  const payload={source:'booking',date:S.date,time:S.time,guests:S.guests,name:S.name,phone:S.phone,email:S.email,note:S.note};
-  try{
-    const r=await fetch(API,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-    let json; try{json=JSON.parse(await r.text());}catch{showSuccess('BM'+Date.now().toString().slice(-6),payload);return;}
-    if(!json.success) throw new Error(json.error||'unknown');
-    showSuccess(json.bookingId,payload);
-  }catch(e){
-    document.getElementById('mask').classList.remove('show');
-    const eb=document.getElementById('err3');
-    eb.textContent='送出失敗，請透過 LINE 或 Email 聯繫我們。（'+e.message+'）';
-    eb.classList.add('show');
-    btn.disabled=false;
+async function submitRes(){
+  const name    = document.getElementById('f-name').value.trim();
+  const company = document.getElementById('f-company').value.trim();
+  const contact = document.getElementById('f-contact').value.trim();
+  const service = document.getElementById('f-service').value;
+  const note    = document.getElementById('f-note').value.trim();
+
+  if(!name || !contact){
+    document.getElementById('err-form').classList.add('show');
+    document.getElementById('fg-name').classList.toggle('err', !name);
+    document.getElementById('fg-contact').classList.toggle('err', !contact);
+    return;
   }
-}
+  document.getElementById('err-form').classList.remove('show');
 
-function showSuccess(bookingId,data){
+  const btn = document.querySelector('.btn-next');
+  btn.disabled = true; btn.textContent = '送出中…';
+  document.getElementById('mask').classList.add('show');
+
+  const payload = {
+    source: 'inquiry',
+    name, company, contact, service, note,
+    time: new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})
+  };
+
+  try{
+    await fetch(API,{method:'POST',redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)});
+  }catch(e){}
+
   document.getElementById('mask').classList.remove('show');
-  document.getElementById('bid').textContent=bookingId;
-  const fmt=ds=>{const p=ds.split('-'),wds=['日','一','二','三','四','五','六'];return p[0]+'/'+parseInt(p[1])+'/'+parseInt(p[2])+'（週'+wds[new Date(ds).getDay()]+'）';};
-  const rows=[['日期',fmt(data.date)],['時段',data.time],['人數',data.guests+' 位'],['姓名',data.name],['電話',data.phone]];
-  if(data.email) rows.push(['Email',data.email]);
-  if(data.note)  rows.push(['需求',data.note]);
-  document.getElementById('sdetails').innerHTML=rows.map(function(r){return '<div class="srow"><span class="sdk">'+r[0]+'</span><span class="sdv">'+r[1]+'</span></div>';}).join('');
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-success').classList.add('active');
-  document.querySelectorAll('.step-tab').forEach(t=>{t.classList.remove('active');t.classList.add('done');});
+
+  // 顯示成功
+  const bid = 'BM'+Date.now().toString().slice(-6);
+  document.getElementById('bid').textContent = bid;
+  const rows = [['姓名',name],['公司',company||'—'],['聯絡方式',contact],['服務項目',service||'—'],['需求說明',note||'—']];
+  document.getElementById('sdetails').innerHTML = rows.map(([k,v])=>
+    '<div class="srow"><span class="sdk">'+k+'</span><span class="sdv">'+v+'</span></div>').join('');
+  document.getElementById('res-form-wrap').style.display='none';
+  document.getElementById('res-success').style.display='block';
   document.getElementById('pf').style.width='100%';
-  document.getElementById('snum').textContent='✓';
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
-document.getElementById('f-name').addEventListener('input',function(){
-  const v=this.value.trim();
-  document.getElementById('s-name').innerHTML=v||'<span class="empty">尚未填寫</span>';
-});
 
 // ── Init ──────────────────────────────
-renderSlots();
-initCal();
+
+resetRes();
+
 </script>
 
 <!-- ── DEMO OVERLAY ── -->
@@ -1009,21 +879,4 @@ const DEMO_B64="PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InpoLVRXIj4KPGhlYWQ+CiAgPG1l
 function openDemo(){
   const overlay=document.getElementById('demo-overlay');
   overlay.style.display='flex';
-  document.body.style.overflow='hidden';
-  const frame=document.getElementById('demo-frame');
-  if(!frame._loaded){
-    const html=decodeURIComponent(escape(atob(DEMO_B64)));
-    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-    frame.src=URL.createObjectURL(blob);
-    frame._loaded=true;
-  }
-}
-function closeDemo(){
-  document.getElementById('demo-overlay').style.display='none';
-  document.body.style.overflow='';
-}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDemo();});
-</script>
-
-</body>
-</html>
+  document.body.style
