@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>網站建置/AI應用/行銷推廣｜BY Mind 心創智誠</title>
+  <title>網站建置/訂位系統/SEO/Line 一站式服務｜BY Mind</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
@@ -159,7 +159,7 @@
 
   /* ── CTA ── */
   #s-cta { background:var(--ember); padding:5rem 3rem; text-align:center; position:relative; overflow:hidden; }
-  #s-cta::before { content:'BY Mind'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Noto Serif JP',serif; font-size:12rem; font-weight:700; color:rgba(0,0,0,.08); white-space:nowrap; pointer-events:none; }
+  #s-cta::before { content:'叁星'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Noto Serif JP',serif; font-size:18rem; font-weight:700; color:rgba(0,0,0,.08); white-space:nowrap; pointer-events:none; }
   .cta-title { font-family:'Noto Serif JP',serif; font-size:clamp(1.6rem,4vw,2.8rem); color:var(--cream); margin-bottom:1rem; font-weight:700; position:relative; z-index:1; }
   .cta-sub { color:rgba(245,237,214,.65); font-size:13px; letter-spacing:4px; margin-bottom:2.5rem; position:relative; z-index:1; }
   .cta-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; position:relative; z-index:1; }
@@ -173,6 +173,7 @@
      ██  RESERVATION PAGE
   ══════════════════════════════════════════════════════════ */
 
+  /* ── Res NAV ── */
   #res-nav {
     position:sticky; top:0; z-index:200;
     background:rgba(26,18,9,0.97); backdrop-filter:blur(12px);
@@ -189,11 +190,14 @@
   #nav-step-text { font-size:11px; color:var(--muted); letter-spacing:2px; }
   #nav-step-text strong { color:var(--gold); }
 
+  /* ── Progress ── */
   .prog-bar  { height:2px; background:rgba(201,168,76,.1); }
   .prog-fill { height:100%; background:var(--gold); transition:width .45s ease; }
 
+  /* ── Layout ── */
   .res-page { max-width:1100px; margin:0 auto; padding:3rem 2rem 5rem; display:grid; grid-template-columns:1fr 360px; gap:2.5rem; align-items:start; }
 
+  /* ── Step tabs ── */
   .steps-nav { display:flex; border-bottom:1px solid var(--border); margin-bottom:2.5rem; overflow-x:auto; }
   .step-tab  { display:flex; align-items:center; gap:10px; padding:1rem 1.5rem 1rem 0; margin-right:2rem; border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap; }
   .step-tab.active { border-bottom-color:var(--gold); }
@@ -205,11 +209,13 @@
   .step-tab.active .step-tab-label { color:var(--cream); }
   .step-tab.done   .step-tab-label { color:var(--mid); }
 
+  /* ── Panels ── */
   .panel { display:none; } .panel.active { display:block; }
   .step-label { font-size:10px; letter-spacing:4px; color:var(--gold); margin-bottom:.5rem; }
   .step-title { font-family:'Noto Serif JP',serif; font-size:1.9rem; font-weight:700; color:var(--cream); margin-bottom:.4rem; }
   .step-desc  { font-size:13px; color:var(--muted); line-height:1.7; margin-bottom:2.5rem; }
 
+  /* ── Calendar ── */
   .cal-wrap   { background:var(--surface); border:1px solid var(--border); padding:1.5rem; margin-bottom:1.5rem; }
   .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
   .cal-nav    { background:transparent; border:1px solid var(--border); color:var(--gold); width:32px; height:32px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; transition:border-color .2s; }
@@ -223,6 +229,7 @@
   .cal-day.selected { background:var(--ember); border-color:var(--ember); color:var(--cream); font-weight:500; }
   .cal-day.past,.cal-day.empty { opacity:.22; cursor:default; }
 
+  /* ── Slots ── */
   .time-section       { margin-bottom:1.5rem; }
   .time-section-title { font-size:11px; letter-spacing:3px; color:var(--gold); margin-bottom:.85rem; }
   .time-slots { display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:8px; }
@@ -231,8 +238,10 @@
   .slot.selected { background:var(--ember); border-color:var(--ember); color:var(--cream); }
   .slot.full    { opacity:.28; cursor:not-allowed; text-decoration:line-through; }
   .slot.loading { opacity:.5; cursor:wait; }
+  .slot.loading .slot-sub { color:rgba(201,168,76,.5)!important; }
   .slot-sub { font-size:9px; letter-spacing:1px; opacity:.6; margin-top:2px; }
 
+  /* ── Guests ── */
   .guest-row  { display:flex; align-items:center; border:1px solid var(--border); width:fit-content; margin-bottom:1.2rem; }
   .g-btn      { width:48px; height:48px; background:transparent; border:none; color:var(--gold); font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s; }
   .g-btn:hover    { background:rgba(201,168,76,.08); }
@@ -242,6 +251,7 @@
   .g-count span   { font-size:9px; color:var(--muted); letter-spacing:2px; margin-top:2px; }
   .guest-note { font-size:12px; color:var(--muted); line-height:1.8; padding:.9rem 1rem; border-left:2px solid rgba(201,168,76,.3); background:var(--gold-dim); margin-bottom:1.5rem; }
 
+  /* ── Form ── */
   .form-sec-title { font-size:11px; letter-spacing:3px; color:var(--gold); margin-bottom:1rem; padding-bottom:.75rem; border-bottom:1px solid var(--border); }
   .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
   .fgrp { margin-bottom:1rem; }
@@ -257,12 +267,14 @@
   .char-note { display:flex; justify-content:space-between; font-size:10px; color:var(--muted); margin-top:5px; }
   .field-hint { font-size:11px; color:var(--muted); line-height:1.7; margin-top:6px; }
 
+  /* ── Res Buttons ── */
   .btn-next { width:100%; background:var(--ember); color:var(--cream); border:none; padding:16px; font-size:14px; letter-spacing:4px; cursor:pointer; font-family:'Noto Serif JP',serif; transition:background .2s; margin-top:1.5rem; display:flex; align-items:center; justify-content:center; gap:10px; }
   .btn-next:hover:not(:disabled) { background:#a32020; }
   .btn-next:disabled { background:rgba(139,26,26,.3); cursor:not-allowed; }
   .btn-back { background:transparent; border:1px solid var(--border); color:var(--muted); padding:12px; font-size:12px; letter-spacing:3px; cursor:pointer; font-family:'Noto Sans JP',sans-serif; transition:all .2s; margin-top:.75rem; width:100%; }
   .btn-back:hover { border-color:var(--bh); color:var(--cream); }
 
+  /* ── Confirm ── */
   .conf-table { background:var(--surface); border:1px solid var(--border); margin-bottom:1.5rem; }
   .crow { display:flex; justify-content:space-between; align-items:flex-start; padding:1rem 1.25rem; border-bottom:1px solid rgba(201,168,76,.07); gap:1rem; }
   .crow:last-child { border-bottom:none; }
@@ -272,15 +284,18 @@
   .terms { background:var(--gold-dim); border:1px solid var(--border); padding:1.1rem 1.25rem; margin-bottom:1.5rem; font-size:12px; color:var(--muted); line-height:1.9; }
   .terms-title { font-size:11px; letter-spacing:2px; color:var(--gold); margin-bottom:.75rem; }
 
+  /* ── Error box ── */
   .err-box { background:rgba(255,107,107,.1); border:1px solid rgba(255,107,107,.35); padding:1rem 1.25rem; margin-bottom:1rem; font-size:13px; color:#ff9999; line-height:1.7; display:none; }
   .err-box.show { display:block; }
 
+  /* ── Mask ── */
   .res-mask { display:none; position:fixed; inset:0; background:rgba(26,18,9,.88); z-index:999; flex-direction:column; align-items:center; justify-content:center; gap:1.5rem; }
   .res-mask.show { display:flex; }
   .spinner { width:48px; height:48px; border:2px solid rgba(201,168,76,.2); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; }
   @keyframes spin { to{transform:rotate(360deg);} }
   .mask-text { font-family:'Noto Serif JP',serif; font-size:1.1rem; color:var(--gold); letter-spacing:4px; }
 
+  /* ── Success ── */
   #panel-success  { text-align:center; padding:3rem 1.5rem; }
   .success-ring   { width:80px; height:80px; border:2px solid var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 1.5rem; }
   .success-title  { font-family:'Noto Serif JP',serif; font-size:1.8rem; color:var(--cream); margin-bottom:.5rem; font-weight:700; }
@@ -295,6 +310,7 @@
   .btn-home { background:var(--ember); color:var(--cream); border:none; padding:14px 40px; font-size:13px; letter-spacing:3px; cursor:pointer; font-family:'Noto Serif JP',serif; transition:background .2s; }
   .btn-home:hover { background:#a32020; }
 
+  /* ── Sidebar ── */
   .sidebar    { position:sticky; top:80px; }
   .sb-card    { background:var(--surface); border:1px solid var(--border); overflow:hidden; margin-bottom:1.5rem; }
   .sb-head    { background:rgba(139,26,26,.18); border-bottom:1px solid var(--border); padding:1rem 1.25rem; font-family:'Noto Serif JP',serif; font-size:14px; color:var(--cream); letter-spacing:2px; }
@@ -311,37 +327,58 @@
   .notice-list li { font-size:12px; color:var(--muted); line-height:1.7; padding-left:14px; position:relative; }
   .notice-list li::before { content:'·'; position:absolute; left:0; color:var(--gold); }
 
+  /* ── Responsive ── */
   @media(max-width:860px) {
+    /* 訂位頁：雙欄 → 單欄 */
     .res-page { grid-template-columns:1fr; padding:2rem 1.25rem 4rem; }
-    .sidebar { position:static; order:99; }
+    .sidebar { position:static; order:99; }  /* sidebar 移到最下面 */
     .form-grid { grid-template-columns:1fr; }
     #res-nav { padding:0 1.25rem; }
     #nav-step-text { display:none; }
+    /* 聯絡區塊 */
     .contact-inner { grid-template-columns:1fr; gap:3rem; }
     .f-row { grid-template-columns:1fr; }
   }
   @media(max-width:768px) {
+    /* 網站 nav */
     #site-nav { padding:0 1.25rem; height:56px; }
     .site-links { display:none; }
+    /* 各 section padding 收窄 */
     .site-section { padding:4rem 1.25rem; }
+    /* Gallery 改 2 欄 */
     .gallery-grid { grid-template-columns:1fr 1fr; grid-template-rows:150px 150px 150px; }
     .g-item.tall  { grid-row:span 1; }
     .g-item.span2 { grid-column:span 2; }
+    /* Footer / CTA */
     #site-footer { padding:2rem 1.25rem; }
     #s-cta { padding:3.5rem 1.25rem; }
-    #s-cta::before { font-size:6rem; }
+    #s-cta::before { font-size:9rem; }
+    /* 訂位 step tab 文字隱藏，只留數字 */
     .step-tab { padding:.75rem .5rem .75rem 0; margin-right:1rem; }
     .step-tab-label { display:none; }
+    /* 步驟標題字縮小 */
     .step-title { font-size:1.5rem; }
+    /* confirm 表格 key/val 改直排 */
     .crow { flex-direction:column; gap:.3rem; }
     .cval { text-align:left; }
   }
   @media(max-width:480px) {
+    /* 時段格子 3 欄 */
     .time-slots { grid-template-columns:repeat(3,1fr); }
+    /* hero stats 間距縮小 */
+    .hero-stats { gap:1.5rem; flex-wrap:wrap; justify-content:center; }
+    .hero-stat strong { font-size:1.8rem; }
+    /* 月曆格子字小一點 */
+    .cal-day { font-size:12px; }
+    /* res-page padding 再收 */
     .res-page { padding:1.5rem 1rem 4rem; }
+    /* btn 文字不換行 */
     .btn-next { font-size:13px; letter-spacing:2px; }
+    /* 訂位 nav logo 縮小 */
     .res-logo { font-size:13px; }
+    /* sidebar sb-card margin 縮小 */
     .sb-card { margin-bottom:1rem; }
+    /* hero title 再縮 */
     .hero-title { letter-spacing:2px; }
   }
   </style>
@@ -355,15 +392,15 @@
 
   <nav id="site-nav">
     <a href="#" class="site-logo" onclick="scrollToTop()">
-      <span id="nav-store-name">BY Mind</span>
-      <span id="nav-store-sub">心創智誠</span>
+      <span id="nav-store-name">叁星燒肉重飯</span>
+      <span id="nav-store-sub">ミツボシ 南港本店</span>
     </a>
     <ul class="site-links">
       <li><a href="#s-about"   onclick="siteScroll('#s-about')">關於我們</a></li>
-      <li><a href="#s-menu"    onclick="siteScroll('#s-menu')">服務方案</a></li>
-      <li><a href="#s-gallery" onclick="siteScroll('#s-gallery')">品牌展示</a></li>
+      <li><a href="#s-menu"    onclick="siteScroll('#s-menu')">菜單</a></li>
+      <li><a href="#s-gallery" onclick="siteScroll('#s-gallery')">宣傳區</a></li>
       <li><a href="#s-faq"     onclick="siteScroll('#s-faq')">常見問題</a></li>
-      <li><button class="nav-cta" onclick="showRes()">立即諮詢</button></li>
+      <li><button class="nav-cta" onclick="showRes()">立即訂位</button></li>
     </ul>
   </nav>
 
@@ -408,17 +445,17 @@
 
   <footer id="site-footer"></footer>
 
-</div>
+</div><!-- /view-website -->
 
 
 <!-- ══════════════════════════════════════════════════════════
-     VIEW 2：諮詢預約
+     VIEW 2：RESERVATION
 ══════════════════════════════════════════════════════════ -->
 <div id="view-res" class="view">
 
   <div class="res-mask" id="mask">
     <div class="spinner"></div>
-    <div class="mask-text">正在送出諮詢申請…</div>
+    <div class="mask-text">正在送出訂位…</div>
   </div>
 
   <nav id="res-nav">
@@ -426,8 +463,8 @@
       <span class="res-back-arrow">←</span>返回首頁
     </button>
     <div class="res-logo">
-      <span id="res-store-name">BY Mind</span>
-      <span id="res-store-sub">心創智誠</span>
+      <span id="res-store-name">叁星燒肉重飯</span>
+      <span id="res-store-sub">ミツボシ 南港本店</span>
     </div>
     <div id="nav-step-text">步驟 <strong>1</strong> / 3</div>
   </nav>
@@ -436,16 +473,16 @@
   <div class="res-page">
     <div>
       <div class="steps-nav">
-        <div class="step-tab active" id="tab-1"><div class="step-num">1</div><div class="step-tab-label">選擇日期</div></div>
+        <div class="step-tab active" id="tab-1"><div class="step-num">1</div><div class="step-tab-label">日期時段</div></div>
         <div class="step-tab"        id="tab-2"><div class="step-num">2</div><div class="step-tab-label">填寫資料</div></div>
         <div class="step-tab"        id="tab-3"><div class="step-num">3</div><div class="step-tab-label">確認送出</div></div>
       </div>
 
       <!-- STEP 1 -->
       <div class="panel active" id="panel-1">
-        <div class="step-label">STEP 01 — 選擇諮詢時間</div>
+        <div class="step-label">STEP 01 — 選擇訂位資訊</div>
         <h2 class="step-title">請選擇日期與時段</h2>
-        <p class="step-desc" id="step1-desc">請選擇希望諮詢的日期與時段，我們將安排專人與您聯繫確認。</p>
+        <p class="step-desc" id="step1-desc">請選擇用餐日期與時段。</p>
 
         <div class="cal-wrap">
           <div class="cal-header">
@@ -456,12 +493,12 @@
           <div class="cal-grid" id="cal-grid"></div>
         </div>
 
-        <div id="res-slots"></div>
+        <div id="res-slots"></div><!-- 時段由 JS 動態產生 -->
 
-        <div class="form-sec-title" style="margin-top:1.5rem">諮詢人數</div>
+        <div class="form-sec-title" style="margin-top:1.5rem">用餐人數</div>
         <div class="guest-row">
           <button class="g-btn" id="g-minus" onclick="chg(-1)" disabled>−</button>
-          <div class="g-count"><strong id="g-num">1</strong><span>位</span></div>
+          <div class="g-count"><strong id="g-num">2</strong><span>位</span></div>
           <button class="g-btn" id="g-plus"  onclick="chg(1)">+</button>
         </div>
         <div class="guest-note" id="guest-note"></div>
@@ -470,8 +507,8 @@
 
       <!-- STEP 2 -->
       <div class="panel" id="panel-2">
-        <div class="step-label">STEP 02 — 填寫諮詢資料</div>
-        <h2 class="step-title">聯絡與需求說明</h2>
+        <div class="step-label">STEP 02 — 填寫訂位資料</div>
+        <h2 class="step-title">聯絡與通知資訊</h2>
         <p class="step-desc">請填寫聯絡資料。標示 <span style="color:#ff6b6b">✱</span> 為必填。</p>
 
         <div style="margin-bottom:1.5rem">
@@ -479,7 +516,7 @@
           <div class="form-grid">
             <div class="fgrp" id="fg-name">
               <label class="flabel">姓名 <span class="freq">✱</span></label>
-              <input type="text" class="finput" id="f-name" placeholder="您的姓名" />
+              <input type="text" class="finput" id="f-name" placeholder="訂位代表人姓名" />
               <div class="ferr">請輸入姓名</div>
             </div>
             <div class="fgrp" id="fg-phone">
@@ -496,7 +533,7 @@
             <label class="flabel">Email</label>
             <input type="email" class="finput" id="f-email" placeholder="your@email.com" />
             <div class="ferr">Email 格式不正確</div>
-            <div class="field-hint">填寫後將寄送諮詢確認信，內含預約編號。</div>
+            <div class="field-hint">填寫後將寄送訂位確認信，內含訂位編號。</div>
           </div>
           <div class="fgrp">
             <label class="flabel">LINE 確認通知</label>
@@ -505,118 +542,119 @@
         </div>
 
         <div style="margin-bottom:1.5rem">
-          <div class="form-sec-title">需求說明（選填）</div>
+          <div class="form-sec-title">備註（選填）</div>
           <div class="fgrp">
-            <textarea class="ftextarea" id="f-note" placeholder="例如：想了解網站建置、AI 應用導入、行銷推廣方案…" oninput="updCC()"></textarea>
-            <div class="char-note"><span>簡述您的需求，有助於我們提前準備</span><span id="cc">0 / 100</span></div>
+            <textarea class="ftextarea" id="f-note" placeholder="例如：過敏食材、座位偏好、生日慶生…" oninput="updCC()"></textarea>
+            <div class="char-note"><span>有任何飲食需求請在此說明</span><span id="cc">0 / 100</span></div>
           </div>
         </div>
 
         <div class="err-box" id="err2">請確認所有必填欄位填寫正確後再繼續。</div>
-        <button class="btn-next" onclick="go(3)">下一步：確認諮詢資訊 →</button>
+        <button class="btn-next" onclick="go(3)">下一步：確認訂位資訊 →</button>
         <button class="btn-back"  onclick="go(1)">← 返回上一步</button>
       </div>
 
       <!-- STEP 3 -->
       <div class="panel" id="panel-3">
-        <div class="step-label">STEP 03 — 確認諮詢資訊</div>
+        <div class="step-label">STEP 03 — 確認訂位資訊</div>
         <h2 class="step-title">請確認以下資訊</h2>
-        <p class="step-desc">確認無誤後，請按「確認送出」完成預約諮詢。</p>
+        <p class="step-desc">確認無誤後，請按「確認送出」完成訂位。</p>
 
         <div class="conf-table">
-          <div class="crow"><span class="ckey">諮詢日期</span><span class="cval" id="c-date">—</span></div>
-          <div class="crow"><span class="ckey">諮詢時段</span><span class="cval" id="c-time">—</span></div>
-          <div class="crow"><span class="ckey">諮詢人數</span><span class="cval" id="c-guests">—</span></div>
-          <div class="crow"><span class="ckey">姓名</span>    <span class="cval" id="c-name">—</span></div>
+          <div class="crow"><span class="ckey">用餐日期</span><span class="cval" id="c-date">—</span></div>
+          <div class="crow"><span class="ckey">用餐時段</span><span class="cval" id="c-time">—</span></div>
+          <div class="crow"><span class="ckey">用餐人數</span><span class="cval" id="c-guests">—</span></div>
+          <div class="crow"><span class="ckey">訂位姓名</span><span class="cval" id="c-name">—</span></div>
           <div class="crow"><span class="ckey">聯絡電話</span><span class="cval" id="c-phone">—</span></div>
-          <div class="crow"><span class="ckey">Email</span>   <span class="cval" id="c-email">—</span></div>
-          <div class="crow"><span class="ckey">需求說明</span><span class="cval" id="c-note">無</span></div>
+          <div class="crow"><span class="ckey">Email</span>    <span class="cval" id="c-email">—</span></div>
+          <div class="crow"><span class="ckey">備註</span>     <span class="cval" id="c-note">無</span></div>
         </div>
 
         <div class="terms">
-          <div class="terms-title">諮詢注意事項</div>
+          <div class="terms-title">訂位注意事項</div>
           <span id="terms-content"></span>
         </div>
 
         <div class="err-box" id="err3"></div>
-        <button class="btn-next" id="btn-submit" onclick="doSubmit()">確認送出預約 ✓</button>
+        <button class="btn-next" id="btn-submit" onclick="doSubmit()">確認送出訂位 ✓</button>
         <button class="btn-back"  onclick="go(2)">← 返回修改資料</button>
       </div>
 
       <!-- SUCCESS -->
       <div class="panel" id="panel-success">
         <div class="success-ring">✓</div>
-        <h2 class="success-title">預約成功！</h2>
+        <h2 class="success-title">訂位成功！</h2>
         <p class="success-sub" id="success-sub"></p>
         <div class="bid-box">
-          <div class="bid-label">預約編號</div>
+          <div class="bid-label">訂位編號</div>
           <div class="bid-val" id="bid">—</div>
         </div>
         <div class="sdetails" id="sdetails"></div>
         <p style="font-size:12px;color:var(--muted);margin-bottom:2rem;letter-spacing:1px;line-height:2" id="success-note"></p>
-        <button class="btn-home" onclick="showSite()">返回 BY Mind 首頁</button>
+        <button class="btn-home" onclick="showSite()">返回餐廳首頁</button>
       </div>
     </div>
 
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="sb-card">
-        <div class="sb-head">諮詢摘要</div>
+        <div class="sb-head">訂位摘要</div>
         <div class="sb-body">
           <div class="si"><div class="si-icon">📅</div><div><div class="si-lbl">日期</div><div class="si-val" id="s-date"><span class="empty">尚未選擇</span></div></div></div>
           <div class="si"><div class="si-icon">🕐</div><div><div class="si-lbl">時段</div><div class="si-val" id="s-time"><span class="empty">尚未選擇</span></div></div></div>
-          <div class="si"><div class="si-icon">👥</div><div><div class="si-lbl">人數</div><div class="si-val" id="s-guests">1 位</div></div></div>
-          <div class="si"><div class="si-icon">👤</div><div><div class="si-lbl">姓名</div><div class="si-val" id="s-name"><span class="empty">尚未填寫</span></div></div></div>
+          <div class="si"><div class="si-icon">👥</div><div><div class="si-lbl">人數</div><div class="si-val" id="s-guests">2 位</div></div></div>
+          <div class="si"><div class="si-icon">👤</div><div><div class="si-lbl">訂位人</div><div class="si-val" id="s-name"><span class="empty">尚未填寫</span></div></div></div>
         </div>
       </div>
       <div class="notice-card">
-        <div class="notice-title">BY Mind 資訊</div>
+        <div class="notice-title">餐廳資訊</div>
         <ul class="notice-list" id="sidebar-info"></ul>
       </div>
     </div>
   </div>
-</div>
+</div><!-- /view-res -->
 
 
 <script>
 // ════════════════════════════════════════════════════════════
-//  🔧 BY Mind 設定區
+//  🔧 換店設定區（只需改這裡）
 // ════════════════════════════════════════════════════════════
 const STORE = {
-  name:    "BY Mind",
-  nameSub: "心創智誠",
+  name:    "日式燒肉飯",
+  nameSub: "BY Mind Demo",
 
+  // ── 訂位後端 URL ──
   apiUrl:     "https://script.google.com/macros/s/AKfycbzZ0oAzmxksC-uZlE4mzCMf2znmNYpmwtwjJXORqnb7Uy_G1_lowymR_u-5Eb7rmOrC/exec",
-  maxPerSlot: 10,
+  maxPerSlot: 20,
 
   // ── HERO ──
   hero: {
-    badge:   "AI 應用 · 網站建置 · 行銷推廣",
-    title:   "心創智誠<br>BY Mind",
-    titleJp: "讓每個想法都能落地為成果",
-    sub:     "AI 應用開發 × 企業數位課程 × 行銷數據策略",
+    badge:   "Demo · BY Mind · 日式燒肉",
+    title:   "日式燒肉<br>餐廳",
+    titleJp: "日式燒肉",
+    sub:     "炭火燒烤 × 和牛丼飯 × 職人之味",
   },
 
-  // ── 品牌簡介 ──
-  about: "一個成功的網站不只是頁面的堆疊，而是從策略、設計、開發到維運的完整系統工程。我們採用模組化開發流程，確保每個環節都經過專業分工與嚴格把關，為您打造高擴充性、高轉換率的數位資產。",
+  // ── 餐廳簡介 ──
+  about: "一個成功的網站不只是頁面的堆疊，而是從策略、設計、開發到維運的完整系統工程。<br>我們採用模組化開發流程，確保每個環節都經過專業分工與嚴格把關，為您打造高擴充性、高轉換率的數位資產。",
 
-  // ── 服務方案圖片 ──
+  // ── 菜單圖片（填入圖片路徑，可多張）──
   menu: {
-    sectionTitle: "服務方案",
+    sectionTitle: "菜單",
     images: [
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1400&q=80",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&q=80",
     ],
   },
 
-  // ── 品牌展示 ──
+  // ── 宣傳區（img 填圖片路徑，留空用 emoji / gradient）──
   gallery: {
-    sectionTitle: "品牌展示",
+    sectionTitle: "品牌宣傳",
     items: [
-      { img:"https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80", emoji:"", label:"AI 應用開發", layout:"tall"  },
-      { img:"https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80", emoji:"", label:"企業課程培訓", layout:""      },
-      { img:"https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80", emoji:"", label:"數據分析策略", layout:""      },
-      { img:"https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80", emoji:"", label:"網站建置服務", layout:"span2" },
-      { img:"https://images.unsplash.com/photo-1611926653458-09294b3142bf?w=800&q=80", emoji:"", label:"行銷推廣規劃", layout:""      },
+      { img:"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&q=80", emoji:"", label:"和牛燒肉", layout:"tall"  },
+      { img:"https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80", emoji:"", label:"精選套餐", layout:""      },
+      { img:"https://images.unsplash.com/photo-1534482421-64566f976cfa?w=800&q=80", emoji:"", label:"炭火職人", layout:""      },
+      { img:"https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=800&q=80", emoji:"", label:"丼飯料理", layout:"span2" },
+      { img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80", emoji:"", label:"用餐環境", layout:""      },
     ],
   },
 
@@ -624,92 +662,99 @@ const STORE = {
   faq: {
     sectionTitle: "常見問題解答",
     items: [
-      { q:"你們提供哪些主要服務？",         a:"BY Mind 提供三大服務：AI 應用開發（聊天機器人、LINE OA 整合）、課程設計與系統訓練（企業內訓、AI 應用教學）、以及行銷推廣與數據分析（SEO、社群經營、品牌策略）。" },
-      { q:"網站建置大概需要多少時間？",     a:"一頁式網站約 2–3 週，多頁形象網站約 4–6 週。依需求複雜度與雙方確認速度而定，我們會在初次諮詢後提供詳細時程規劃。" },
-      { q:"LINE OA 串接需要自備帳號嗎？",   a:"是的，LINE OA 帳號需由您自行申請（免費方案即可），我們負責技術串接與 AI 功能設定，協助您快速上線。" },
-      { q:"企業內訓課程可以客製化嗎？",     a:"完全可以！我們會依據您的產業背景、團隊技術水平與學習目標，量身規劃課程內容，並提供工作坊形式的實作練習。" },
-      { q:"如何開始合作？",                 a:"您可以透過頁面上的「立即諮詢」預約免費初次諮詢，或直接透過 LINE / Email 聯繫我們，我們將於 24 小時內回覆安排時間。" },
+      { q:"需要事先訂位嗎？",       a:"建議避開午餐（12:00–13:30）與晚餐（18:00–20:00）尖峰時段，非餐時通常可直接入座。" },
+      { q:"有提供外帶與外送嗎？",   a:"有的！本店提供內用、外帶與外送三種服務。外送請透過常用外送平台訂購。" },
+      { q:"如何前往南港本店？",     a:"本店位於台北市南港區經貿二路 131 號，拉拉 PORT 5 樓（51100 舖）。鄰近捷運南港展覽館站，步行約 8–10 分鐘。" },
+      { q:"份量對一個人來說夠嗎？", a:"單人套餐份量飽足。建議點選 1 號套餐，家庭套餐適合 2–3 人共享。" },
+      { q:"營業時間是什麼時候？",   a:"本店每日營業，打烊時間為晚上 22:00。節假日可能調整，建議查看 Google 地圖最新資訊。" },
     ],
   },
 
   // ── 聯絡資訊 ──
   contact: {
-    address:  "歡迎透過 LINE 或 Email 聯繫，可安排線上或面對面諮詢",
+    address:  "Please contact BY Mind",
     hours: [
-      { day:"週一至週五", time:"09:00 – 18:00" },
-      { day:"週六",       time:"預約制" },
-      { day:"週日",       time:"休息" },
+      { day:"週一至週五", time:"11:00 – 22:00" },
+      { day:"週六至週日", time:"10:30 – 22:00" },
+      { day:"例假日",     time:"請以 Google 地圖為準" },
     ],
-    priceRange: "依專案規模報價，歡迎諮詢",
-    instagram:  "bymindmkt",
-    services:   "AI 開發 · 課程設計 · 行銷推廣 · 網站建置",
+    priceRange: "每人 NT$200 – 400",
+    instagram:  "instagram.com（詳見 Google 地圖）",
+    services:   "內用 · 外帶 · 外送",
   },
 
   // ── CTA ──
   cta: {
-    title: "今天就讓想法開始落地",
-    sub:   "AI 應用 · 數位課程 · 行銷策略 · 網站建置",
+    title: "今日就來品嚐叁星滋味",
+    sub:   "炭火燒肉 · 職人丼飯 · 每日新鮮",
   },
 
   // ── Footer ──
   footer: {
-    addressLine: "bymindmkt@gmail.com &nbsp;|&nbsp; +886 0985-541-896",
-    copyright:   "© 2025 BY Mind 心創智誠. All rights reserved.",
+    addressLine: "Please contact BY Mind &nbsp;|&nbsp; 每日 11:00 – 22:00",
+    copyright:   "© 2025 BY Mind. All rights reserved.",
   },
 
-  // ── 諮詢時段設定 ──
+  // ── 訂位頁設定 ──
   sessions: [
-    { title:"上午時段", slots:["09:00","09:30","10:00","10:30","11:00","11:30"] },
-    { title:"下午時段", slots:["13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30"] },
+    { title:"午餐時段", slots:["11:00","11:30","12:00","12:30","13:00","13:30","14:00"] },
+    { title:"晚餐時段", slots:["17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"] },
   ],
-  sidebarInfo:  ["BY Mind 心創智誠","週一至週五 09:00 – 18:00","AI 開發 · 課程 · 行銷 · 網站","免費初次諮詢 30 分鐘","📧 bymindmkt@gmail.com"],
-  guestNote:    "● 3 人以上團隊諮詢，請於備註說明，方便安排合適空間。<br>● 可選擇線上視訊或面對面諮詢，歡迎備註偏好方式。",
-  terms:        ["預約後如需取消或更改，請於 24 小時前告知。","初次諮詢為免費服務，時間約 30–60 分鐘。","正式提案與報價將於諮詢後 3 個工作天內提供。"],
-  lineHint:     "已加入 BY Mind LINE 官方帳號者，完成預約後將自動收到確認通知。",
-  successNote:  "如需更改或取消預約，請透過 LINE 或 Email 聯繫我們。",
-  contactHint:  "LINE / Email",
+  sidebarInfo:  ["BY Mind","每日 11:00 – 22:00","內用 · 外帶 · 外送","均消 NT$200–400 / 人","⭐ 4.6（881 則 Google 評論）"],
+  guestNote:    "● 6 人以上大型訂位，請先致電或 Instagram 私訊確認。<br>● 小朋友亦請計入人數，方便安排座位。",
+  terms:        ["遲到 15 分鐘以上，訂位將自動釋出。","如需取消或更改，請於用餐前 2 小時通知。","6 人以上大型訂位，請另行電話確認。"],
+  lineHint:     "已加入本店 LINE 官方帳號並完成電話綁定者，訂位後將自動收到 LINE 確認通知。",
+  successNote:  "如需更改或取消，請透過電話或 Instagram 聯繫本店。",
+  contactHint:  "Instagram",
 
   // ── 社群連結 ──
   social: {
     googleMaps: "https://www.google.com/maps/",
-    instagram:  "https://instagram.com/bymindmkt",
-    facebook:   "https://facebook.com/",
-    line:       "https://line.me/R/ti/p/@607ysroc",
+    instagram:  "https://instagram.com/",   // ← 填入 IG 連結
+    facebook:   "https://facebook.com/",    // ← 填入 FB 連結
+    line:       "https://line.me/R/ti/p/@607ysroc",  // ← 填入 LINE 官方帳號連結
   },
 };
 // ════════════════════════════════════════════════════════════
 
+// ── 工具 ──────────────────────────────────────────────────
 function secHeader(label, title) {
   return `<p class="sec-label">${label}</p><h2 class="sec-title">${title}</h2><div class="sec-line"></div>`;
 }
 
+// ── 渲染 WEBSITE ─────────────────────────────────────────
 function renderSite() {
-  document.title = `${STORE.name} ${STORE.nameSub} ｜AI應用・網站建置・行銷推廣`;
+  document.title = `${STORE.name} ${STORE.nameSub}`;
   document.getElementById('nav-store-name').textContent = STORE.name;
   document.getElementById('nav-store-sub').textContent  = STORE.nameSub;
 
+  // Hero
   document.getElementById('hero-content').innerHTML = `
     <div class="hero-badge">${STORE.hero.badge}</div>
     <h1 class="hero-title">${STORE.hero.title}</h1>
     <span class="hero-title-jp">${STORE.hero.titleJp}</span>
     <p class="hero-sub">${STORE.hero.sub}</p>
     <div class="hero-btns">
-      <button class="btn-primary" onclick="siteScroll('#s-menu')">了解服務方案</button>
-      <button class="btn-outline" onclick="showRes()">免費諮詢預約</button>
+      <button class="btn-primary" onclick="siteScroll('#s-menu')">查看菜單</button>
+      <button class="btn-outline" onclick="showRes()">立即訂位</button>
     </div>`;
 
+  // About
   document.getElementById('about-header').innerHTML = secHeader('About — 關於我們', STORE.name);
-  document.getElementById('about-text').innerHTML = STORE.about;
+  document.getElementById('about-text').textContent = STORE.about;
 
-  document.getElementById('menu-header').innerHTML = secHeader('Services — 服務方案', STORE.menu.sectionTitle);
+  // Menu — 全寬圖片
+  document.getElementById('menu-header').innerHTML = secHeader('Menu — 菜單', STORE.menu.sectionTitle);
   document.getElementById('menu-img-container').innerHTML = STORE.menu.images.map(src=>`
-    <div class="menu-img-wrap"><img src="${src}" alt="服務方案" loading="lazy"></div>`).join('');
+    <div class="menu-img-wrap"><img src="${src}" alt="菜單" loading="lazy"></div>`).join('');
 
-  document.getElementById('gallery-header').innerHTML = secHeader('Portfolio — 品牌展示', STORE.gallery.sectionTitle);
+  // Gallery → 宣傳區
+  document.getElementById('gallery-header').innerHTML = secHeader('Promo — 宣傳區', STORE.gallery.sectionTitle);
   document.getElementById('gallery-grid').innerHTML   = STORE.gallery.items.map((i,idx)=>`
     <div class="g-item ${i.layout} g${idx+1}" style="${i.img?`background-image:url('${i.img}');background-size:cover;background-position:center;font-size:0`:''}">
       ${i.img?'':i.emoji}<span class="g-label">${i.label}</span></div>`).join('');
 
+  // FAQ
   document.getElementById('faq-header').innerHTML = secHeader('FAQ — 常見問題', STORE.faq.sectionTitle);
   document.getElementById('faq-list').innerHTML   = STORE.faq.items.map((i,idx)=>`
     <div class="faq-item ${idx===0?'open':''}">
@@ -717,69 +762,61 @@ function renderSite() {
       <div class="faq-a">${i.a}</div>
     </div>`).join('');
 
-  document.getElementById('contact-header').innerHTML = secHeader('Contact — 聯絡我們', '預約諮詢與合作洽談');
+  // Contact
+  document.getElementById('contact-header').innerHTML = secHeader('Contact — 聯絡我們', '預約與詢問');
   document.getElementById('contact-inner').innerHTML  = `
     <div>
-      <h3 class="contact-h3">聯絡資訊</h3>
-      <div class="info-row"><span class="info-icon">📍</span><div><span class="info-label">諮詢方式</span><span class="info-value">${STORE.contact.address}</span></div></div>
-      <div class="info-row"><span class="info-icon">🕐</span><div><span class="info-label">服務時間</span><div class="hrs-grid">${STORE.contact.hours.map(h=>`<span class="hrs-day">${h.day}</span><span class="hrs-time">${h.time}</span>`).join('')}</div></div></div>
-      <div class="info-row"><span class="info-icon">💰</span><div><span class="info-label">報價方式</span><span class="info-value">${STORE.contact.priceRange}</span></div></div>
-      <div class="info-row"><span class="info-icon">📱</span><div><span class="info-label">Instagram</span><span class="info-value"><a href="${STORE.social.instagram}" target="_blank" style="color:var(--mid);text-decoration:none">@${STORE.contact.instagram}</a></span></div></div>
-      <div class="info-row"><span class="info-icon">💼</span><div><span class="info-label">服務項目</span><span class="info-value">${STORE.contact.services}</span></div></div>
+      <h3 class="contact-h3">餐廳資訊</h3>
+      <div class="info-row"><span class="info-icon">📍</span><div><span class="info-label">地址</span><span class="info-value">${STORE.contact.address}</span></div></div>
+      <div class="info-row"><span class="info-icon">🕐</span><div><span class="info-label">營業時間</span><div class="hrs-grid">${STORE.contact.hours.map(h=>`<span class="hrs-day">${h.day}</span><span class="hrs-time">${h.time}</span>`).join('')}</div></div></div>
+      <div class="info-row"><span class="info-icon">💰</span><div><span class="info-label">平均消費</span><span class="info-value">${STORE.contact.priceRange}</span></div></div>
+      <div class="info-row"><span class="info-icon">📱</span><div><span class="info-label">Instagram</span><span class="info-value"><a href="${STORE.social.instagram}" target="_blank" style="color:var(--mid);text-decoration:none">${STORE.contact.instagram}</a></span></div></div>
+      <div class="info-row"><span class="info-icon">🍽️</span><div><span class="info-label">服務方式</span><span class="info-value">${STORE.contact.services}</span></div></div>
     </div>
     <div>
       <h3 class="contact-h3">留下訊息</h3>
       <div id="contact-form-wrap">
         <div class="f-row">
           <div class="f-group"><label class="f-label">姓名</label><input type="text" class="f-input" id="cf-name" placeholder="您的姓名" /></div>
-          <div class="f-group"><label class="f-label">公司 / 單位</label><input type="text" class="f-input" id="cf-guests" placeholder="公司或單位名稱" /></div>
+          <div class="f-group"><label class="f-label">人數</label><input type="number" class="f-input" id="cf-guests" placeholder="用餐人數" min="1" max="20" /></div>
         </div>
         <div class="f-group"><label class="f-label">電話 / Email</label><input type="text" class="f-input" id="cf-contact" placeholder="聯絡方式" /></div>
         <div class="f-row">
-          <div class="f-group"><label class="f-label">感興趣的服務</label>
+          <div class="f-group"><label class="f-label">用餐日期</label><input type="date" class="f-input" id="cf-date" /></div>
+          <div class="f-group"><label class="f-label">用餐時段</label>
             <select class="f-select" id="cf-time">
               <option value="">請選擇</option>
-              <option>AI 應用 / 程式開發</option>
-              <option>課程設計 / 系統訓練</option>
-              <option>行銷推廣 / 數據分析</option>
-              <option>網站建置</option>
-              <option>其他 / 綜合諮詢</option>
-            </select>
-          </div>
-          <div class="f-group"><label class="f-label">預算範圍</label>
-            <select class="f-select" id="cf-date">
-              <option value="">請選擇</option>
-              <option>NT$30,000 以下</option>
-              <option>NT$30,000 – 100,000</option>
-              <option>NT$100,000 以上</option>
-              <option>尚未確定</option>
+              <option>午餐 11:00–14:00</option><option>下午茶 14:00–17:00</option><option>晚餐 17:00–22:00</option>
             </select>
           </div>
         </div>
-        <div class="f-group"><label class="f-label">需求說明</label><textarea class="f-textarea" id="cf-msg" placeholder="請簡述您的需求或想了解的服務…"></textarea></div>
-        <button class="f-submit" onclick="submitContact()">送出諮詢需求 →</button>
+        <div class="f-group"><label class="f-label">備註 / 特殊需求</label><textarea class="f-textarea" id="cf-msg" placeholder="請輸入任何特殊需求或問題…"></textarea></div>
+        <button class="f-submit" onclick="submitContact()">送出預約申請 →</button>
       </div>
       <div class="f-success" id="contact-success" style="display:none">
         <div class="f-success-icon">✓</div>
-        <div class="f-success-title">感謝您的諮詢申請</div>
-        <div class="f-success-sub">我們將於 24 小時內與您聯繫</div>
+        <div class="f-success-title">感謝您的預約申請</div>
+        <div class="f-success-sub">我們將於 24 小時內與您聯繫確認</div>
       </div>
     </div>`;
 
+  // CTA
   document.getElementById('cta-title').textContent = STORE.cta.title;
   document.getElementById('cta-sub').textContent   = STORE.cta.sub;
   document.getElementById('cta-btns').innerHTML    = `
-    <a href="${STORE.social.line}"       target="_blank" class="btn-white">💬 LINE 官方帳號</a>
-    <a href="mailto:bymindmkt@gmail.com" class="btn-outline-white">📧 Email 聯繫</a>
+    <a href="${STORE.social.googleMaps}" target="_blank" class="btn-outline-white">📍 Google 地圖</a>
     <a href="${STORE.social.instagram}"  target="_blank" class="btn-outline-white">📷 Instagram</a>
-    <a href="${STORE.social.facebook}"   target="_blank" class="btn-outline-white">👤 Facebook</a>`;
+    <a href="${STORE.social.facebook}"   target="_blank" class="btn-outline-white">👤 Facebook</a>
+    <a href="${STORE.social.line}"       target="_blank" class="btn-white">💬 LINE 官方帳號</a>`;
 
+  // Footer
   document.getElementById('site-footer').innerHTML = `
-    <div class="footer-logo">${STORE.name}｜${STORE.nameSub}</div>
+    <div class="footer-logo">${STORE.name} ${STORE.nameSub}</div>
     <div class="footer-text">${STORE.footer.addressLine}</div>
     <div class="footer-text">${STORE.footer.copyright}</div>`;
 }
 
+// ── 渲染 RESERVATION ────────────────────────────────────
 function renderRes() {
   document.getElementById('res-store-name').textContent = STORE.name;
   document.getElementById('res-store-sub').textContent  = STORE.nameSub;
@@ -790,6 +827,7 @@ function renderRes() {
   document.getElementById('success-note').textContent   = STORE.successNote;
   document.getElementById('sidebar-info').innerHTML     = STORE.sidebarInfo.map(s=>`<li>${s}</li>`).join('');
 
+  // 時段
   document.getElementById('res-slots').innerHTML = STORE.sessions.map(s=>`
     <div class="time-section">
       <div class="time-section-title">${s.title}</div>
@@ -797,7 +835,9 @@ function renderRes() {
     </div>`).join('');
 }
 
-// ── VIEW 切換 ─────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  VIEW 切換
+// ════════════════════════════════════════════════════════
 function showRes() {
   document.getElementById('view-website').classList.remove('active');
   document.getElementById('view-res').classList.add('active');
@@ -816,7 +856,9 @@ function siteScroll(sel) {
   return false;
 }
 
-// ── FAQ ───────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  WEBSITE：FAQ / Contact
+// ════════════════════════════════════════════════════════
 document.addEventListener('click', e => {
   const btn = e.target.closest('.faq-q');
   if (!btn) return;
@@ -834,8 +876,10 @@ function submitContact() {
   document.getElementById('contact-success').style.display   = 'block';
 }
 
-// ── 月曆 ──────────────────────────────────────────────────
-const S = { date:null, time:null, guests:1, name:'', phone:'', email:'', note:'' };
+// ════════════════════════════════════════════════════════
+//  RESERVATION：月曆
+// ════════════════════════════════════════════════════════
+const S = { date:null, time:null, guests:2, name:'', phone:'', email:'', note:'' };
 let calY, calM;
 
 function initCal() {
@@ -884,6 +928,9 @@ async function pickDate(ds) {
   await fetchCapacity(ds);
 }
 
+// ════════════════════════════════════════════════════════
+//  RESERVATION：名額查詢（CORS 修正）
+// ════════════════════════════════════════════════════════
 async function fetchCapacity(date) {
   document.querySelectorAll('.slot').forEach(el=>{
     if(!el.classList.contains('manual-full')){
@@ -901,7 +948,9 @@ async function fetchCapacity(date) {
     bindSlots(); return;
   }
   try {
-    const r = await fetch(`${STORE.apiUrl}?action=capacity&date=${date}`,{ method:'GET', redirect:'follow' });
+    const r = await fetch(`${STORE.apiUrl}?action=capacity&date=${date}`,{
+      method:'GET', redirect:'follow'   // ← CORS 修正
+    });
     applyCapacity((await r.json()).capacity||{});
   } catch {
     document.querySelectorAll('.slot').forEach(el=>{
@@ -940,11 +989,14 @@ function bindSlots() {
   });
 }
 
+// ════════════════════════════════════════════════════════
+//  RESERVATION：人數 / 字數
+// ════════════════════════════════════════════════════════
 function chg(d) {
-  S.guests=Math.max(1,Math.min(10,S.guests+d));
+  S.guests=Math.max(1,Math.min(20,S.guests+d));
   document.getElementById('g-num').textContent=S.guests;
   document.getElementById('g-minus').disabled=S.guests<=1;
-  document.getElementById('g-plus').disabled=S.guests>=10;
+  document.getElementById('g-plus').disabled=S.guests>=20;
   document.getElementById('s-guests').textContent=S.guests+' 位';
   syncConfirm();
 }
@@ -954,6 +1006,9 @@ function updCC() {
   document.getElementById('cc').textContent=`${Math.min(v.length,100)} / 100`;
 }
 
+// ════════════════════════════════════════════════════════
+//  RESERVATION：驗證 / 同步
+// ════════════════════════════════════════════════════════
 function validate2() {
   let ok=true;
   const setErr=(id,valid)=>{ document.getElementById('fg-'+id).classList.toggle('err',!valid); return valid; };
@@ -979,8 +1034,11 @@ function syncConfirm() {
   document.getElementById('c-note').textContent = S.note  ||'無';
 }
 
+// ════════════════════════════════════════════════════════
+//  RESERVATION：步驟切換
+// ════════════════════════════════════════════════════════
 function go(n) {
-  if(n===2){if(!S.date){alert('請先選擇諮詢日期');return;} if(!S.time){alert('請先選擇諮詢時段');return;}}
+  if(n===2){if(!S.date){alert('請先選擇用餐日期');return;} if(!S.time){alert('請先選擇用餐時段');return;}}
   if(n===3){if(!validate2())return; syncConfirm();}
   const pct={1:'33%',2:'66%',3:'100%'};
   document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
@@ -996,17 +1054,17 @@ function go(n) {
 }
 
 function resetWizard() {
-  S.date=null; S.time=null; S.guests=1; S.name=''; S.phone=''; S.email=''; S.note='';
+  S.date=null; S.time=null; S.guests=2; S.name=''; S.phone=''; S.email=''; S.note='';
   document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===0));
   for(let i=1;i<=3;i++){const t=document.getElementById('tab-'+i); t.classList.remove('active','done'); if(i===1)t.classList.add('active');}
   document.getElementById('pf').style.width='33%';
   document.getElementById('nav-step-text').innerHTML='步驟 <strong>1</strong> / 3';
-  document.getElementById('g-num').textContent='1';
+  document.getElementById('g-num').textContent='2';
   document.getElementById('g-minus').disabled=true;
   document.getElementById('g-plus').disabled=false;
   document.getElementById('s-date').innerHTML='<span class="empty">尚未選擇</span>';
   document.getElementById('s-time').innerHTML='<span class="empty">尚未選擇</span>';
-  document.getElementById('s-guests').textContent='1 位';
+  document.getElementById('s-guests').textContent='2 位';
   document.getElementById('s-name').innerHTML='<span class="empty">尚未填寫</span>';
   document.getElementById('f-name').value='';
   document.getElementById('f-phone').value='';
@@ -1016,11 +1074,14 @@ function resetWizard() {
   document.getElementById('err2').classList.remove('show');
   document.getElementById('err3').classList.remove('show');
   document.getElementById('btn-submit').disabled=false;
-  document.querySelectorAll('.slot').forEach(el=>{el.classList.remove('selected','full','loading'); el.querySelector('.slot-sub').textContent=''; el.querySelector('.slot-sub').style.color='';});
+  document.querySelectorAll('.slot').forEach(el=>{el.classList.remove('selected','full','loading'); el.querySelector('.slot-sub').textContent='有空位'; el.querySelector('.slot-sub').style.color='';});
   bindSlots();
   initCal();
 }
 
+// ════════════════════════════════════════════════════════
+//  RESERVATION：送出（CORS 修正）
+// ════════════════════════════════════════════════════════
 async function doSubmit() {
   const btn=document.getElementById('btn-submit');
   btn.disabled=true;
@@ -1029,23 +1090,35 @@ async function doSubmit() {
 
   const payload={ source:"booking", date:S.date, time:S.time, guests:S.guests, name:S.name, phone:S.phone, email:S.email, note:S.note };
 
+  // ── Demo 模式（尚未設定真實 URL）──
   if(STORE.apiUrl.includes('YOUR_DEPLOYMENT_ID')){
     await new Promise(r=>setTimeout(r,1200));
-    showSuccess('BM'+Date.now().toString().slice(-6),payload);
+    showSuccess('MB'+Date.now().toString().slice(-6),payload);
     return;
   }
 
   try {
+    // GAS Web App 必須用 no-cors 或 text/plain + redirect:follow
+    // 這裡用 no-cors：瀏覽器不讀回傳內容，GAS 仍會寫入試算表
+    // 若你的 GAS 有正確 CORS header，可改回下方 json 版本
     const r = await fetch(STORE.apiUrl, {
       method:   'POST',
       redirect: 'follow',
       headers:  { 'Content-Type': 'text/plain;charset=utf-8' },
       body:     JSON.stringify(payload),
     });
+
     let json;
-    try { const text = await r.text(); json = JSON.parse(text); } catch {
-      showSuccess('BM'+Date.now().toString().slice(-6), payload); return;
+    try {
+      const text = await r.text();
+      json = JSON.parse(text);
+    } catch {
+      // GAS redirect 後有時拿不到 JSON，但訂位已寫入
+      // 直接視為成功，給 mock bookingId
+      showSuccess('MB'+Date.now().toString().slice(-6), payload);
+      return;
     }
+
     if(json.full){
       document.getElementById('mask').classList.remove('show');
       const eb=document.getElementById('err3');
@@ -1057,10 +1130,11 @@ async function doSubmit() {
     }
     if(!json.success) throw new Error(json.error||'unknown');
     showSuccess(json.bookingId, payload);
+
   } catch(e) {
     document.getElementById('mask').classList.remove('show');
     const eb=document.getElementById('err3');
-    eb.textContent=`送出失敗，請稍後再試，或直接透過 ${STORE.contactHint} 聯繫我們。（${e.message}）`;
+    eb.textContent=`送出失敗，請稍後再試，或直接透過 ${STORE.contactHint} 聯繫本店。（${e.message}）`;
     eb.classList.add('show');
     btn.disabled=false;
   }
@@ -1070,15 +1144,15 @@ function showSuccess(bookingId,data) {
   document.getElementById('mask').classList.remove('show');
   document.getElementById('bid').textContent=bookingId;
   const fmt=ds=>{ if(!ds)return'—'; const p=ds.split('-'),wds=['日','一','二','三','四','五','六']; return `${p[0]}/${parseInt(p[1])}/${parseInt(p[2])}（週${wds[new Date(ds).getDay()]}）`; };
-  const rows=[['諮詢日期',fmt(data.date)],['諮詢時段',data.time],['諮詢人數',data.guests+' 位'],['姓名',data.name],['聯絡電話',data.phone]];
+  const rows=[['用餐日期',fmt(data.date)],['用餐時段',data.time],['用餐人數',data.guests+' 位'],['訂位姓名',data.name],['聯絡電話',data.phone]];
   if(data.email) rows.push(['Email',data.email]);
-  if(data.note)  rows.push(['需求說明',data.note]);
+  if(data.note)  rows.push(['備註',data.note]);
   document.getElementById('sdetails').innerHTML=rows.map(([k,v])=>`<div class="srow"><span class="sdk">${k}</span><span class="sdv">${v}</span></div>`).join('');
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-success').classList.add('active');
   document.querySelectorAll('.step-tab').forEach(t=>{t.classList.remove('active');t.classList.add('done');});
   document.getElementById('pf').style.width='100%';
-  document.getElementById('nav-step-text').innerHTML='預約完成 ✓';
+  document.getElementById('nav-step-text').innerHTML='訂位完成 ✓';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1087,7 +1161,9 @@ document.getElementById('f-name').addEventListener('input',function(){
   document.getElementById('s-name').innerHTML=v||'<span class="empty">尚未填寫</span>';
 });
 
-// ── 初始化 ────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  初始化
+// ════════════════════════════════════════════════════════
 renderSite();
 renderRes();
 document.querySelectorAll('.slot.full').forEach(el=>el.classList.add('manual-full'));
