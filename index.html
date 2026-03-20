@@ -159,7 +159,7 @@
 
   /* ── CTA ── */
   #s-cta { background:var(--ember); padding:5rem 3rem; text-align:center; position:relative; overflow:hidden; }
-  #s-cta::before { content:'叁星'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Noto Serif JP',serif; font-size:18rem; font-weight:700; color:rgba(0,0,0,.08); white-space:nowrap; pointer-events:none; }
+  #s-cta::before { content:'BY Mind'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Noto Serif JP',serif; font-size:18rem; font-weight:700; color:rgba(0,0,0,.08); white-space:nowrap; pointer-events:none; }
   .cta-title { font-family:'Noto Serif JP',serif; font-size:clamp(1.6rem,4vw,2.8rem); color:var(--cream); margin-bottom:1rem; font-weight:700; position:relative; z-index:1; }
   .cta-sub { color:rgba(245,237,214,.65); font-size:13px; letter-spacing:4px; margin-bottom:2.5rem; position:relative; z-index:1; }
   .cta-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; position:relative; z-index:1; }
@@ -392,8 +392,8 @@
 
   <nav id="site-nav">
     <a href="#" class="site-logo" onclick="scrollToTop()">
-      <span id="nav-store-name">叁星燒肉重飯</span>
-      <span id="nav-store-sub">ミツボシ 南港本店</span>
+      <span id="nav-store-name"日式燒肉</span>
+      <span id="nav-store-sub">網站建置 BY Mind</span>
     </a>
     <ul class="site-links">
       <li><a href="#s-about"   onclick="siteScroll('#s-about')">關於我們</a></li>
@@ -463,8 +463,8 @@
       <span class="res-back-arrow">←</span>返回首頁
     </button>
     <div class="res-logo">
-      <span id="res-store-name">叁星燒肉重飯</span>
-      <span id="res-store-sub">ミツボシ 南港本店</span>
+      <span id="res-store-name">日式燒肉</span>
+      <span id="res-store-sub">網站建置 BY Mind</span>
     </div>
     <div id="nav-step-text">步驟 <strong>1</strong> / 3</div>
   </nav>
@@ -664,7 +664,7 @@ const STORE = {
     items: [
       { q:"需要事先訂位嗎？",       a:"建議避開午餐（12:00–13:30）與晚餐（18:00–20:00）尖峰時段，非餐時通常可直接入座。" },
       { q:"有提供外帶與外送嗎？",   a:"有的！本店提供內用、外帶與外送三種服務。外送請透過常用外送平台訂購。" },
-      { q:"如何前往南港本店？",     a:"本店位於台北市南港區經貿二路 131 號，拉拉 PORT 5 樓（51100 舖）。鄰近捷運南港展覽館站，步行約 8–10 分鐘。" },
+      { q:"如何前往本店？",     a:"請加入BY Mind LINE 官方帳號" },
       { q:"份量對一個人來說夠嗎？", a:"單人套餐份量飽足。建議點選 1 號套餐，家庭套餐適合 2–3 人共享。" },
       { q:"營業時間是什麼時候？",   a:"本店每日營業，打烊時間為晚上 22:00。節假日可能調整，建議查看 Google 地圖最新資訊。" },
     ],
@@ -685,7 +685,7 @@ const STORE = {
 
   // ── CTA ──
   cta: {
-    title: "今日就來品嚐叁星滋味",
+    title: "今日就來品嚐燒肉滋味",
     sub:   "炭火燒肉 · 職人丼飯 · 每日新鮮",
   },
 
