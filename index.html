@@ -600,9 +600,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:
           <select class="fs" id="cf-service">
             <option value="">請選擇</option>
             <option>AI 應用 / 程式開發</option>
+            <option>網站建置 / 成效優化</option>
+            <option>行銷推廣 / 形象設計</option>
             <option>課程設計 / 系統訓練</option>
-            <option>行銷推廣 / 數據分析</option>
-            <option>網站建置</option>
             <option>綜合諮詢</option>
           </select>
         </div>
@@ -811,7 +811,7 @@ async function submitCF(){
   if(!name||!contact){alert('請填寫姓名與聯絡方式');return;}
   const btn=document.querySelector('.f-btn');
   btn.disabled=true; btn.textContent='送出中…';
-  const payload={sheet:'SHEET_INQUIRY',type:'inquiry',name,company,contact,service,msg,
+  const payload={source:'contact',sheet:'SHEET_INQUIRY',type:'inquiry',name,company,contact,service,msg,
     time:new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})};
   try{
     await fetch('https://script.google.com/macros/s/AKfycbwC6gXYNVxulG6r_UalcbktQCH3c6byBtcG8nvN925Ch6Pn-Lw7fu8GC9lU3HovwSlS/exec',
