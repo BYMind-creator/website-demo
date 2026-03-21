@@ -767,7 +767,7 @@ async function submitCF(){
   const payload={source:'contact',name,company,contact,service,msg,
     time:new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})};
   try{
-    await fetch('https://script.google.com/macros/s/AKfycbzZ0oAzmxksC-uZlE4mzCMf2znmNYpmwtwjJXORqnb7Uy_G1_lowymR_u-5Eb7rmOrC/exec',
+    await fetch('https://script.google.com/macros/s/AKfycbwC6gXYNVxulG6r_UalcbktQCH3c6byBtcG8nvN925Ch6Pn-Lw7fu8GC9lU3HovwSlS/exec',
       {method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
   }catch(e){}
   document.getElementById('cf-wrap').style.display='none';
@@ -775,7 +775,7 @@ async function submitCF(){
 }
 
 // ── Reservation form ─────────────────
-const API='https://script.google.com/macros/s/AKfycbzZ0oAzmxksC-uZlE4mzCMf2znmNYpmwtwjJXORqnb7Uy_G1_lowymR_u-5Eb7rmOrC/exec';
+const API='https://script.google.com/macros/s/AKfycbwC6gXYNVxulG6r_UalcbktQCH3c6byBtcG8nvN925Ch6Pn-Lw7fu8GC9lU3HovwSlS/exec';
 
 function syncSidebar(){
   const name    = document.getElementById('f-name').value.trim();
