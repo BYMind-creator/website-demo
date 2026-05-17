@@ -2459,17 +2459,12 @@ async function submitCF(){
   };
 
   try{
-    const res=await fetch(GAS_URL,{
+    await fetch(GAS_URL,{
       method:'POST',
       mode:'no-cors',
       body:JSON.stringify(payload)
     });
-    const text=await res.text();
-    let json={};
-    try{json=JSON.parse(text);}catch{}
-    if(!res.ok||json.success===false) throw new Error(json.error||'送出失敗');
 
-    /* GA4 表單送出事件 */
     if(typeof gtag==='function'){
       gtag('event','form_submit',{event_category:'lead',event_label:service||'unspecified'});
     }
