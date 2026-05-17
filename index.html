@@ -2442,6 +2442,7 @@ async function submitCF(){
   const errBox=document.getElementById('cf-err');
 
   if(!name||!contact){
+    errBox.textContent='請填寫姓名與聯絡方式後再送出。';
     errBox.classList.add('show');
     return;
   }
@@ -2458,12 +2459,15 @@ async function submitCF(){
     time:new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})
   };
 
+  // 改成可讀回應的方式：移除 no-cors,GAS 端需設 CORS header
   try{
-    await fetch(GAS_URL,{
+    const res=await fetch(GAS_URL,{
       method:'POST',
-      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, // 用 text/plain 避開 preflight
       body:JSON.stringify(payload)
     });
+
+    if(!res.ok) throw new Error('HTTP '+res.status);
 
     if(typeof gtag==='function'){
       gtag('event','form_submit',{event_category:'lead',event_label:service||'unspecified'});
@@ -2472,11 +2476,17 @@ async function submitCF(){
     document.getElementById('cf-wrap').style.display='none';
     document.getElementById('cf-ok').style.display='block';
   }catch(e){
-    errBox.textContent='送出失敗，請稍後再試或直接透過 LINE 聯繫我們。';
+    // 真的失敗時:給用戶 fallback 選項,不要讓 lead 掉
+    errBox.innerHTML='系統暫時忙線。請直接 <a href="https://line.me/R/ti/p/@607ysroc" target="_blank" style="color:var(--mint-700);text-decoration:underline;">加 LINE</a> 或寄信至 <a href="mailto:services@bymind.world" style="color:var(--mint-700);text-decoration:underline;">services@bymind.world</a>,我們會優先處理。';
     errBox.classList.add('show');
     btn.disabled=false;
     btn.textContent='送出需求 →';
-    console.error(e);
+    
+    // 上報錯誤到 GA4,你之後可以在 GA4 看到失敗次數
+    if(typeof gtag==='function'){
+      gtag('event','form_submit_error',{event_category:'error',event_label:e.message});
+    }
+    console.error('Form submit failed:',e);
   }
 }
 </script>
