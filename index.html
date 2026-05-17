@@ -660,6 +660,30 @@ body{
   align-items:center;
 }
 .edu-left .sec-title{margin-bottom:1.25rem;}
+/* BY My Question 標題前的 logo */
+.edu-title-with-logo{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:.75rem;
+}
+.edu-title-logo{
+  width:clamp(40px,5vw,56px);
+  height:clamp(40px,5vw,56px);
+  object-fit:contain;
+  flex-shrink:0;
+}
+.edu-title-with-logo span{
+  flex:1;
+  min-width:0;
+}
+@media(max-width:640px){
+  .edu-title-with-logo{gap:.6rem;}
+  .edu-title-logo{
+    width:36px;
+    height:36px;
+  }
+}
 .edu-features{
   list-style:none;
   display:flex;flex-direction:column;gap:.75rem;
@@ -1750,7 +1774,10 @@ a.c-info-val:hover{
       <!-- Left: 內容 -->
       <div class="edu-left">
         <p class="sec-label">For education</p>
-        <h2 class="sec-title">BY My Question—<br>為考生與學習者打造的 AI 工具。</h2>
+        <h2 class="sec-title edu-title-with-logo">
+          <img src="logo_nav.png" alt="BY My Question logo" class="edu-title-logo"/>
+          <span>BY My Question—<br>為考生與學習者打造的 AI 工具。</span>
+        </h2>
         <p class="sec-sub">
           拍題建題庫、AI 自動識題、錯題追蹤、學習數據分析——把碎片化的練習，整理成你的個人化學習履歷。
           適合準備國考、證照、研究所、各級升學的考生與自學者，全年齡都用得上。
