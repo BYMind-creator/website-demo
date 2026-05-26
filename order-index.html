@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>訂今天的午餐｜食聚 ShiJu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ink: #1a1d1a;
+  --ink-light: #4a4d4a;
+  --paper: #f5f1e8;
+  --paper-deep: #ebe5d4;
+  --moss: #2d4a2b;
+  --moss-deep: #1f3320;
+  --moss-soft: #4a6a3f;
+  --persimmon: #d2542a;
+  --persimmon-soft: #e89572;
+  --persimmon-deep: #b04420;
+  --rice: #faf7ed;
+  --white: #ffffff;
+  --line: rgba(26, 29, 26, 0.1);
+  --line-strong: rgba(26, 29, 26, 0.2);
+  --success: #4a8a4a;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.05);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.08), 0 24px 64px rgba(0,0,0,0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--rice);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+.serif { font-family: 'Noto Serif TC', serif; }
+.italic-serif { font-family: 'Instrument Serif', serif; font-style: italic; }
+
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+/* ============== HEADER ============== */
+.app-header {
+  background: var(--rice);
+  border-bottom: 1px solid var(--line);
+  padding: 1rem 1.25rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  background: rgba(250, 247, 237, 0.92);
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--moss);
+  color: var(--rice);
+  border-radius: 6px;
+  text-align: center;
+  line-height: 32px;
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: 1.05rem;
+  transform: rotate(-3deg);
+}
+
+.brand-text {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.building-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--paper);
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--moss);
+  border: 1px solid var(--line);
+  transition: all 0.2s;
+}
+
+.building-selector:hover { background: var(--paper-deep); }
+
+.building-selector .pin { font-size: 0.9rem; }
+
+/* ============== INFO BANNER ============== */
+.info-banner {
+  background: var(--moss);
+  color: var(--rice);
+  padding: 0.7rem 1.25rem;
+  text-align: center;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.info-banner .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--persimmon-soft);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.countdown {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  color: var(--persimmon-soft);
+}
+
+/* ============== CONTAINER ============== */
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem;
+}
+
+/* ============== PAGE TRANSITIONS ============== */
+.page {
+  display: none;
+  animation: fadeUp 0.35s ease-out;
+}
+.page.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============== PAGE 1: 餐廳列表 ============== */
+.page-title-wrap {
+  margin-bottom: 1.5rem;
+}
+
+.page-eyebrow {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--persimmon);
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.page-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.page-subtitle {
+  color: var(--ink-light);
+  font-size: 0.95rem;
+}
+
+/* 餐廳卡片 */
+.restaurant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.restaurant-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  display: flex;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.restaurant-card::after {
+  content: '→';
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+  color: var(--ink);
+  opacity: 0.3;
+  transition: all 0.3s;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--moss-soft);
+}
+.restaurant-card:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(4px);
+  color: var(--moss);
+}
+
+.rest-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.rest-thumb.bento { background: linear-gradient(135deg, #f7e8a0, #f0d472); }
+.rest-thumb.salad { background: linear-gradient(135deg, #b8d8a0, #8fbf6f); }
+.rest-thumb.ramen { background: linear-gradient(135deg, #d97757, #c64a26); }
+
+.rest-info { flex: 1; padding-right: 2rem; }
+
+.rest-info h3 {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-bottom: 0.2rem;
+}
+
+.rest-info .desc {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rest-meta {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--moss);
+  font-weight: 500;
+}
+
+.rest-meta .meta-divider {
+  color: var(--line-strong);
+}
+
+/* ============== PAGE 2: 菜單 ============== */
+.back-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: var(--ink-light);
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: fit-content;
+  padding: 0.4rem 0.8rem 0.4rem 0;
+  transition: all 0.2s;
+}
+
+.back-bar:hover { color: var(--moss); transform: translateX(-2px); }
+
+.restaurant-hero {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--line);
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.restaurant-hero .rest-thumb {
+  width: 80px;
+  height: 80px;
+  font-size: 2.5rem;
+}
+
+.restaurant-hero h2 {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin-bottom: 0.3rem;
+}
+
+.restaurant-hero .desc {
+  font-size: 0.9rem;
+  color: var(--ink-light);
+}
+
+/* 分類 tabs */
+.category-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding: 0.2rem 0 0.5rem 0;
+  scrollbar-width: none;
+}
+.category-tabs::-webkit-scrollbar { display: none; }
+
+.cat-tab {
+  background: var(--white);
+  border: 1px solid var(--line);
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.cat-tab.active {
+  background: var(--ink);
+  color: var(--rice);
+  border-color: var(--ink);
+}
+
+.cat-tab:hover:not(.active) { border-color: var(--moss); color: var(--moss); }
+
+/* 菜單品項 */
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.menu-item {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--line);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.menu-item:hover { border-color: var(--moss-soft); }
+
+.menu-info { flex: 1; }
+
+.menu-info h4 {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.2rem;
+}
+
+.menu-info .desc {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  margin-bottom: 0.4rem;
+}
+
+.menu-info .price {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+/* 加減按鈕 */
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.add-btn {
+  width: 36px;
+  height: 36px;
+  background: var(--ink);
+  color: var(--rice);
+  border-radius: 50%;
+  font-size: 1.3rem;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.add-btn:hover { background: var(--moss); transform: scale(1.08); }
+.add-btn:active { transform: scale(0.95); }
+
+.qty-control .qty-num {
+  font-weight: 600;
+  font-size: 1.05rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+.qty-control .qty-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.qty-control .qty-btn:hover { background: var(--paper-deep); border-color: var(--moss); }
+.qty-control .qty-btn:active { transform: scale(0.92); }
+
+/* ============== 浮動購物車 ============== */
+.cart-bar {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--ink);
+  color: var(--rice);
+  border-radius: 16px;
+  padding: 1rem 1.4rem;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: all 0.2s;
+  animation: slideUp 0.3s ease-out;
+}
+
+.cart-bar:hover { background: var(--moss-deep); }
+
+.cart-bar.visible { display: flex; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cart-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.cart-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--persimmon);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--rice);
+  color: var(--ink);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-bar-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-bar-label {
+  font-size: 0.72rem;
+  opacity: 0.65;
+}
+
+.cart-bar-amount {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.cart-bar-cta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+  font-size: 0.92rem;
+}
+
+/* ============== PAGE 3: 購物車 ============== */
+.cart-section {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+
+.cart-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.cart-section-header h3 {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cart-rest-emoji { font-size: 1.2rem; }
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px dashed var(--line);
+}
+.cart-item:last-child { border-bottom: none; }
+
+.cart-item-name {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.cart-item-subtotal {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  min-width: 70px;
+  text-align: right;
+}
+
+.summary-box {
+  background: var(--paper);
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  font-size: 0.95rem;
+}
+
+.summary-row.total {
+  border-top: 1px solid var(--line-strong);
+  margin-top: 0.5rem;
+  padding-top: 0.8rem;
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.summary-row .label-meta {
+  font-size: 0.75rem;
+  color: var(--ink-light);
+  display: block;
+}
+
+/* ============== PAGE 4: 結帳 ============== */
+.form-section {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+
+.form-section h3 {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-field {
+  margin-bottom: 1.1rem;
+}
+.form-field:last-child { margin-bottom: 0; }
+
+.form-field label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  margin-bottom: 0.45rem;
+  font-weight: 500;
+}
+
+.form-field label .required { color: var(--persimmon); }
+
+.form-input {
+  width: 100%;
+  background: var(--rice);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--moss);
+  background: var(--white);
+}
+
+textarea.form-input { resize: vertical; min-height: 70px; }
+
+/* 選大樓 */
+.building-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.building-option {
+  background: var(--rice);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.building-option:hover { border-color: var(--moss); }
+
+.building-option.selected {
+  background: var(--white);
+  border-color: var(--moss);
+  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.1);
+}
+
+.option-radio {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--line-strong);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.building-option.selected .option-radio {
+  border-color: var(--moss);
+}
+.building-option.selected .option-radio::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--moss);
+  border-radius: 50%;
+}
+
+.option-content { flex: 1; }
+
+.option-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+
+.option-meta {
+  font-size: 0.8rem;
+  color: var(--ink-light);
+}
+
+/* 付款方式 */
+.payment-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.payment-option {
+  background: var(--rice);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 0.9rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.payment-option:hover { border-color: var(--moss); }
+.payment-option.selected {
+  background: var(--white);
+  border-color: var(--moss);
+  box-shadow: 0 0 0 3px rgba(45, 74, 43, 0.1);
+}
+
+.pay-icon { font-size: 1.4rem; margin-bottom: 0.3rem; }
+.pay-name { font-weight: 600; font-size: 0.9rem; }
+.pay-meta { font-size: 0.72rem; color: var(--ink-light); margin-top: 0.15rem; }
+
+/* 主按鈕 */
+.btn-primary {
+  width: 100%;
+  background: var(--ink);
+  color: var(--rice);
+  border-radius: 12px;
+  padding: 1.1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.btn-primary:hover { background: var(--moss); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { background: var(--ink-light); cursor: not-allowed; opacity: 0.5; }
+
+.btn-secondary {
+  width: 100%;
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--line-strong);
+  border-radius: 12px;
+  padding: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover { border-color: var(--ink); background: var(--paper); }
+
+/* ============== PAGE 5: 成功 ============== */
+.success-page {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.success-icon {
+  width: 96px;
+  height: 96px;
+  background: var(--moss);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--rice);
+  margin: 0 auto 1.5rem;
+  animation: pop 0.5s cubic-bezier(0.2, 0.8, 0.4, 1.2);
+}
+
+@keyframes pop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.success-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.7rem;
+  margin-bottom: 0.5rem;
+}
+
+.success-subtitle {
+  color: var(--ink-light);
+  margin-bottom: 2rem;
+}
+
+.order-receipt {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: 1px solid var(--line);
+  text-align: left;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.order-receipt::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--moss), var(--persimmon));
+  border-radius: 16px 16px 0 0;
+}
+
+.receipt-header {
+  text-align: center;
+  padding-bottom: 1.2rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px dashed var(--line);
+}
+
+.receipt-label {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--persimmon);
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
+}
+
+.receipt-order-num {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.45rem 0;
+  font-size: 0.92rem;
+}
+
+.receipt-row .label { color: var(--ink-light); }
+.receipt-row .value { font-weight: 500; text-align: right; }
+
+.receipt-pickup {
+  background: var(--moss-deep);
+  color: var(--rice);
+  border-radius: 12px;
+  padding: 1.1rem;
+  margin-top: 1.2rem;
+  text-align: center;
+}
+
+.pickup-eyebrow {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+
+.pickup-time {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--persimmon-soft);
+  margin: 0.2rem 0;
+}
+
+.pickup-location { font-size: 0.88rem; opacity: 0.9; }
+
+.line-notice {
+  background: rgba(0, 195, 0, 0.08);
+  border: 1px solid rgba(0, 195, 0, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  font-size: 0.88rem;
+  color: var(--moss-deep);
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.line-icon {
+  width: 32px;
+  height: 32px;
+  background: #06c755;
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* ============== MODAL ============== */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 29, 26, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: flex-end;
+  animation: fadeIn 0.2s;
+}
+
+.modal.active { display: flex; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-content {
+  background: var(--rice);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.4, 1);
+}
+
+.modal-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--line-strong);
+  border-radius: 2px;
+  margin: -0.5rem auto 1rem;
+}
+
+.modal-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* ============== EMPTY STATE ============== */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--ink-light);
+}
+.empty-icon { font-size: 3rem; opacity: 0.4; margin-bottom: 1rem; }
+.empty-text { font-size: 1rem; margin-bottom: 1.5rem; }
+
+/* ============== TOAST ============== */
+.toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--ink);
+  color: var(--rice);
+  padding: 0.7rem 1.3rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  z-index: 2000;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============== RESPONSIVE ============== */
+@media (max-width: 480px) {
+  .page-title { font-size: 1.5rem; }
+  .restaurant-card { padding: 1rem; }
+  .rest-thumb { width: 64px; height: 64px; font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- =============== HEADER =============== -->
+<header class="app-header">
+  <div class="header-row">
+    <a href="#" class="brand" onclick="goToPage('restaurants'); return false;">
+      <span class="brand-mark">食</span>
+      <span class="brand-text">食聚</span>
+    </a>
+    <button class="building-selector" onclick="openModal('building')">
+      <span class="pin">📍</span>
+      <span id="current-building-name">七期國泰商辦</span>
+      <span style="opacity: 0.5;">▾</span>
+    </button>
+  </div>
+</header>
+
+<!-- 截單倒數 banner -->
+<div class="info-banner">
+  <span class="dot"></span>
+  <span>今日截單剩 <span class="countdown" id="countdown">2 小時 17 分</span>・12:00 大廳取餐</span>
+</div>
+
+<!-- =============== PAGE 1: 餐廳列表 =============== -->
+<main class="container">
+
+<div class="page active" id="page-restaurants">
+  <div class="page-title-wrap">
+    <span class="page-eyebrow">今天想吃什麼</span>
+    <h1 class="page-title">當日合作餐廳</h1>
+    <p class="page-subtitle">三家在地好店，今天 10:30 前下單</p>
+  </div>
+
+  <div class="restaurant-list" id="restaurant-list">
+    <!-- 由 JS 渲染 -->
+  </div>
+</div>
+
+<!-- =============== PAGE 2: 菜單 =============== -->
+<div class="page" id="page-menu">
+  <div class="back-bar" onclick="goToPage('restaurants')">
+    <span>←</span>
+    <span>所有餐廳</span>
+  </div>
+
+  <div class="restaurant-hero" id="rest-hero">
+    <!-- 由 JS 渲染 -->
+  </div>
+
+  <div class="category-tabs" id="category-tabs">
+    <!-- 由 JS 渲染 -->
+  </div>
+
+  <div class="menu-list" id="menu-list">
+    <!-- 由 JS 渲染 -->
+  </div>
+</div>
+
+<!-- =============== PAGE 3: 購物車 =============== -->
+<div class="page" id="page-cart">
+  <div class="back-bar" onclick="goBack()">
+    <span>←</span>
+    <span>繼續選餐</span>
+  </div>
+
+  <div class="page-title-wrap">
+    <span class="page-eyebrow">your order</span>
+    <h1 class="page-title">我的訂單</h1>
+  </div>
+
+  <div id="cart-content">
+    <!-- 由 JS 渲染 -->
+  </div>
+</div>
+
+<!-- =============== PAGE 4: 結帳 =============== -->
+<div class="page" id="page-checkout">
+  <div class="back-bar" onclick="goToPage('cart')">
+    <span>←</span>
+    <span>回到訂單</span>
+  </div>
+
+  <div class="page-title-wrap">
+    <span class="page-eyebrow">checkout</span>
+    <h1 class="page-title">填寫取餐資訊</h1>
+    <p class="page-subtitle">準時 12:00 在大廳等你</p>
+  </div>
+
+  <!-- 取餐地點 -->
+  <div class="form-section">
+    <h3>取餐大樓</h3>
+    <div class="building-options" id="building-options">
+      <!-- 由 JS 渲染 -->
+    </div>
+  </div>
+
+  <!-- 聯絡資訊 -->
+  <div class="form-section">
+    <h3>聯絡資訊</h3>
+    <div class="form-field">
+      <label>取餐姓名 <span class="required">*</span></label>
+      <input type="text" class="form-input" id="contact-name" placeholder="王小明" autocomplete="name">
+    </div>
+    <div class="form-field">
+      <label>聯絡電話 <span class="required">*</span></label>
+      <input type="tel" class="form-input" id="contact-phone" placeholder="0912-345-678" autocomplete="tel">
+    </div>
+    <div class="form-field">
+      <label>備註（公司分機、用餐偏好）</label>
+      <textarea class="form-input" id="contact-note" placeholder="例如：分機 1234、不要香菜"></textarea>
+    </div>
+  </div>
+
+  <!-- 付款 -->
+  <div class="form-section">
+    <h3>付款方式</h3>
+    <div class="payment-options">
+      <div class="payment-option selected" data-payment="cash" onclick="selectPayment('cash')">
+        <div class="pay-icon">💵</div>
+        <div class="pay-name">現場付現</div>
+        <div class="pay-meta">取餐時付</div>
+      </div>
+      <div class="payment-option" data-payment="line_pay" onclick="selectPayment('line_pay')">
+        <div class="pay-icon">📱</div>
+        <div class="pay-name">LINE Pay 轉帳</div>
+        <div class="pay-meta">下單後給帳號</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 總計 -->
+  <div class="summary-box">
+    <div class="summary-row">
+      <span>商品小計</span>
+      <span id="checkout-subtotal">$0</span>
+    </div>
+    <div class="summary-row">
+      <span>服務費
+        <span class="label-meta">不抽餐廳成，固定服務費</span>
+      </span>
+      <span>$25</span>
+    </div>
+    <div class="summary-row total">
+      <span>應付總計</span>
+      <span id="checkout-total">$25</span>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="submitOrder()">
+    <span>確認下單</span>
+    <span>→</span>
+  </button>
+</div>
+
+<!-- =============== PAGE 5: 訂單成功 =============== -->
+<div class="page" id="page-success">
+  <div class="success-page">
+    <div class="success-icon">✓</div>
+    <h1 class="success-title">訂單已成立</h1>
+    <p class="success-subtitle">餐廳已收到通知，準備幫你料理</p>
+
+    <div class="order-receipt">
+      <div class="receipt-header">
+        <div class="receipt-label">order no.</div>
+        <div class="receipt-order-num" id="order-number">20260526-001</div>
+      </div>
+
+      <div class="receipt-row">
+        <span class="label">取餐姓名</span>
+        <span class="value" id="receipt-name">—</span>
+      </div>
+      <div class="receipt-row">
+        <span class="label">聯絡電話</span>
+        <span class="value" id="receipt-phone">—</span>
+      </div>
+      <div class="receipt-row">
+        <span class="label">付款方式</span>
+        <span class="value" id="receipt-payment">—</span>
+      </div>
+      <div class="receipt-row">
+        <span class="label">應付金額</span>
+        <span class="value" style="font-family: 'Noto Serif TC', serif; font-weight: 700;" id="receipt-total">—</span>
+      </div>
+
+      <div class="receipt-pickup">
+        <div class="pickup-eyebrow">pickup at</div>
+        <div class="pickup-time" id="receipt-pickup-time">12:00</div>
+        <div class="pickup-location" id="receipt-pickup-location">七期國泰商辦・1F 大廳警衛處</div>
+      </div>
+    </div>
+
+    <div class="line-notice">
+      <div class="line-icon">L</div>
+      <div>
+        <strong>已在 LINE 推播通知</strong><br>
+        <span style="opacity: 0.7; font-size: 0.82rem;">取餐前 10 分鐘會再提醒你</span>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="goToPage('restaurants'); resetCart();">
+      <span>再訂一單</span>
+    </button>
+    <button class="btn-secondary" onclick="goToPage('restaurants'); resetCart();">回到首頁</button>
+  </div>
+</div>
+
+</main>
+
+<!-- =============== 浮動購物車條 =============== -->
+<div class="cart-bar" id="cart-bar" onclick="goToPage('cart')">
+  <div class="cart-bar-left">
+    <div class="cart-icon">
+      🛒
+      <span class="cart-count" id="cart-count">0</span>
+    </div>
+    <div class="cart-bar-text">
+      <span class="cart-bar-label">購物車</span>
+      <span class="cart-bar-amount" id="cart-amount">$0</span>
+    </div>
+  </div>
+  <div class="cart-bar-cta">
+    查看訂單
+    <span>→</span>
+  </div>
+</div>
+
+<!-- =============== 選大樓 Modal =============== -->
+<div class="modal" id="building-modal" onclick="closeModalIfBackdrop(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <h3 class="modal-title">選擇你的辦公大樓</h3>
+    <div class="building-options" id="building-modal-options">
+      <!-- 由 JS 渲染 -->
+    </div>
+  </div>
+</div>
+
+<!-- =============== Toast =============== -->
+<div class="toast" id="toast">已加入購物車</div>
+
+<script>
+// ============== 模擬資料（之後改成從 Supabase 拉） ==============
+const buildings = [
+  {
+    id: '11111111',
+    name: '七期國泰商辦',
+    district: '西屯區',
+    address: '台中市西屯區市政北二路號',
+    pickup_location: '1F 大廳警衛處',
+    pickup_time: '12:00',
+    cutoff_time: '10:30'
+  },
+  {
+    id: '22222222',
+    name: '台中軟體園區 A 棟',
+    district: '南屯區',
+    address: '台中市南屯區精科路號',
+    pickup_location: 'B1 取餐櫃',
+    pickup_time: '12:15',
+    cutoff_time: '10:45'
+  }
+];
+
+const restaurants = [
+  {
+    id: 'r1',
+    name: '阿明便當',
+    emoji: '🍱',
+    thumbClass: 'bento',
+    description: '台中老字號家常便當，主菜可換，配菜每日變化',
+    priceRange: '$50-130',
+    itemCount: 6,
+    categories: ['主餐', '配菜', '湯品'],
+    menu: [
+      { id: 'm1', name: '排骨便當', desc: '招牌酥炸排骨 + 三樣配菜 + 白飯', price: 110, category: '主餐' },
+      { id: 'm2', name: '雞腿便當', desc: '香烤雞腿 + 三樣配菜 + 白飯', price: 130, category: '主餐' },
+      { id: 'm3', name: '魚排便當', desc: '酥炸魚排 + 三樣配菜 + 白飯', price: 120, category: '主餐' },
+      { id: 'm4', name: '滷肉飯', desc: '古早味滷肉飯（小）', price: 50, category: '主餐' },
+      { id: 'm5', name: '燙青菜', desc: '當季時蔬', price: 30, category: '配菜' },
+      { id: 'm6', name: '味噌湯', desc: '日式味噌湯', price: 25, category: '湯品' }
+    ]
+  },
+  {
+    id: 'r2',
+    name: '青田輕食',
+    emoji: '🥗',
+    thumbClass: 'salad',
+    description: '低卡輕食、沙拉、義大利麵，適合健身與輕食族',
+    priceRange: '$160-190',
+    itemCount: 5,
+    categories: ['沙拉', '義大利麵', '飲料'],
+    menu: [
+      { id: 'm7', name: '香煎雞胸沙拉', desc: '低卡高蛋白，附油醋醬', price: 160, category: '沙拉' },
+      { id: 'm8', name: '鮮蝦凱薩沙拉', desc: '蝦仁 + 凱薩醬 + 帕瑪森起司', price: 180, category: '沙拉' },
+      { id: 'm9', name: '青醬雞肉義大利麵', desc: '羅勒青醬 + 嫩煎雞肉', price: 170, category: '義大利麵' },
+      { id: 'm10', name: '蕃茄海鮮義大利麵', desc: '蛤蜊 + 蝦仁 + 蕃茄醬', price: 190, category: '義大利麵' },
+      { id: 'm11', name: '無糖鮮奶茶', desc: '350ml', price: 55, category: '飲料' }
+    ]
+  },
+  {
+    id: 'r3',
+    name: '日麵屋拉麵',
+    emoji: '🍜',
+    thumbClass: 'ramen',
+    description: '日式拉麵、丼飯，湯頭每日現熬，叉燒手工製作',
+    priceRange: '$150-180',
+    itemCount: 5,
+    categories: ['拉麵', '丼飯'],
+    menu: [
+      { id: 'm12', name: '豚骨拉麵', desc: '濃郁豚骨湯頭 + 叉燒 2 片', price: 180, category: '拉麵' },
+      { id: 'm13', name: '醬油拉麵', desc: '清爽醬油湯頭 + 叉燒 2 片', price: 170, category: '拉麵' },
+      { id: 'm14', name: '味噌拉麵', desc: '北海道風味噌湯頭', price: 175, category: '拉麵' },
+      { id: 'm15', name: '親子丼', desc: '雞肉 + 半熟蛋', price: 150, category: '丼飯' },
+      { id: 'm16', name: '炸雞丼', desc: '日式唐揚雞', price: 160, category: '丼飯' }
+    ]
+  }
+];
+
+// ============== 狀態 ==============
+const state = {
+  currentPage: 'restaurants',
+  previousPage: null,
+  currentRestaurant: null,
+  currentCategory: '全部',
+  selectedBuilding: buildings[0],
+  cart: {}, // { itemId: { item, quantity } }
+  payment: 'cash'
+};
+
+const SERVICE_FEE = 25;
+
+// ============== 工具函式 ==============
+function $(id) { return document.getElementById(id); }
+function $$(sel) { return document.querySelectorAll(sel); }
+
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+function formatPrice(n) { return '$' + n.toLocaleString('zh-TW'); }
+
+// ============== 渲染：餐廳列表 ==============
+function renderRestaurants() {
+  const list = $('restaurant-list');
+  list.innerHTML = restaurants.map(r => `
+    <div class="restaurant-card" onclick="openRestaurant('${r.id}')">
+      <div class="rest-thumb ${r.thumbClass}">${r.emoji}</div>
+      <div class="rest-info">
+        <h3>${r.name}</h3>
+        <p class="desc">${r.description}</p>
+        <div class="rest-meta">
+          <span>${r.priceRange}</span>
+          <span class="meta-divider">·</span>
+          <span>${r.itemCount} 道餐點</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============== 渲染：菜單 ==============
+function openRestaurant(rid) {
+  state.currentRestaurant = restaurants.find(r => r.id === rid);
+  state.currentCategory = '全部';
+  goToPage('menu');
+  renderMenu();
+}
+
+function renderMenu() {
+  const r = state.currentRestaurant;
+  if (!r) return;
+
+  $('rest-hero').innerHTML = `
+    <div class="rest-thumb ${r.thumbClass}">${r.emoji}</div>
+    <div>
+      <h2>${r.name}</h2>
+      <p class="desc">${r.description}</p>
+    </div>
+  `;
+
+  const cats = ['全部', ...r.categories];
+  $('category-tabs').innerHTML = cats.map(c => `
+    <button class="cat-tab ${state.currentCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">${c}</button>
+  `).join('');
+
+  const items = state.currentCategory === '全部'
+    ? r.menu
+    : r.menu.filter(m => m.category === state.currentCategory);
+
+  $('menu-list').innerHTML = items.map(m => {
+    const inCart = state.cart[m.id];
+    const qty = inCart ? inCart.quantity : 0;
+    return `
+      <div class="menu-item">
+        <div class="menu-info">
+          <h4>${m.name}</h4>
+          <p class="desc">${m.desc}</p>
+          <div class="price">${formatPrice(m.price)}</div>
+        </div>
+        ${qty > 0 ? `
+          <div class="qty-control">
+            <button class="qty-btn" onclick="updateQty('${m.id}', -1)">−</button>
+            <span class="qty-num">${qty}</span>
+            <button class="qty-btn" onclick="updateQty('${m.id}', 1)">+</button>
+          </div>
+        ` : `
+          <button class="add-btn" onclick="addToCart('${m.id}')">+</button>
+        `}
+      </div>
+    `;
+  }).join('');
+}
+
+function setCategory(c) {
+  state.currentCategory = c;
+  renderMenu();
+}
+
+// ============== 購物車邏輯 ==============
+function findMenuItem(itemId) {
+  for (const r of restaurants) {
+    const item = r.menu.find(m => m.id === itemId);
+    if (item) return { item, restaurant: r };
+  }
+  return null;
+}
+
+function addToCart(itemId) {
+  const found = findMenuItem(itemId);
+  if (!found) return;
+
+  if (state.cart[itemId]) {
+    state.cart[itemId].quantity++;
+  } else {
+    state.cart[itemId] = {
+      item: found.item,
+      restaurant: found.restaurant,
+      quantity: 1
+    };
+  }
+  renderMenu();
+  updateCartBar();
+  toast(`已加入 ${found.item.name}`);
+}
+
+function updateQty(itemId, delta) {
+  if (!state.cart[itemId]) return;
+  state.cart[itemId].quantity += delta;
+  if (state.cart[itemId].quantity <= 0) {
+    delete state.cart[itemId];
+  }
+  renderMenu();
+  updateCartBar();
+}
+
+function getCartSummary() {
+  let count = 0, subtotal = 0;
+  const byRestaurant = {};
+  for (const itemId in state.cart) {
+    const c = state.cart[itemId];
+    count += c.quantity;
+    subtotal += c.item.price * c.quantity;
+    if (!byRestaurant[c.restaurant.id]) {
+      byRestaurant[c.restaurant.id] = { restaurant: c.restaurant, items: [] };
+    }
+    byRestaurant[c.restaurant.id].items.push(c);
+  }
+  return { count, subtotal, byRestaurant };
+}
+
+function updateCartBar() {
+  const { count, subtotal } = getCartSummary();
+  const bar = $('cart-bar');
+
+  if (count > 0 && state.currentPage !== 'cart' && state.currentPage !== 'checkout' && state.currentPage !== 'success') {
+    bar.classList.add('visible');
+    $('cart-count').textContent = count;
+    $('cart-amount').textContent = formatPrice(subtotal + SERVICE_FEE);
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+// ============== 渲染：購物車 ==============
+function renderCart() {
+  const { count, subtotal, byRestaurant } = getCartSummary();
+  const content = $('cart-content');
+
+  if (count === 0) {
+    content.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🛒</div>
+        <div class="empty-text">購物車空空的</div>
+        <button class="btn-primary" onclick="goToPage('restaurants')">去看看餐廳</button>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+  for (const rid in byRestaurant) {
+    const { restaurant, items } = byRestaurant[rid];
+    html += `
+      <div class="cart-section">
+        <div class="cart-section-header">
+          <h3><span class="cart-rest-emoji">${restaurant.emoji}</span>${restaurant.name}</h3>
+        </div>
+        ${items.map(c => `
+          <div class="cart-item">
+            <div class="qty-control">
+              <button class="qty-btn" onclick="updateQty('${c.item.id}', -1); renderCart();">−</button>
+              <span class="qty-num">${c.quantity}</span>
+              <button class="qty-btn" onclick="updateQty('${c.item.id}', 1); renderCart();">+</button>
+            </div>
+            <div class="cart-item-name">${c.item.name}</div>
+            <div class="cart-item-subtotal">${formatPrice(c.item.price * c.quantity)}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="summary-box">
+      <div class="summary-row">
+        <span>商品小計</span>
+        <span>${formatPrice(subtotal)}</span>
+      </div>
+      <div class="summary-row">
+        <span>服務費
+          <span class="label-meta">不抽餐廳成，固定服務費</span>
+        </span>
+        <span>${formatPrice(SERVICE_FEE)}</span>
+      </div>
+      <div class="summary-row total">
+        <span>應付總計</span>
+        <span>${formatPrice(subtotal + SERVICE_FEE)}</span>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="goToCheckout()">
+      <span>填寫取餐資訊</span>
+      <span>→</span>
+    </button>
+  `;
+  content.innerHTML = html;
+}
+
+// ============== 結帳 ==============
+function goToCheckout() {
+  const { subtotal } = getCartSummary();
+  $('checkout-subtotal').textContent = formatPrice(subtotal);
+  $('checkout-total').textContent = formatPrice(subtotal + SERVICE_FEE);
+
+  // 渲染大樓選項
+  $('building-options').innerHTML = buildings.map(b => `
+    <div class="building-option ${b.id === state.selectedBuilding.id ? 'selected' : ''}"
+         data-building="${b.id}"
+         onclick="selectBuilding('${b.id}', this)">
+      <div class="option-radio"></div>
+      <div class="option-content">
+        <div class="option-name">${b.name}</div>
+        <div class="option-meta">${b.district} · 取餐 ${b.pickup_time} @ ${b.pickup_location}</div>
+      </div>
+    </div>
+  `).join('');
+
+  goToPage('checkout');
+}
+
+function selectBuilding(bid, elem) {
+  state.selectedBuilding = buildings.find(b => b.id === bid);
+  $('current-building-name').textContent = state.selectedBuilding.name;
+  $$('.building-option').forEach(o => o.classList.remove('selected'));
+  if (elem) elem.classList.add('selected');
+}
+
+function selectPayment(p) {
+  state.payment = p;
+  $$('.payment-option').forEach(o => o.classList.remove('selected'));
+  $(`[data-payment="${p}"]`).classList.add('selected');
+}
+
+function submitOrder() {
+  const name = $('contact-name').value.trim();
+  const phone = $('contact-phone').value.trim();
+
+  if (!name) { toast('請填寫取餐姓名'); $('contact-name').focus(); return; }
+  if (!phone) { toast('請填寫聯絡電話'); $('contact-phone').focus(); return; }
+  if (!/^09\d{2}-?\d{3}-?\d{3}$/.test(phone.replace(/\s/g, ''))) {
+    toast('電話格式不正確（例：0912-345-678）');
+    $('contact-phone').focus();
+    return;
+  }
+
+  const { subtotal } = getCartSummary();
+  const total = subtotal + SERVICE_FEE;
+
+  // 模擬訂單編號
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+  const seq = String(Math.floor(Math.random() * 99) + 1).padStart(3, '0');
+  const orderNum = `${dateStr}-${seq}`;
+
+  // 填收據
+  $('order-number').textContent = orderNum;
+  $('receipt-name').textContent = name;
+  $('receipt-phone').textContent = phone;
+  $('receipt-payment').textContent = state.payment === 'cash' ? '現場付現' : 'LINE Pay 轉帳';
+  $('receipt-total').textContent = formatPrice(total);
+  $('receipt-pickup-time').textContent = state.selectedBuilding.pickup_time;
+  $('receipt-pickup-location').textContent = `${state.selectedBuilding.name}・${state.selectedBuilding.pickup_location}`;
+
+  goToPage('success');
+}
+
+function resetCart() {
+  state.cart = {};
+  state.currentRestaurant = null;
+  $('contact-name').value = '';
+  $('contact-phone').value = '';
+  $('contact-note').value = '';
+  updateCartBar();
+}
+
+// ============== 頁面切換 ==============
+function goToPage(page) {
+  state.previousPage = state.currentPage;
+  state.currentPage = page;
+  $$('.page').forEach(p => p.classList.remove('active'));
+  $(`page-${page}`).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (page === 'cart') renderCart();
+  updateCartBar();
+}
+
+function goBack() {
+  // 從購物車回到上一頁（菜單或餐廳列表）
+  if (state.previousPage === 'menu' && state.currentRestaurant) {
+    goToPage('menu');
+  } else {
+    goToPage('restaurants');
+  }
+}
+
+// ============== Modal ==============
+function openModal(type) {
+  if (type === 'building') {
+    const list = $('building-modal-options');
+    list.innerHTML = buildings.map(b => `
+      <div class="building-option ${b.id === state.selectedBuilding.id ? 'selected' : ''}"
+           onclick="selectBuildingFromModal('${b.id}')">
+        <div class="option-radio"></div>
+        <div class="option-content">
+          <div class="option-name">${b.name}</div>
+          <div class="option-meta">${b.district} · 取餐 ${b.pickup_time} @ ${b.pickup_location}</div>
+        </div>
+      </div>
+    `).join('');
+    $('building-modal').classList.add('active');
+  }
+}
+
+function selectBuildingFromModal(bid) {
+  selectBuilding(bid);
+  setTimeout(() => $('building-modal').classList.remove('active'), 200);
+}
+
+function closeModalIfBackdrop(e) {
+  if (e.target.classList.contains('modal')) {
+    e.target.classList.remove('active');
+  }
+}
+
+// ============== 倒數計時 ==============
+function updateCountdown() {
+  // 模擬截單時間 = 今天 10:30
+  const now = new Date();
+  const cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 30);
+
+  // 如果已過 10:30，顯示明天的
+  if (now > cutoff) {
+    cutoff.setDate(cutoff.getDate() + 1);
+  }
+
+  const diff = cutoff - now;
+  if (diff <= 0) return;
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+  $('countdown').textContent = `${hours} 小時 ${mins} 分`;
+}
+
+// ============== 初始化 ==============
+renderRestaurants();
+updateCountdown();
+setInterval(updateCountdown, 60000);
+</script>
+
+</body>
+</html>

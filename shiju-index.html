@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食聚 ShiJu｜台中辦公大樓集單午餐</title>
+<meta name="description" content="台中商辦大樓專屬的午餐集單服務。一棟大樓、多家好店、定時送達。讓上班族的午餐，回到該有的樣子。">
+
+<!-- 字體 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ink: #1a1d1a;
+  --paper: #f5f1e8;
+  --paper-deep: #ebe5d4;
+  --moss: #2d4a2b;
+  --moss-deep: #1f3320;
+  --persimmon: #d2542a;
+  --persimmon-soft: #e89572;
+  --rice: #faf7ed;
+  --line: rgba(26, 29, 26, 0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--rice);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* === 紙質紋理背景 === */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(45, 74, 43, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(210, 84, 42, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === 噪點層 === */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+}
+
+main { position: relative; z-index: 2; }
+
+/* === 共用排版 === */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.serif { font-family: 'Noto Serif TC', serif; }
+.italic-serif { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; }
+
+h1, h2, h3 {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+/* === Nav === */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(250, 247, 237, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.logo-mark {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background: var(--moss);
+  color: var(--rice);
+  border-radius: 4px;
+  text-align: center;
+  line-height: 32px;
+  font-size: 1.1rem;
+  margin-right: 0.4rem;
+  transform: rotate(-3deg);
+}
+
+.logo-en {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: var(--moss);
+  opacity: 0.7;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.nav-links a:hover { color: var(--persimmon); }
+
+.cta-btn {
+  background: var(--ink);
+  color: var(--rice);
+  padding: 0.65rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.92rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cta-btn:hover {
+  background: var(--moss);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45, 74, 43, 0.25);
+}
+
+.cta-btn.persimmon { background: var(--persimmon); }
+.cta-btn.persimmon:hover { background: var(--moss); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+}
+
+/* === Hero === */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-content {
+  position: relative;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--moss);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  padding: 0.4rem 0.9rem;
+  background: rgba(45, 74, 43, 0.08);
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+}
+
+.hero-eyebrow .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--moss);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.hero h1 {
+  font-size: clamp(2.6rem, 6vw, 4.8rem);
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 .accent {
+  color: var(--persimmon);
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.hero h1 .underline-mark {
+  position: relative;
+  display: inline-block;
+}
+
+.hero h1 .underline-mark::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: -4px;
+  right: -4px;
+  height: 12px;
+  background: var(--persimmon-soft);
+  z-index: -1;
+  opacity: 0.5;
+  transform: skew(-3deg);
+}
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: var(--ink);
+  opacity: 0.7;
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+  line-height: 1.7;
+}
+
+.hero-cta-group {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--moss);
+  color: var(--rice);
+  padding: 1rem 2rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary:hover {
+  background: var(--moss-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(45, 74, 43, 0.3);
+}
+
+.btn-secondary {
+  color: var(--ink);
+  padding: 1rem 0;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1.5px solid var(--ink);
+  transition: gap 0.25s;
+}
+
+.btn-secondary:hover { gap: 0.9rem; }
+
+/* === Hero 視覺：堆疊便當示意圖 === */
+.hero-visual {
+  position: relative;
+  height: 480px;
+}
+
+.bento-stack {
+  position: absolute;
+  inset: 0;
+}
+
+.bento {
+  position: absolute;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.04),
+    0 8px 24px rgba(0,0,0,0.08),
+    0 24px 48px rgba(0,0,0,0.06);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento:hover { transform: translateY(-8px) rotate(0deg) !important; }
+
+.bento-1 {
+  width: 260px;
+  height: 200px;
+  top: 20px;
+  left: 0;
+  background: linear-gradient(135deg, #f7e8a0 0%, #f0d472 100%);
+  transform: rotate(-6deg);
+  z-index: 3;
+}
+
+.bento-2 {
+  width: 240px;
+  height: 220px;
+  top: 80px;
+  right: 30px;
+  background: linear-gradient(135deg, #d97757 0%, #c64a26 100%);
+  transform: rotate(4deg);
+  z-index: 2;
+  color: var(--rice);
+}
+
+.bento-3 {
+  width: 280px;
+  height: 190px;
+  bottom: 40px;
+  left: 60px;
+  background: linear-gradient(135deg, #4a6a3f 0%, #2d4a2b 100%);
+  transform: rotate(-3deg);
+  z-index: 1;
+  color: var(--rice);
+}
+
+.bento-label {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-bottom: 0.4rem;
+}
+
+.bento-name {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+}
+
+.bento-price {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: auto;
+}
+
+.bento-meta {
+  font-size: 0.78rem;
+  opacity: 0.75;
+  margin-top: 0.4rem;
+}
+
+.bento { display: flex; flex-direction: column; }
+
+/* 時間貼紙 */
+.time-sticker {
+  position: absolute;
+  bottom: -10px;
+  right: 20px;
+  background: var(--ink);
+  color: var(--rice);
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  z-index: 10;
+  transform: rotate(-2deg);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.time-sticker::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #6ec46e;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .hero-visual { height: 360px; }
+  .bento-1, .bento-2, .bento-3 { transform: scale(0.85); }
+}
+
+/* === 統計列 === */
+.stats {
+  background: var(--ink);
+  color: var(--rice);
+  padding: 3rem 0;
+  margin-top: 4rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.stat-num {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--persimmon-soft);
+}
+
+.stat-num .small { font-size: 1.4rem; opacity: 0.7; }
+
+.stat-label {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  font-weight: 300;
+}
+
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* === Section 共用 === */
+section { padding: 7rem 0; }
+
+.section-header {
+  margin-bottom: 4rem;
+  max-width: 700px;
+}
+
+.section-eyebrow {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--persimmon);
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+}
+
+.section-desc {
+  font-size: 1.1rem;
+  color: var(--ink);
+  opacity: 0.7;
+  line-height: 1.7;
+}
+
+/* === How it works === */
+.how {
+  background: var(--paper);
+  position: relative;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  position: relative;
+}
+
+.step {
+  background: var(--rice);
+  padding: 2.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  position: relative;
+  transition: all 0.3s;
+}
+
+.step:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  border-color: var(--moss);
+}
+
+.step-num {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 3.5rem;
+  color: var(--persimmon);
+  line-height: 1;
+  margin-bottom: 1.5rem;
+}
+
+.step h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.step p {
+  color: var(--ink);
+  opacity: 0.7;
+  font-size: 0.95rem;
+}
+
+.step-tag {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--moss);
+  background: rgba(45, 74, 43, 0.08);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) { .steps { grid-template-columns: 1fr; } }
+
+/* === 餐廳 === */
+.restaurants {
+  background: var(--rice);
+}
+
+.rest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.rest-card {
+  background: var(--paper);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid var(--line);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.rest-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--moss);
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+}
+
+.rest-card:hover {
+  transform: translateY(-4px);
+  background: var(--paper-deep);
+}
+.rest-card:hover::before { transform: translateX(0); }
+
+.rest-emoji {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.rest-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.rest-card .desc {
+  font-size: 0.9rem;
+  color: var(--ink);
+  opacity: 0.65;
+  margin-bottom: 1.25rem;
+}
+
+.rest-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.82rem;
+  color: var(--moss);
+  font-weight: 500;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.rest-card.placeholder {
+  background: transparent;
+  border: 2px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--ink);
+  opacity: 0.5;
+  font-style: italic;
+}
+
+@media (max-width: 900px) { .rest-grid { grid-template-columns: 1fr; } }
+
+/* === 為什麼選我們 === */
+.why {
+  background: var(--moss-deep);
+  color: var(--rice);
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.why .section-eyebrow { color: var(--persimmon-soft); }
+
+.why-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.why-item {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.why-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--persimmon);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.why-item h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+  color: var(--rice);
+}
+
+.why-item p {
+  font-size: 0.95rem;
+  opacity: 0.75;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) { .why-grid { grid-template-columns: 1fr; gap: 3rem; } }
+
+/* === 給餐廳合作的 CTA === */
+.partner {
+  background: var(--rice);
+  padding: 7rem 0;
+}
+
+.partner-box {
+  background: var(--ink);
+  color: var(--rice);
+  border-radius: 24px;
+  padding: 5rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.partner-box::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(210, 84, 42, 0.3) 0%, transparent 70%);
+}
+
+.partner-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+}
+
+.partner h2 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin-bottom: 1.5rem;
+}
+
+.partner h2 .accent {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--persimmon-soft);
+}
+
+.partner p {
+  font-size: 1.1rem;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.partner .btn-primary {
+  background: var(--persimmon);
+  color: var(--rice);
+}
+
+.partner .btn-primary:hover { background: var(--persimmon-soft); color: var(--ink); }
+
+@media (max-width: 768px) {
+  .partner-box { padding: 3rem 2rem; }
+}
+
+/* === Footer === */
+footer {
+  background: var(--ink);
+  color: var(--rice);
+  padding: 4rem 0 2rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer-brand h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  color: var(--rice);
+}
+
+.footer-brand p {
+  font-size: 0.9rem;
+  opacity: 0.6;
+  max-width: 280px;
+}
+
+.footer-col h4 {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--persimmon-soft);
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.05em;
+}
+
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-col a {
+  color: var(--rice);
+  opacity: 0.65;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+
+.footer-col a:hover { opacity: 1; color: var(--persimmon-soft); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(245, 241, 232, 0.1);
+  padding-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  opacity: 0.5;
+}
+
+@media (max-width: 900px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; gap: 1rem; }
+}
+
+/* === Fade in 動畫 === */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-eyebrow, .hero h1, .hero-subtitle, .hero-cta-group {
+  animation: fadeUp 0.8s ease-out backwards;
+}
+.hero-eyebrow { animation-delay: 0.1s; }
+.hero h1 { animation-delay: 0.2s; }
+.hero-subtitle { animation-delay: 0.35s; }
+.hero-cta-group { animation-delay: 0.5s; }
+
+.bento-1 { animation: fadeUp 0.9s ease-out 0.6s backwards; }
+.bento-2 { animation: fadeUp 0.9s ease-out 0.75s backwards; }
+.bento-3 { animation: fadeUp 0.9s ease-out 0.9s backwards; }
+.time-sticker { animation: fadeUp 0.6s ease-out 1.2s backwards; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <span class="logo-mark serif">食</span>
+    <span>食聚</span>
+    <span class="logo-en">shiju.</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#how">怎麼訂</a></li>
+    <li><a href="#restaurants">合作餐廳</a></li>
+    <li><a href="#why">為什麼選我們</a></li>
+    <li><a href="#partner">餐廳合作</a></li>
+    <li><a href="/order" class="cta-btn">立即訂餐 →</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- =============== HERO =============== -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-content">
+      <span class="hero-eyebrow">
+        <span class="dot"></span>
+        台中商辦大樓專屬服務・MVP 試營運中
+      </span>
+      <h1>
+        把<span class="underline-mark">辦公午餐</span><br>
+        交給<span class="accent">值得信任的</span><br>
+        附近店家
+      </h1>
+      <p class="hero-subtitle">
+        食聚為台中商辦大樓提供集單午餐服務。
+        我們挑選大樓周邊的好店、整合每日訂單、
+        準時送到大廳，讓你十二點不用再煩惱中午吃什麼。
+      </p>
+      <div class="hero-cta-group">
+        <a href="/order" class="btn-primary">
+          開始訂今天的午餐
+          <span>→</span>
+        </a>
+        <a href="#how" class="btn-secondary">
+          了解運作方式
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="bento-stack">
+        <div class="bento bento-1">
+          <div class="bento-label">阿明便當・主菜</div>
+          <div class="bento-name">招牌排骨</div>
+          <div class="bento-meta">三樣配菜・白飯</div>
+          <div class="bento-price">$110</div>
+        </div>
+        <div class="bento bento-2">
+          <div class="bento-label">青田輕食・主餐</div>
+          <div class="bento-name">香煎雞胸沙拉</div>
+          <div class="bento-meta">低卡高蛋白</div>
+          <div class="bento-price">$160</div>
+        </div>
+        <div class="bento bento-3">
+          <div class="bento-label">日麵屋・拉麵</div>
+          <div class="bento-name">豚骨拉麵</div>
+          <div class="bento-meta">叉燒兩片</div>
+          <div class="bento-price">$180</div>
+        </div>
+        <div class="time-sticker">
+          截單 10:30・送達 12:00
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== STATS =============== -->
+<section class="stats">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num">3<span class="small">家</span></div>
+      <div class="stat-label">合作餐廳・持續增加中</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2<span class="small">棟</span></div>
+      <div class="stat-label">服務大樓・台中西屯/南屯</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">$25</div>
+      <div class="stat-label">每單服務費・不抽餐廳成</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">90<span class="small">分</span></div>
+      <div class="stat-label">從截單到送達・每天 12 點到</div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== HOW =============== -->
+<section id="how" class="how">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">how it works</span>
+      <h2 class="section-title">三個步驟，午餐就在大廳等你</h2>
+      <p class="section-desc">
+        不用下載 App，不用註冊一堆會員。打開 LINE 或瀏覽器，從你的大樓開始選餐廳，五分鐘搞定一週午餐。
+      </p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <span class="step-tag">10:30 前</span>
+        <div class="step-num">01</div>
+        <h3>選擇大樓・挑選餐廳</h3>
+        <p>進入訂餐頁，選擇你的辦公大樓，瀏覽當日合作的 3-5 家在地好店，加入購物車。</p>
+      </div>
+      <div class="step">
+        <span class="step-tag">10:30 截單</span>
+        <div class="step-num">02</div>
+        <h3>確認訂單・LINE 通知</h3>
+        <p>確認訂單後，餐廳開始備餐。你會在 LINE 收到訂單編號跟取餐通知，不用一直查看。</p>
+      </div>
+      <div class="step">
+        <span class="step-tag">12:00 送達</span>
+        <div class="step-num">03</div>
+        <h3>大廳取餐・現場付款</h3>
+        <p>中午十二點，你的午餐已在大廳警衛處。報訂單編號或姓名取餐，現場付現或 LINE Pay。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 餐廳 =============== -->
+<section id="restaurants" class="restaurants">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">our partners</span>
+      <h2 class="section-title">當週合作餐廳</h2>
+      <p class="section-desc">
+        我們不放網紅店、不放連鎖速食。挑選的是大樓周邊真正吃得到、品質穩定的在地店家。每週更新。
+      </p>
+    </div>
+
+    <div class="rest-grid">
+      <div class="rest-card">
+        <span class="rest-emoji">🍱</span>
+        <h3>阿明便當</h3>
+        <p class="desc">台中老字號家常便當，主菜可換，配菜每日變化</p>
+        <div class="rest-meta">
+          <span>主餐 $50-130</span>
+          <span>•</span>
+          <span>6 道餐點</span>
+        </div>
+      </div>
+      <div class="rest-card">
+        <span class="rest-emoji">🥗</span>
+        <h3>青田輕食</h3>
+        <p class="desc">低卡輕食、沙拉、義大利麵，適合健身與輕食族</p>
+        <div class="rest-meta">
+          <span>主餐 $160-190</span>
+          <span>•</span>
+          <span>5 道餐點</span>
+        </div>
+      </div>
+      <div class="rest-card">
+        <span class="rest-emoji">🍜</span>
+        <h3>日麵屋拉麵</h3>
+        <p class="desc">日式拉麵、丼飯，湯頭每日現熬，叉燒手工製作</p>
+        <div class="rest-meta">
+          <span>主餐 $150-180</span>
+          <span>•</span>
+          <span>5 道餐點</span>
+        </div>
+      </div>
+      <div class="rest-card placeholder">
+        + 持續招募中<br>下週可能就是你的店
+      </div>
+      <div class="rest-card placeholder">
+        + 持續招募中<br>下週可能就是你的店
+      </div>
+      <div class="rest-card placeholder">
+        + 持續招募中<br>下週可能就是你的店
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== WHY =============== -->
+<section id="why" class="why">
+  <div class="container">
+    <div class="why-grid">
+      <div>
+        <span class="section-eyebrow">why us</span>
+        <h2 class="section-title">不是又一個外送 App</h2>
+        <p class="section-desc" style="color: rgba(245, 241, 232, 0.7);">
+          我們做的事情，foodpanda、Uber Eats 都不做：
+          幫一棟大樓的同事一起訂、定時送、認識店家、價格透明。
+        </p>
+      </div>
+      <div class="why-list">
+        <div class="why-item">
+          <div class="why-icon">⊕</div>
+          <div>
+            <h3>不抽餐廳的成</h3>
+            <p>餐廳售價就是你付的價格，我們只跟你收一筆 25 元服務費。餐廳能賺、你也付得合理。</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">⏱</div>
+          <div>
+            <h3>準時十二點到</h3>
+            <p>不是「30-45 分鐘」這種模糊承諾。我們每天十二點準時送到大廳，你十二點下樓就拿得到。</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">⚲</div>
+          <div>
+            <h3>挑大樓周邊的店</h3>
+            <p>不放距離十公里的網紅店。我們合作的是大樓五分鐘車程內的在地好店，新鮮、熱騰騰送達。</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">♡</div>
+          <div>
+            <h3>用 LINE 就能訂</h3>
+            <p>不用下載 App、不用註冊一堆資料。LINE 加好友開始訂，或瀏覽器打開網址直接點。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== PARTNER CTA =============== -->
+<section id="partner" class="partner">
+  <div class="container">
+    <div class="partner-box">
+      <div class="partner-content">
+        <span class="section-eyebrow" style="color: var(--persimmon-soft);">for restaurants</span>
+        <h2>
+          你是餐廳老闆？<br>
+          <span class="accent">我們想跟你合作。</span>
+        </h2>
+        <p>
+          如果你在台中西屯、南屯、北屯一帶開店，每天有穩定的中午出餐能力，
+          歡迎加入食聚。我們不抽你的成、不要求菜單獨家、隔週結款。
+        </p>
+        <a href="mailto:hi@shiju.tw" class="btn-primary">
+          聯絡我們談談
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- =============== FOOTER =============== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>食聚・shiju</h3>
+        <p>台中商辦大樓專屬的午餐集單服務。把該屬於上班族的好午餐，找回來。</p>
+      </div>
+      <div class="footer-col">
+        <h4>服務</h4>
+        <ul>
+          <li><a href="/order">立即訂餐</a></li>
+          <li><a href="#how">怎麼訂</a></li>
+          <li><a href="#restaurants">合作餐廳</a></li>
+          <li><a href="#">合作大樓</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>合作</h4>
+        <ul>
+          <li><a href="#partner">餐廳合作</a></li>
+          <li><a href="#">大樓進駐</a></li>
+          <li><a href="#">企業團訂</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>聯絡</h4>
+        <ul>
+          <li><a href="mailto:hi@shiju.tw">hi@shiju.tw</a></li>
+          <li><a href="#">LINE 官方帳號</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 食聚 shiju・MVP 試營運版本</div>
+      <div>made in 台中</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

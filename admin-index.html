@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台管理｜食聚 ShiJu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ink: #1a1d1a;
+  --ink-light: #5a5d5a;
+  --ink-soft: #8a8d8a;
+  --paper: #f5f1e8;
+  --paper-deep: #ebe5d4;
+  --moss: #2d4a2b;
+  --moss-deep: #1f3320;
+  --moss-soft: #4a6a3f;
+  --persimmon: #d2542a;
+  --persimmon-soft: #e89572;
+  --rice: #faf7ed;
+  --white: #ffffff;
+  --line: rgba(26, 29, 26, 0.1);
+  --line-strong: rgba(26, 29, 26, 0.2);
+
+  --status-pending: #f59e0b;
+  --status-pending-bg: rgba(245, 158, 11, 0.1);
+  --status-preparing: #3b82f6;
+  --status-preparing-bg: rgba(59, 130, 246, 0.1);
+  --status-ready: #8b5cf6;
+  --status-ready-bg: rgba(139, 92, 246, 0.1);
+  --status-completed: #10b981;
+  --status-completed-bg: rgba(16, 185, 129, 0.1);
+  --status-cancelled: #ef4444;
+  --status-cancelled-bg: rgba(239, 68, 68, 0.1);
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--rice);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.serif { font-family: 'Noto Serif TC', serif; }
+.italic-serif { font-family: 'Instrument Serif', serif; font-style: italic; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, select, textarea { font-family: inherit; font-size: 1rem; color: var(--ink); }
+
+/* ============== LOGIN ============== */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--rice);
+}
+
+.login-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  max-width: 400px;
+  width: 100%;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 2rem;
+}
+
+.login-brand-mark {
+  width: 40px;
+  height: 40px;
+  background: var(--moss);
+  color: var(--rice);
+  border-radius: 8px;
+  text-align: center;
+  line-height: 40px;
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: 1.2rem;
+  transform: rotate(-3deg);
+}
+
+.login-brand-text {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.login-brand-meta {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--ink-light);
+  font-size: 0.9rem;
+}
+
+.login-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
+}
+
+.login-subtitle {
+  color: var(--ink-light);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.login-form { display: flex; flex-direction: column; gap: 1rem; }
+
+.form-field label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  background: var(--rice);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--moss);
+  background: var(--white);
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--rice);
+  border-radius: 10px;
+  padding: 0.9rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: var(--moss); }
+
+.login-tip {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--line);
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  text-align: center;
+}
+.login-tip code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--paper);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  color: var(--persimmon);
+  font-weight: 600;
+}
+
+/* ============== APP LAYOUT ============== */
+.admin-app {
+  display: none;
+  min-height: 100vh;
+}
+.admin-app.active { display: flex; }
+
+/* ============== SIDEBAR ============== */
+.sidebar {
+  width: 240px;
+  background: var(--moss-deep);
+  color: var(--rice);
+  padding: 1.5rem 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand {
+  padding: 0 1.5rem 1.5rem;
+  border-bottom: 1px solid rgba(245, 241, 232, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sidebar-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--persimmon);
+  color: var(--rice);
+  border-radius: 6px;
+  text-align: center;
+  line-height: 32px;
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: 1.05rem;
+  transform: rotate(-3deg);
+}
+
+.sidebar-brand-text {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.sidebar-brand-meta {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  margin-top: 0.4rem;
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+}
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0 0.75rem;
+}
+
+.nav-section-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  padding: 0.8rem 0.75rem 0.4rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--rice);
+  opacity: 0.7;
+  transition: all 0.15s;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-item:hover { opacity: 1; background: rgba(245, 241, 232, 0.05); }
+
+.nav-item.active {
+  background: rgba(245, 241, 232, 0.12);
+  opacity: 1;
+  font-weight: 500;
+}
+
+.nav-icon {
+  width: 18px;
+  display: inline-block;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--persimmon);
+  color: var(--rice);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(245, 241, 232, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--persimmon);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.user-info { flex: 1; }
+.user-name { font-weight: 500; }
+.user-role { font-size: 0.7rem; opacity: 0.5; }
+
+.logout-btn {
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  font-size: 1rem;
+}
+.logout-btn:hover { opacity: 1; }
+
+/* ============== MAIN ============== */
+.main-content {
+  flex: 1;
+  padding: 2rem 2.5rem;
+  max-width: calc(100vw - 240px);
+  overflow-x: hidden;
+}
+
+.page { display: none; animation: fadeIn 0.3s; }
+.page.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-header-left { flex: 1; }
+
+.page-eyebrow {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--persimmon);
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+  display: block;
+}
+
+.page-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.page-subtitle {
+  color: var(--ink-light);
+  font-size: 0.95rem;
+}
+
+.btn-group { display: flex; gap: 0.5rem; }
+
+.btn-ghost {
+  background: transparent;
+  border: 1.5px solid var(--line);
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { border-color: var(--moss); color: var(--moss); }
+
+.btn-solid {
+  background: var(--ink);
+  color: var(--rice);
+  padding: 0.65rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s;
+}
+.btn-solid:hover { background: var(--moss); }
+
+/* ============== STATS ============== */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--moss);
+}
+
+.stat-card.persimmon::before { background: var(--persimmon); }
+.stat-card.amber::before { background: var(--status-pending); }
+.stat-card.blue::before { background: var(--status-preparing); }
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stat-value {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.stat-value .unit {
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.5;
+  margin-left: 0.2rem;
+}
+
+.stat-meta {
+  font-size: 0.75rem;
+  color: var(--ink-light);
+}
+.stat-meta .up { color: var(--status-completed); }
+.stat-meta .down { color: var(--status-cancelled); }
+
+/* ============== FILTER BAR ============== */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  background: var(--white);
+  border: 1.5px solid var(--line);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-chip:hover { border-color: var(--moss); }
+.filter-chip.active {
+  background: var(--ink);
+  color: var(--rice);
+  border-color: var(--ink);
+}
+
+.filter-chip .chip-count {
+  background: rgba(255,255,255,0.2);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.filter-chip:not(.active) .chip-count {
+  background: var(--paper);
+  color: var(--ink-light);
+}
+
+.search-input {
+  margin-left: auto;
+  background: var(--white);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  padding: 0.55rem 1rem 0.55rem 2.4rem;
+  font-size: 0.88rem;
+  width: 240px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%235a5d5a' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 1rem center;
+}
+.search-input:focus { outline: none; border-color: var(--moss); }
+
+/* ============== TABLE ============== */
+.table-wrap {
+  background: var(--white);
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  padding: 1rem;
+  font-size: 0.92rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: background 0.15s;
+  cursor: pointer;
+}
+
+tbody tr:hover { background: var(--paper); }
+tbody tr:last-child td { border-bottom: none; }
+
+.order-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--moss);
+}
+
+.cell-strong { font-weight: 500; }
+.cell-meta { font-size: 0.78rem; color: var(--ink-light); margin-top: 0.15rem; }
+
+.cell-amount {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+}
+
+/* Status badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-pending { color: var(--status-pending); background: var(--status-pending-bg); }
+.status-pending::before { background: var(--status-pending); }
+.status-preparing { color: var(--status-preparing); background: var(--status-preparing-bg); }
+.status-preparing::before { background: var(--status-preparing); }
+.status-ready { color: var(--status-ready); background: var(--status-ready-bg); }
+.status-ready::before { background: var(--status-ready); }
+.status-completed { color: var(--status-completed); background: var(--status-completed-bg); }
+.status-completed::before { background: var(--status-completed); }
+.status-cancelled { color: var(--status-cancelled); background: var(--status-cancelled-bg); }
+.status-cancelled::before { background: var(--status-cancelled); }
+
+.restaurant-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.18rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: var(--paper-deep);
+  color: var(--moss-deep);
+}
+
+.restaurant-tag .emoji { font-size: 0.85rem; }
+
+/* ============== ORDER DETAIL (Drawer) ============== */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 29, 26, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  animation: fadeIn 0.2s;
+}
+.drawer-backdrop.active { display: block; }
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 480px;
+  max-width: 92vw;
+  height: 100vh;
+  background: var(--rice);
+  z-index: 1001;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.4, 1);
+  box-shadow: var(--shadow-lg);
+}
+
+.drawer.active { transform: translateX(0); }
+
+.drawer-header {
+  background: var(--white);
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.drawer-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.drawer-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  transition: background 0.15s;
+}
+.drawer-close:hover { background: var(--paper); }
+
+.drawer-order-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--moss);
+}
+
+.drawer-meta {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.drawer-body { padding: 1.5rem; }
+
+.drawer-section { margin-bottom: 2rem; }
+.drawer-section:last-child { margin-bottom: 0; }
+
+.drawer-section-title {
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.55rem 0;
+  font-size: 0.92rem;
+  border-bottom: 1px dashed var(--line);
+}
+.detail-row:last-child { border-bottom: none; }
+
+.detail-label { color: var(--ink-light); }
+.detail-value { font-weight: 500; text-align: right; }
+
+.items-list {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+}
+
+.item-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed var(--line);
+}
+.item-row:last-child { border-bottom: none; }
+
+.item-qty {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--moss);
+  min-width: 32px;
+}
+
+.item-name { flex: 1; font-weight: 500; font-size: 0.92rem; }
+.item-name .item-note {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  margin-top: 0.2rem;
+}
+
+.item-subtotal {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.status-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.status-btn {
+  padding: 0.7rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border: 1.5px solid var(--line);
+  background: var(--white);
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.status-btn:hover {
+  border-color: var(--moss);
+  color: var(--moss);
+}
+
+.status-btn.active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--rice);
+}
+
+.drawer-actions {
+  padding: 1.5rem;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.drawer-actions .btn-primary { flex: 1; }
+
+/* ============== PRINT SHEET ============== */
+.print-sheet {
+  background: var(--white);
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.print-header {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.print-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.print-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--ink-light);
+}
+
+.print-meta strong { color: var(--ink); font-weight: 500; }
+
+.restaurant-block {
+  border-bottom: 1px dashed var(--line);
+  padding: 1.25rem 0;
+}
+.restaurant-block:last-child { border-bottom: none; padding-bottom: 0; }
+.restaurant-block:first-child { padding-top: 0; }
+
+.rb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.rb-name {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rb-summary {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+}
+
+.rb-summary strong {
+  color: var(--ink);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.rb-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.3rem 1.5rem;
+}
+
+.rb-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  font-size: 0.92rem;
+}
+
+.rb-item-name { flex: 1; }
+.rb-item-qty {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--moss);
+  margin-left: 1rem;
+}
+
+.individual-list { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+
+.individual-list-title {
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.individual-item {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto;
+  gap: 0.75rem;
+  padding: 0.3rem 0;
+  font-size: 0.85rem;
+  align-items: center;
+}
+
+.individual-item .order-num-small {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-light);
+}
+
+@media print {
+  body { background: white; }
+  .sidebar, .page-header, .filter-bar, .no-print { display: none !important; }
+  .main-content { padding: 0; max-width: none; }
+  .print-sheet { border: none; padding: 0; }
+}
+
+/* ============== MENU MANAGEMENT ============== */
+.menu-card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+
+.menu-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+
+.menu-card-title {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.menu-item-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px dashed var(--line);
+}
+.menu-item-row:last-child { border-bottom: none; }
+
+.menu-item-row .item-info { flex: 1; }
+.menu-item-row .item-info .name { font-weight: 500; font-size: 0.92rem; }
+.menu-item-row .item-info .desc { font-size: 0.78rem; color: var(--ink-light); margin-top: 0.15rem; }
+
+.menu-item-row .cat-badge {
+  font-size: 0.72rem;
+  background: var(--paper);
+  color: var(--ink-light);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.menu-item-row .price-input {
+  width: 90px;
+  background: var(--rice);
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-align: right;
+}
+.menu-item-row .price-input:focus { outline: none; border-color: var(--moss); }
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: var(--line-strong);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle.on { background: var(--moss); }
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.toggle.on::after { transform: translateX(18px); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: var(--ink);
+  color: var(--rice);
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  z-index: 2000;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.25s;
+  pointer-events: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Empty state */
+.empty {
+  background: var(--white);
+  border: 1.5px dashed var(--line-strong);
+  border-radius: 12px;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--ink-light);
+}
+
+.empty-icon { font-size: 3rem; margin-bottom: 0.8rem; opacity: 0.4; }
+.empty-text { font-size: 0.95rem; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .stat-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main-content { max-width: 100vw; padding: 1.5rem 1.25rem; }
+  .page-title { font-size: 1.5rem; }
+  .stat-row { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .stat-value { font-size: 1.6rem; }
+  table { font-size: 0.85rem; }
+  th, td { padding: 0.7rem 0.6rem; }
+  .drawer { width: 100vw; }
+}
+</style>
+</head>
+<body>
+
+<!-- =============== LOGIN =============== -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-brand-mark">食</div>
+      <div>
+        <div class="login-brand-text">食聚</div>
+        <div class="login-brand-meta">admin console</div>
+      </div>
+    </div>
+    <h1 class="login-title">後台管理</h1>
+    <p class="login-subtitle">登入以管理今日訂單與餐廳</p>
+    <div class="login-form">
+      <div class="form-field">
+        <label>帳號</label>
+        <input type="text" class="form-input" id="username" placeholder="admin" value="admin">
+      </div>
+      <div class="form-field">
+        <label>密碼</label>
+        <input type="password" class="form-input" id="password" placeholder="輸入密碼" value="demo1234">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">
+        登入後台 →
+      </button>
+    </div>
+    <div class="login-tip">
+      Demo 帳號：<code>admin</code> / <code>demo1234</code>
+    </div>
+  </div>
+</div>
+
+<!-- =============== ADMIN APP =============== -->
+<div class="admin-app" id="admin-app">
+
+<!-- 側邊欄 -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-row">
+      <div class="sidebar-mark">食</div>
+      <div>
+        <div class="sidebar-brand-text">食聚</div>
+      </div>
+    </div>
+    <div class="sidebar-brand-meta">admin console</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">今日營運</div>
+    <div class="nav-item active" onclick="goToPage('dashboard')">
+      <span class="nav-icon">◉</span>
+      <span>總覽 Dashboard</span>
+    </div>
+    <div class="nav-item" onclick="goToPage('orders')">
+      <span class="nav-icon">⊞</span>
+      <span>訂單列表</span>
+      <span class="nav-badge" id="nav-order-count">12</span>
+    </div>
+    <div class="nav-item" onclick="goToPage('printsheet')">
+      <span class="nav-icon">⎙</span>
+      <span>對單表</span>
+    </div>
+
+    <div class="nav-section-title">資料管理</div>
+    <div class="nav-item" onclick="goToPage('menu')">
+      <span class="nav-icon">☷</span>
+      <span>餐廳與菜單</span>
+    </div>
+    <div class="nav-item" onclick="goToPage('buildings')">
+      <span class="nav-icon">⌂</span>
+      <span>合作大樓</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-avatar">A</div>
+    <div class="user-info">
+      <div class="user-name">Admin</div>
+      <div class="user-role">平台管理員</div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()" title="登出">⊗</button>
+  </div>
+</aside>
+
+<!-- 主內容 -->
+<main class="main-content">
+
+<!-- ===== Dashboard ===== -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="page-eyebrow">today at a glance</span>
+      <h1 class="page-title">今日營運總覽</h1>
+      <p class="page-subtitle" id="today-date">2026 年 5 月 26 日（星期一）・截單剩 <span id="cutoff-countdown" style="color: var(--persimmon); font-weight: 600;">2 小時 17 分</span></p>
+    </div>
+    <div class="btn-group">
+      <button class="btn-ghost" onclick="goToPage('printsheet')">
+        <span>⎙</span> 印對單表
+      </button>
+      <button class="btn-solid" onclick="goToPage('orders')">
+        看所有訂單
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">總訂單數</div>
+      <div class="stat-value">12<span class="unit">單</span></div>
+      <div class="stat-meta"><span class="up">↑ 4</span> 較昨天</div>
+    </div>
+    <div class="stat-card persimmon">
+      <div class="stat-label">總營業額</div>
+      <div class="stat-value">$1,860</div>
+      <div class="stat-meta">含服務費 $300</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">待處理訂單</div>
+      <div class="stat-value">3<span class="unit">單</span></div>
+      <div class="stat-meta">需確認</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">服務大樓</div>
+      <div class="stat-value">2<span class="unit">棟</span></div>
+      <div class="stat-meta">3 家餐廳供應</div>
+    </div>
+  </div>
+
+  <div class="page-header" style="margin-bottom: 1rem;">
+    <div class="page-header-left">
+      <h2 style="font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1.3rem;">餐廳出餐狀況</h2>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>餐廳</th>
+          <th style="text-align: right;">訂單數</th>
+          <th style="text-align: right;">餐點份數</th>
+          <th style="text-align: right;">營業額</th>
+          <th>狀態</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr onclick="goToPage('printsheet')">
+          <td>
+            <span class="restaurant-tag"><span class="emoji">🍱</span>阿明便當</span>
+          </td>
+          <td style="text-align: right;" class="cell-strong">7</td>
+          <td style="text-align: right;" class="cell-strong">17</td>
+          <td style="text-align: right;" class="cell-amount">$820</td>
+          <td><span class="status-badge status-preparing">準備中</span></td>
+          <td><span style="opacity: 0.3;">→</span></td>
+        </tr>
+        <tr onclick="goToPage('printsheet')">
+          <td>
+            <span class="restaurant-tag"><span class="emoji">🥗</span>青田輕食</span>
+          </td>
+          <td style="text-align: right;" class="cell-strong">3</td>
+          <td style="text-align: right;" class="cell-strong">5</td>
+          <td style="text-align: right;" class="cell-amount">$820</td>
+          <td><span class="status-badge status-pending">待確認</span></td>
+          <td><span style="opacity: 0.3;">→</span></td>
+        </tr>
+        <tr onclick="goToPage('printsheet')">
+          <td>
+            <span class="restaurant-tag"><span class="emoji">🍜</span>日麵屋拉麵</span>
+          </td>
+          <td style="text-align: right;" class="cell-strong">2</td>
+          <td style="text-align: right;" class="cell-strong">3</td>
+          <td style="text-align: right;" class="cell-amount">$520</td>
+          <td><span class="status-badge status-preparing">準備中</span></td>
+          <td><span style="opacity: 0.3;">→</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 訂單列表 ===== -->
+<div class="page" id="page-orders">
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="page-eyebrow">all orders</span>
+      <h1 class="page-title">訂單列表</h1>
+      <p class="page-subtitle">2026/05/26・共 12 筆</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn-ghost">
+        <span>↓</span> 匯出 CSV
+      </button>
+      <button class="btn-solid" onclick="goToPage('printsheet')">
+        <span>⎙</span> 對單表
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="filterOrders('all', this)">
+      全部 <span class="chip-count">12</span>
+    </button>
+    <button class="filter-chip" onclick="filterOrders('pending', this)">
+      待確認 <span class="chip-count">3</span>
+    </button>
+    <button class="filter-chip" onclick="filterOrders('preparing', this)">
+      準備中 <span class="chip-count">6</span>
+    </button>
+    <button class="filter-chip" onclick="filterOrders('ready', this)">
+      可取餐 <span class="chip-count">2</span>
+    </button>
+    <button class="filter-chip" onclick="filterOrders('completed', this)">
+      已完成 <span class="chip-count">1</span>
+    </button>
+    <input type="text" class="search-input" placeholder="搜尋訂單號 / 姓名" id="search">
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>訂單號</th>
+          <th>客人</th>
+          <th>餐廳</th>
+          <th>大樓</th>
+          <th style="text-align: right;">金額</th>
+          <th>狀態</th>
+          <th>時間</th>
+        </tr>
+      </thead>
+      <tbody id="orders-tbody">
+        <!-- by JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 對單表（最重要） ===== -->
+<div class="page" id="page-printsheet">
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="page-eyebrow">order summary sheet</span>
+      <h1 class="page-title">餐廳對單表</h1>
+      <p class="page-subtitle">列印給餐廳，或自己拿著去取餐</p>
+    </div>
+    <div class="btn-group no-print">
+      <button class="btn-ghost" onclick="window.print()">
+        <span>⎙</span> 列印
+      </button>
+      <button class="btn-solid">
+        <span>📱</span> 用 LINE 傳給餐廳
+      </button>
+    </div>
+  </div>
+
+  <!-- 大樓篩選 no-print -->
+  <div class="filter-bar no-print">
+    <span style="color: var(--ink-light); font-size: 0.85rem;">大樓：</span>
+    <button class="filter-chip active">七期國泰商辦 <span class="chip-count">9</span></button>
+    <button class="filter-chip">台中軟體園區 A 棟 <span class="chip-count">3</span></button>
+  </div>
+
+  <div class="print-sheet" id="print-sheet">
+    <div class="print-header">
+      <div class="print-title">當日訂單對單表</div>
+      <div class="print-meta">
+        <span><strong>日期：</strong>2026/05/26（一）</span>
+        <span><strong>大樓：</strong>七期國泰商辦</span>
+        <span><strong>取餐：</strong>12:00 @ 1F 大廳警衛處</span>
+      </div>
+    </div>
+
+    <!-- 阿明便當 -->
+    <div class="restaurant-block">
+      <div class="rb-header">
+        <div class="rb-name"><span>🍱</span>阿明便當</div>
+        <div class="rb-summary">
+          7 筆訂單・<strong>合計 17 份</strong>・11:30 取餐
+        </div>
+      </div>
+      <div class="rb-items">
+        <div class="rb-item"><span class="rb-item-name">排骨便當</span><span class="rb-item-qty">× 8</span></div>
+        <div class="rb-item"><span class="rb-item-name">雞腿便當</span><span class="rb-item-qty">× 3</span></div>
+        <div class="rb-item"><span class="rb-item-name">魚排便當</span><span class="rb-item-qty">× 2</span></div>
+        <div class="rb-item"><span class="rb-item-name">滷肉飯</span><span class="rb-item-qty">× 0</span></div>
+        <div class="rb-item"><span class="rb-item-name">燙青菜</span><span class="rb-item-qty">× 0</span></div>
+        <div class="rb-item"><span class="rb-item-name">味噌湯</span><span class="rb-item-qty">× 4</span></div>
+      </div>
+
+      <div class="individual-list">
+        <div class="individual-list-title">個別訂單明細（給配送用）</div>
+        <div class="individual-item">
+          <span class="order-num-small">#001</span>
+          <span><strong>王小明</strong> 0912-345-678</span>
+          <span>排骨便當×1、味噌湯×1</span>
+          <span class="cell-amount">$135</span>
+        </div>
+        <div class="individual-item">
+          <span class="order-num-small">#002</span>
+          <span><strong>李美麗</strong> 0922-333-444（不要香菜）</span>
+          <span>雞腿便當×1</span>
+          <span class="cell-amount">$130</span>
+        </div>
+        <div class="individual-item">
+          <span class="order-num-small">#003</span>
+          <span><strong>陳大為</strong> 0933-555-666</span>
+          <span>排骨便當×2、味噌湯×1</span>
+          <span class="cell-amount">$245</span>
+        </div>
+        <div class="individual-item">
+          <span class="order-num-small">#005</span>
+          <span><strong>林志強</strong> 0911-222-333</span>
+          <span>排骨便當×1、雞腿便當×1、味噌湯×1</span>
+          <span class="cell-amount">$265</span>
+        </div>
+        <div class="individual-item">
+          <span class="order-num-small">#006</span>
+          <span><strong>張雅婷</strong> 0966-777-888</span>
+          <span>魚排便當×1</span>
+          <span class="cell-amount">$120</span>
+        </div>
+        <div class="individual-item">
+          <span class="order-num-small">#008</span>
+          <span><strong>劉建宏</strong> 0988-111-222</span>
+          <span>排骨便當×2</span>
+          <span class="cell-amount">$220</span>
+        </div>
+        <div class="individual-item">
+          <span class="order-num-small">#011</span>
+          <span><strong>吳佩玲</strong> 0955-888-999</span>
+          <span>魚排便當×1、味噌湯×1</span>
+          <span class="cell-amount">$145</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 青田輕食 -->
+    <div class="restaurant-block">
+      <div class="rb-header">
+        <div class="rb-name"><span>🥗</span>青田輕食</div>
+        <div class="rb-summary">
+          3 筆訂單・<strong>合計 5 份</strong>・11:30 取餐
+        </div>
+      </div>
+      <div class="rb-items">
+        <div class="rb-item"><span class="rb-item-name">香煎雞胸沙拉</span><span class="rb-item-qty">× 2</span></div>
+        <div class="rb-item"><span class="rb-item-name">鮮蝦凱薩沙拉</span><span class="rb-item-qty">× 1</span></div>
+        <div class="rb-item"><span class="rb-item-name">青醬雞肉義大利麵</span><span class="rb-item-qty">× 2</span></div>
+        <div class="rb-item"><span class="rb-item-name">無糖鮮奶茶</span><span class="rb-item-qty">× 0</span></div>
+      </div>
+      <div class="individual-list">
+        <div class="individual-list-title">個別訂單明細</div>
+        <div class="individual-item">
+          <span class="order-num-small">#004</span>
+          <span><strong>黃文琪</strong> 0900-123-456</span>
+          <span>香煎雞胸沙拉×1、青醬雞肉麵×1</span>
+          <span class="cell-amount">$330</span>
+        </div>
+        <div class="individual-item">
+          <span class="order-num-small">#007</span>
+          <span><strong>蔡明儒</strong> 0977-555-444</span>
+          <span>鮮蝦凱薩沙拉×1、青醬雞肉麵×1</span>
+          <span class="cell-amount">$350</span>
+        </div>
+        <div class="individual-item">
+          <span class="order-num-small">#010</span>
+          <span><strong>許安琪</strong> 0933-222-111</span>
+          <span>香煎雞胸沙拉×1</span>
+          <span class="cell-amount">$160</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 日麵屋 -->
+    <div class="restaurant-block">
+      <div class="rb-header">
+        <div class="rb-name"><span>🍜</span>日麵屋拉麵</div>
+        <div class="rb-summary">
+          2 筆訂單・<strong>合計 3 份</strong>・11:40 取餐
+        </div>
+      </div>
+      <div class="rb-items">
+        <div class="rb-item"><span class="rb-item-name">豚骨拉麵</span><span class="rb-item-qty">× 2</span></div>
+        <div class="rb-item"><span class="rb-item-name">親子丼</span><span class="rb-item-qty">× 1</span></div>
+        <div class="rb-item"><span class="rb-item-name">炸雞丼</span><span class="rb-item-qty">× 0</span></div>
+      </div>
+      <div class="individual-list">
+        <div class="individual-list-title">個別訂單明細</div>
+        <div class="individual-item">
+          <span class="order-num-small">#009</span>
+          <span><strong>周怡君</strong> 0922-666-777</span>
+          <span>豚骨拉麵×2</span>
+          <span class="cell-amount">$360</span>
+        </div>
+        <div class="individual-item">
+          <span class="order-num-small">#012</span>
+          <span><strong>謝俊賢</strong> 0911-888-999</span>
+          <span>親子丼×1</span>
+          <span class="cell-amount">$150</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 結算 -->
+    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--ink); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+      <div>
+        <div style="font-size: 0.78rem; color: var(--ink-light); margin-bottom: 0.3rem;">總訂單數</div>
+        <div style="font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1.8rem;">12 單</div>
+      </div>
+      <div>
+        <div style="font-size: 0.78rem; color: var(--ink-light); margin-bottom: 0.3rem;">總餐點數</div>
+        <div style="font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1.8rem;">25 份</div>
+      </div>
+      <div>
+        <div style="font-size: 0.78rem; color: var(--ink-light); margin-bottom: 0.3rem;">總營業額</div>
+        <div style="font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1.8rem; color: var(--persimmon);">$2,160</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 菜單管理 ===== -->
+<div class="page" id="page-menu">
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="page-eyebrow">restaurants & menu</span>
+      <h1 class="page-title">餐廳與菜單</h1>
+      <p class="page-subtitle">管理今日開放的餐廳、上下架餐點、調整價格</p>
+    </div>
+    <button class="btn-solid">+ 新增餐廳</button>
+  </div>
+
+  <!-- 阿明便當 -->
+  <div class="menu-card">
+    <div class="menu-card-header">
+      <div class="menu-card-title">🍱 阿明便當 <span class="status-badge status-completed">營業中</span></div>
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+
+    <div class="menu-item-row">
+      <div class="cat-badge">主餐</div>
+      <div class="item-info">
+        <div class="name">排骨便當</div>
+        <div class="desc">招牌酥炸排骨 + 三樣配菜 + 白飯</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="110">
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="menu-item-row">
+      <div class="cat-badge">主餐</div>
+      <div class="item-info">
+        <div class="name">雞腿便當</div>
+        <div class="desc">香烤雞腿 + 三樣配菜 + 白飯</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="130">
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="menu-item-row">
+      <div class="cat-badge">主餐</div>
+      <div class="item-info">
+        <div class="name">魚排便當</div>
+        <div class="desc">酥炸魚排 + 三樣配菜 + 白飯</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="120">
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="menu-item-row">
+      <div class="cat-badge">主餐</div>
+      <div class="item-info">
+        <div class="name">滷肉飯</div>
+        <div class="desc">古早味滷肉飯（小）</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="50">
+      <div class="toggle" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="menu-item-row">
+      <div class="cat-badge">湯品</div>
+      <div class="item-info">
+        <div class="name">味噌湯</div>
+        <div class="desc">日式味噌湯</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="25">
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+  </div>
+
+  <!-- 青田輕食 -->
+  <div class="menu-card">
+    <div class="menu-card-header">
+      <div class="menu-card-title">🥗 青田輕食 <span class="status-badge status-completed">營業中</span></div>
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+
+    <div class="menu-item-row">
+      <div class="cat-badge">沙拉</div>
+      <div class="item-info">
+        <div class="name">香煎雞胸沙拉</div>
+        <div class="desc">低卡高蛋白，附油醋醬</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="160">
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="menu-item-row">
+      <div class="cat-badge">沙拉</div>
+      <div class="item-info">
+        <div class="name">鮮蝦凱薩沙拉</div>
+        <div class="desc">蝦仁 + 凱薩醬 + 帕瑪森起司</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="180">
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="menu-item-row">
+      <div class="cat-badge">義大利麵</div>
+      <div class="item-info">
+        <div class="name">青醬雞肉義大利麵</div>
+        <div class="desc">羅勒青醬 + 嫩煎雞肉</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="170">
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+  </div>
+
+  <!-- 日麵屋 -->
+  <div class="menu-card">
+    <div class="menu-card-header">
+      <div class="menu-card-title">🍜 日麵屋拉麵 <span class="status-badge status-completed">營業中</span></div>
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+
+    <div class="menu-item-row">
+      <div class="cat-badge">拉麵</div>
+      <div class="item-info">
+        <div class="name">豚骨拉麵</div>
+        <div class="desc">濃郁豚骨湯頭 + 叉燒 2 片</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="180">
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="menu-item-row">
+      <div class="cat-badge">丼飯</div>
+      <div class="item-info">
+        <div class="name">親子丼</div>
+        <div class="desc">雞肉 + 半熟蛋</div>
+      </div>
+      <span style="color: var(--ink-light); font-size: 0.78rem;">$</span>
+      <input type="number" class="price-input" value="150">
+      <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 合作大樓 ===== -->
+<div class="page" id="page-buildings">
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="page-eyebrow">partner buildings</span>
+      <h1 class="page-title">合作大樓</h1>
+      <p class="page-subtitle">2 棟服務中・規劃增加更多</p>
+    </div>
+    <button class="btn-solid">+ 新增大樓</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>大樓名稱</th>
+          <th>區域</th>
+          <th>取餐地點</th>
+          <th>截單時間</th>
+          <th>取餐時間</th>
+          <th>狀態</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cell-strong">七期國泰商辦</td>
+          <td>西屯區</td>
+          <td>1F 大廳警衛處</td>
+          <td class="mono">10:30</td>
+          <td class="mono">12:00</td>
+          <td><span class="status-badge status-completed">營運中</span></td>
+          <td><span style="opacity: 0.3;">→</span></td>
+        </tr>
+        <tr>
+          <td class="cell-strong">台中軟體園區 A 棟</td>
+          <td>南屯區</td>
+          <td>B1 取餐櫃</td>
+          <td class="mono">10:45</td>
+          <td class="mono">12:15</td>
+          <td><span class="status-badge status-completed">營運中</span></td>
+          <td><span style="opacity: 0.3;">→</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="empty" style="margin-top: 1.5rem;">
+    <div class="empty-icon">🏢</div>
+    <div class="empty-text">想知道哪些大樓最適合先談？<br>用「員工數」「外食比例」「警衛配合度」三個指標篩</div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- =============== Drawer (訂單明細) =============== -->
+<div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
+<div class="drawer" id="order-drawer">
+  <div class="drawer-header">
+    <div class="drawer-header-top">
+      <div>
+        <div class="drawer-order-num" id="d-order-num">20260526-001</div>
+        <div class="drawer-meta">
+          <span class="status-badge status-preparing" id="d-status">準備中</span>
+          <span>·</span>
+          <span id="d-time">10:12 下單</span>
+        </div>
+      </div>
+      <button class="drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+  </div>
+
+  <div class="drawer-body">
+    <div class="drawer-section">
+      <div class="drawer-section-title">客戶資訊</div>
+      <div class="detail-row">
+        <span class="detail-label">姓名</span>
+        <span class="detail-value" id="d-name">王小明</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">電話</span>
+        <span class="detail-value mono" id="d-phone">0912-345-678</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">取餐大樓</span>
+        <span class="detail-value" id="d-building">七期國泰商辦</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">取餐時間</span>
+        <span class="detail-value" id="d-pickup">12:00 @ 1F 大廳警衛處</span>
+      </div>
+      <div class="detail-row" id="d-note-row">
+        <span class="detail-label">備註</span>
+        <span class="detail-value" id="d-note">不要香菜，少冰</span>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-title">訂購內容</div>
+      <div class="items-list" id="d-items">
+        <div class="item-row">
+          <span class="item-qty">×2</span>
+          <span class="item-name">
+            排骨便當
+            <span class="item-note">阿明便當</span>
+          </span>
+          <span class="item-subtotal">$220</span>
+        </div>
+        <div class="item-row">
+          <span class="item-qty">×1</span>
+          <span class="item-name">
+            味噌湯
+            <span class="item-note">阿明便當</span>
+          </span>
+          <span class="item-subtotal">$25</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-title">金額</div>
+      <div class="detail-row">
+        <span class="detail-label">商品小計</span>
+        <span class="detail-value">$245</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">服務費</span>
+        <span class="detail-value">$25</span>
+      </div>
+      <div class="detail-row" style="font-size: 1.05rem;">
+        <span class="detail-label" style="color: var(--ink); font-weight: 500;">應付總計</span>
+        <span class="detail-value" style="font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1.2rem; color: var(--persimmon);">$270</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">付款方式</span>
+        <span class="detail-value">現場付現 <span class="status-badge status-pending" style="margin-left: 0.5rem;">未付</span></span>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-title">訂單狀態</div>
+      <div class="status-actions">
+        <button class="status-btn" onclick="setStatus(this, '待確認')">⏳ 待確認</button>
+        <button class="status-btn active" onclick="setStatus(this, '準備中')">🔥 準備中</button>
+        <button class="status-btn" onclick="setStatus(this, '可取餐')">📦 可取餐</button>
+        <button class="status-btn" onclick="setStatus(this, '已完成')">✓ 已完成</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-actions">
+    <button class="btn-ghost" style="flex: 0 0 auto;">取消訂單</button>
+    <button class="btn-primary">推播給客人</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">已更新</div>
+
+<script>
+// ============== 模擬資料 ==============
+const orders = [
+  { num: '20260526-001', name: '王小明', phone: '0912-345-678', building: '七期', restaurant: '🍱 阿明便當', items: '排骨×2、味噌湯×1', amount: 270, status: 'preparing', time: '10:12' },
+  { num: '20260526-002', name: '李美麗', phone: '0922-333-444', building: '七期', restaurant: '🍱 阿明便當', items: '雞腿便當×1', amount: 155, status: 'preparing', time: '10:15', note: '不要香菜' },
+  { num: '20260526-003', name: '陳大為', phone: '0933-555-666', building: '七期', restaurant: '🍱 阿明便當', items: '排骨×2、味噌湯×1', amount: 270, status: 'preparing', time: '10:18' },
+  { num: '20260526-004', name: '黃文琪', phone: '0900-123-456', building: '七期', restaurant: '🥗 青田輕食', items: '雞胸沙拉×1、青醬麵×1', amount: 355, status: 'pending', time: '10:22' },
+  { num: '20260526-005', name: '林志強', phone: '0911-222-333', building: '七期', restaurant: '🍱 阿明便當', items: '排骨×1、雞腿×1、味噌湯×1', amount: 290, status: 'preparing', time: '10:25' },
+  { num: '20260526-006', name: '張雅婷', phone: '0966-777-888', building: '七期', restaurant: '🍱 阿明便當', items: '魚排便當×1', amount: 145, status: 'preparing', time: '10:28' },
+  { num: '20260526-007', name: '蔡明儒', phone: '0977-555-444', building: '七期', restaurant: '🥗 青田輕食', items: '凱薩沙拉×1、青醬麵×1', amount: 375, status: 'pending', time: '10:30' },
+  { num: '20260526-008', name: '劉建宏', phone: '0988-111-222', building: '七期', restaurant: '🍱 阿明便當', items: '排骨×2', amount: 245, status: 'ready', time: '10:32' },
+  { num: '20260526-009', name: '周怡君', phone: '0922-666-777', building: '軟體園區', restaurant: '🍜 日麵屋', items: '豚骨拉麵×2', amount: 385, status: 'preparing', time: '10:35' },
+  { num: '20260526-010', name: '許安琪', phone: '0933-222-111', building: '軟體園區', restaurant: '🥗 青田輕食', items: '雞胸沙拉×1', amount: 185, status: 'pending', time: '10:38' },
+  { num: '20260526-011', name: '吳佩玲', phone: '0955-888-999', building: '七期', restaurant: '🍱 阿明便當', items: '魚排便當×1、味噌湯×1', amount: 170, status: 'ready', time: '10:41' },
+  { num: '20260526-012', name: '謝俊賢', phone: '0911-888-999', building: '軟體園區', restaurant: '🍜 日麵屋', items: '親子丼×1', amount: 175, status: 'completed', time: '10:44' }
+];
+
+const STATUS_MAP = {
+  pending: { label: '待確認', class: 'status-pending' },
+  preparing: { label: '準備中', class: 'status-preparing' },
+  ready: { label: '可取餐', class: 'status-ready' },
+  completed: { label: '已完成', class: 'status-completed' },
+  cancelled: { label: '已取消', class: 'status-cancelled' }
+};
+
+function $(id) { return document.getElementById(id); }
+function $$(s) { return document.querySelectorAll(s); }
+
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+// ============== 登入 ==============
+function doLogin() {
+  const u = $('username').value;
+  const p = $('password').value;
+  if (u === 'admin' && p === 'demo1234') {
+    $('login-screen').style.display = 'none';
+    $('admin-app').classList.add('active');
+    renderOrders();
+  } else {
+    toast('帳號或密碼錯誤');
+  }
+}
+
+function doLogout() {
+  $('login-screen').style.display = 'flex';
+  $('admin-app').classList.remove('active');
+}
+
+// ============== 渲染訂單表 ==============
+function renderOrders(filter = 'all') {
+  const tbody = $('orders-tbody');
+  const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
+
+  tbody.innerHTML = filtered.map(o => {
+    const st = STATUS_MAP[o.status];
+    return `
+      <tr onclick="openOrder('${o.num}')">
+        <td><span class="order-num">${o.num.split('-')[1]}</span></td>
+        <td>
+          <div class="cell-strong">${o.name}</div>
+          <div class="cell-meta mono">${o.phone}</div>
+        </td>
+        <td><span class="restaurant-tag">${o.restaurant}</span><div class="cell-meta">${o.items}</div></td>
+        <td>${o.building}</td>
+        <td style="text-align: right;" class="cell-amount">$${o.amount}</td>
+        <td><span class="status-badge ${st.class}">${st.label}</span></td>
+        <td class="mono" style="color: var(--ink-light); font-size: 0.85rem;">${o.time}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function filterOrders(status, elem) {
+  $$('.filter-chip').forEach(c => c.classList.remove('active'));
+  if (elem) elem.classList.add('active');
+  renderOrders(status);
+}
+
+// ============== 訂單明細 ==============
+function openOrder(num) {
+  const o = orders.find(x => x.num === num);
+  if (!o) return;
+
+  $('d-order-num').textContent = o.num;
+  $('d-name').textContent = o.name;
+  $('d-phone').textContent = o.phone;
+  $('d-building').textContent = o.building === '七期' ? '七期國泰商辦' : '台中軟體園區 A 棟';
+  $('d-time').textContent = `${o.time} 下單`;
+
+  const st = STATUS_MAP[o.status];
+  const badge = $('d-status');
+  badge.className = `status-badge ${st.class}`;
+  badge.textContent = st.label;
+
+  if (o.note) {
+    $('d-note').textContent = o.note;
+    $('d-note-row').style.display = 'flex';
+  } else {
+    $('d-note-row').style.display = 'none';
+  }
+
+  $('drawer-backdrop').classList.add('active');
+  $('order-drawer').classList.add('active');
+}
+
+function closeDrawer() {
+  $('drawer-backdrop').classList.remove('active');
+  $('order-drawer').classList.remove('active');
+}
+
+function setStatus(elem, label) {
+  $$('.status-btn').forEach(b => b.classList.remove('active'));
+  elem.classList.add('active');
+  toast(`狀態已更新為「${label}」`);
+}
+
+// ============== 頁面切換 ==============
+function goToPage(page) {
+  $$('.page').forEach(p => p.classList.remove('active'));
+  $(`page-${page}`).classList.add('active');
+  $$('.nav-item').forEach(n => n.classList.remove('active'));
+  event.target.closest('.nav-item')?.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 倒數
+function updateCountdown() {
+  const now = new Date();
+  const cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 30);
+  if (now > cutoff) cutoff.setDate(cutoff.getDate() + 1);
+  const diff = cutoff - now;
+  if (diff <= 0) return;
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const el = $('cutoff-countdown');
+  if (el) el.textContent = `${h} 小時 ${m} 分`;
+}
+
+updateCountdown();
+setInterval(updateCountdown, 60000);
+</script>
+
+</body>
+</html>
