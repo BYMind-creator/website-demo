@@ -240,50 +240,8 @@ nav {
 
 .btn-text-only:hover { color: var(--accent); }
 
-.hero-visual {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-}
-
-.hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: contrast(1.02) saturate(0.95);
-}
-
-.hero-caption {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  right: 1rem;
-  background: var(--rice);
-  padding: 1rem 1.2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid var(--ink);
-}
-
-.caption-text {
-  font-family: 'Fraunces', serif;
-  font-style: italic;
-  font-size: 0.92rem;
-}
-
-.caption-meta {
-  font-family: 'Fraunces', serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-light);
-}
-
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
-  .hero { padding: 2rem 0 4rem; }
-  .hero-issue { margin-bottom: 2.5rem; }
 }
 
 /* ============== STATS STRIP ============== */
@@ -345,13 +303,12 @@ nav {
 section { padding: 7rem 0; }
 
 .section-header {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 3rem;
-  margin-bottom: 5rem;
-  align-items: end;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--ink);
+  margin-bottom: 3.5rem;
+  max-width: 720px;
+}
+
+.section-header .section-title {
+  margin-bottom: 1rem;
 }
 
 .section-chapter {
@@ -387,7 +344,7 @@ section { padding: 7rem 0; }
 
 @media (max-width: 768px) {
   section { padding: 4.5rem 0; }
-  .section-header { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 3rem; }
+  .section-header { margin-bottom: 2.5rem; }
   .section-chapter .num { font-size: 2rem; }
 }
 
@@ -1014,7 +971,20 @@ footer {
   opacity: 0.5;
   font-style: italic;
   min-height: 180px;
+  text-decoration: none;
+  line-height: 1.7;
+  transition: all 0.25s;
 }
+
+.rest-card.placeholder:hover {
+  opacity: 1;
+  border-color: var(--accent);
+  border-style: solid;
+  color: var(--accent);
+  background: rgba(61, 90, 58, 0.04);
+}
+
+.rest-card.placeholder::before { display: none; }
 
 @media (max-width: 900px) { .rest-grid { grid-template-columns: 1fr; } }
 
@@ -1199,7 +1169,20 @@ footer {
 
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .hero-visual { height: 420px; transform: scale(0.85); }
+  .hero-visual { height: 440px; }
+}
+
+@media (max-width: 560px) {
+  .hero { padding: 3rem 1.25rem 4rem; }
+  .hero-visual {
+    height: 380px;
+    transform: scale(0.82);
+    transform-origin: center top;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-visual { transform: scale(0.7); height: 340px; }
 }
 
 .btn-hero-cta {
@@ -1520,15 +1503,15 @@ footer {
           <span>5 道餐點</span>
         </div>
       </div>
-      <div class="rest-card placeholder">
+      <a href="https://bymind.world/" target="_blank" rel="noopener" class="rest-card placeholder">
         + 持續招募中<br>下週可能就是你的店
-      </div>
-      <div class="rest-card placeholder">
+      </a>
+      <a href="https://bymind.world/" target="_blank" rel="noopener" class="rest-card placeholder">
         + 持續招募中<br>下週可能就是你的店
-      </div>
-      <div class="rest-card placeholder">
+      </a>
+      <a href="https://bymind.world/" target="_blank" rel="noopener" class="rest-card placeholder">
         + 持續招募中<br>下週可能就是你的店
-      </div>
+      </a>
     </div>
   </div>
 </section>
@@ -1610,8 +1593,8 @@ footer {
     </div>
 
     <div class="footer-bottom">
-      <div>© 2026 BY Mind · MVP 試營運版本</div>
-      <div>Made in Taichung</div>
+      <div>© 2026 BY Mind</div>
+      <div>Located in Taichung</div>
     </div>
   </div>
 </footer>
