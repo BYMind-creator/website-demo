@@ -1049,7 +1049,7 @@ textarea.form-input { resize: vertical; min-height: 70px; }
   <div class="page-title-wrap">
     <span class="page-eyebrow">今天想吃什麼</span>
     <h1 class="page-title">當日合作餐廳</h1>
-    <p class="page-subtitle">三家在地好店，今天 10:30 前下單</p>
+    <p class="page-subtitle">三家在地好店，今天 10:00 前下單</p>
   </div>
 
   <div class="restaurant-list" id="restaurant-list">
@@ -1269,7 +1269,7 @@ const buildings = [
     address: '台中市西屯區市政北二路號',
     pickup_location: '1F 大廳警衛處',
     pickup_time: '12:00',
-    cutoff_time: '10:30'
+    cutoff_time: '10:00'
   },
   {
     id: '22222222',
@@ -1699,11 +1699,11 @@ function closeModalIfBackdrop(e) {
 
 // ============== 倒數計時 ==============
 function updateCountdown() {
-  // 模擬截單時間 = 今天 10:30
+  // 模擬截單時間 = 今天 10:00
   const now = new Date();
   const cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 30);
 
-  // 如果已過 10:30，顯示明天的
+  // 如果已過 10:00，顯示明天的
   if (now > cutoff) {
     cutoff.setDate(cutoff.getDate() + 1);
   }
