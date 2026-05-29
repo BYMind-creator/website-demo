@@ -102,6 +102,98 @@
 <!-- QRCode.js (前端生成 LINE QR) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+/* ════════════════════════════════
+   全頁 cursor-zoom 光圈效果
+   滑鼠跟隨 + 按下變大
+════════════════════════════════ */
+
+/* 所有可點元素加 cursor-zoom 容器 */
+a, button,
+.dcard, .tcard, .bcard, .case-row, .faq-q,
+.edu-b2b, .c-line-card, .cta-btn,
+.proc-step, .edu-features li {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 光圈本體 */
+.cursor-zoom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(16,185,129,0.35) 0%,
+    rgba(16,185,129,0.15) 50%,
+    transparent 100%);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(var(--cx, 0px), var(--cy, 0px)) scale(0.6);
+  transition: opacity 0.25s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 0;
+  will-change: transform, opacity;
+}
+
+/* 滑鼠進入元素：光圈淡入 */
+.cursor-zoom.show {
+  opacity: 1;
+  transform: translate(var(--cx, 0px), var(--cy, 0px)) scale(1);
+}
+
+/* 滑鼠按下不放：光圈放大到填滿 */
+.cursor-zoom.pressing {
+  transform: translate(var(--cx, 0px), var(--cy, 0px)) scale(8);
+  background: radial-gradient(circle,
+    rgba(16,185,129,0.5) 0%,
+    rgba(16,185,129,0.3) 40%,
+    rgba(16,185,129,0.1) 100%);
+  transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+              background 0.4s ease;
+}
+
+/* 確保元素內容在光圈之上 */
+a > *, button > *,
+.dcard > *, .tcard > *, .bcard > *,
+.case-row > *, .faq-q > *, .edu-b2b > *,
+.c-line-card > *, .cta-btn > *,
+.proc-step > *, .edu-features li > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 深色背景元素（黑底 CTA、nav-cta）光圈改用白色 */
+.nav-cta .cursor-zoom,
+#s-cta .cta-btn .cursor-zoom,
+.btn-primary .cursor-zoom,
+.f-btn .cursor-zoom {
+  background: radial-gradient(circle,
+    rgba(255,255,255,0.45) 0%,
+    rgba(255,255,255,0.2) 50%,
+    transparent 100%);
+}
+.nav-cta .cursor-zoom.pressing,
+#s-cta .cta-btn .cursor-zoom.pressing,
+.btn-primary .cursor-zoom.pressing,
+.f-btn .cursor-zoom.pressing {
+  background: radial-gradient(circle,
+    rgba(255,255,255,0.6) 0%,
+    rgba(255,255,255,0.35) 40%,
+    rgba(255,255,255,0.1) 100%);
+}
+
+/* 觸控裝置完全關閉 */
+@media (hover: none), (pointer: coarse) {
+  .cursor-zoom { display: none !important; }
+}
+
+/* 尊重 reduced-motion 偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-zoom { display: none !important; }
+}
+  
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 
@@ -2423,6 +2515,98 @@ window.addEventListener('scroll',()=>{
   else nav.style.borderBottomColor='rgba(17,17,17,0.06)';
 });
 
+/* === 全頁 cursor-zoom 光圈互動 === */
+(function() {
+  // 觸控/reduced-motion 直接跳過
+  if (window.matchMedia('(hover: none)').matches ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // 要加光圈的元素選擇器
+  const SELECTOR = [
+    'a', 'button',
+    '.dcard', '.tcard', '.bcard',
+    '.case-row', '.faq-q',
+    '.edu-b2b', '.c-line-card', '.cta-btn',
+    '.proc-step', '.edu-features li'
+  ].join(',');
+
+  // 排除清單（這些不要加光圈：純文字連結、footer 細連結等）
+  const EXCLUDE_SELECTOR = [
+    '.nav-logo',
+    '.nav-links a',
+    '.footer-meta a',
+    '.c-info-val',
+    '[href^="tel:"]',
+    '[href^="mailto:"].c-info-val'
+  ].join(',');
+
+  function shouldExclude(el) {
+    return el.matches(EXCLUDE_SELECTOR) ||
+           el.closest('.f-err'); // 錯誤訊息裡的連結
+  }
+
+  function attach(el) {
+    if (el.dataset.czInit || shouldExclude(el)) return;
+    el.dataset.czInit = '1';
+
+    // 建立光圈
+    const zoom = document.createElement('span');
+    zoom.className = 'cursor-zoom';
+    el.appendChild(zoom);
+
+    let isPressing = false;
+
+    el.addEventListener('mouseenter', (e) => {
+      const r = el.getBoundingClientRect();
+      zoom.style.setProperty('--cx', (e.clientX - r.left) + 'px');
+      zoom.style.setProperty('--cy', (e.clientY - r.top) + 'px');
+      // 強制 reflow 後再加 show，避免初始位置動畫
+      void zoom.offsetWidth;
+      zoom.classList.add('show');
+    });
+
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      zoom.style.setProperty('--cx', (e.clientX - r.left) + 'px');
+      zoom.style.setProperty('--cy', (e.clientY - r.top) + 'px');
+    });
+
+    el.addEventListener('mouseleave', () => {
+      zoom.classList.remove('show', 'pressing');
+      isPressing = false;
+    });
+
+    el.addEventListener('mousedown', () => {
+      isPressing = true;
+      zoom.classList.add('pressing');
+    });
+
+    const release = () => {
+      if (isPressing) {
+        zoom.classList.remove('pressing');
+        isPressing = false;
+      }
+    };
+    el.addEventListener('mouseup', release);
+    window.addEventListener('mouseup', release); // 滑鼠在元素外放開也要收
+  }
+
+  // 初始套用
+  document.querySelectorAll(SELECTOR).forEach(attach);
+
+  // 動態加入的元素也支援（如果你之後 SPA 化）
+  const observer = new MutationObserver(muts => {
+    muts.forEach(m => {
+      m.addedNodes.forEach(node => {
+        if (node.nodeType !== 1) return;
+        if (node.matches?.(SELECTOR)) attach(node);
+        node.querySelectorAll?.(SELECTOR).forEach(attach);
+      });
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
+  
 /* === LINE QR 前端生成 === */
 function generateQR(){
   const el=document.getElementById('line-qr');
