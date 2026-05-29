@@ -1615,7 +1615,7 @@ a.c-info-val:hover{
 }
 
 /* ════════════════════════════════
-   全頁滑鼠圓點（12px 實心薄荷綠）
+   全頁滑鼠圓點 + 拖尾
 ════════════════════════════════ */
 
 #cz-cursor {
@@ -1630,50 +1630,57 @@ a.c-info-val:hover{
   pointer-events: none;
   z-index: 9999;
   opacity: 0;
-  will-change: transform, width, height, background;
-  transition:
-    opacity 0.3s ease,
-    width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-    height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-    background 0.3s ease,
-    margin 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.3s ease, background 0.3s ease;
+  will-change: transform;
 }
 
-#cz-cursor.active {
-  opacity: 1;
-}
+#cz-cursor.active { opacity: 1; }
 
+/* hover 在可點元素：圓點稍微大一點點（14 → 18，提示用） */
 #cz-cursor.hovering {
-  width: 36px;
-  height: 36px;
-  margin: -18px 0 0 -18px;
-  background: rgba(16, 185, 129, 0.45);
+  background: rgba(16, 185, 129, 0.85);
 }
 
+/* 按下不放：稍微膨脹 */
 #cz-cursor.pressing {
-  width: 80px;
-  height: 80px;
-  margin: -40px 0 0 -40px;
-  background: rgba(16, 185, 129, 0.55);
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  background: rgba(16, 185, 129, 1);
   transition:
-    width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
-    height 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
-    margin 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
-    background 0.4s ease;
+    width 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    margin 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 0.25s ease;
 }
 
-#cz-cursor.dark {
+/* 深底區域：圓點變白 */
+#cz-cursor.dark { background: rgb(255, 255, 255); }
+#cz-cursor.dark.hovering { background: rgba(255, 255, 255, 0.85); }
+#cz-cursor.dark.pressing { background: rgba(255, 255, 255, 1); }
+
+/* ─── 拖尾 ─── */
+.cz-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: rgb(16, 185, 129);
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.cz-trail.dark {
   background: rgb(255, 255, 255);
 }
-#cz-cursor.dark.hovering {
-  background: rgba(255, 255, 255, 0.5);
-}
-#cz-cursor.dark.pressing {
-  background: rgba(255, 255, 255, 0.7);
-}
 
+/* 觸控裝置不顯示 */
 @media (hover: none), (pointer: coarse) {
-  #cz-cursor { display: none !important; }
+  #cz-cursor, .cz-trail { display: none !important; }
 }
    
 </style>
@@ -2486,13 +2493,24 @@ window.addEventListener('scroll',()=>{
   else nav.style.borderBottomColor='rgba(17,17,17,0.06)';
 });
 
-/* === 全頁跟隨滑鼠圓點 === */
+/* === 全頁跟隨滑鼠圓點 + 拖尾 === */
 (function() {
   if (window.matchMedia('(hover: none)').matches) return;
 
+  // 主圓點
   const cursor = document.createElement('div');
   cursor.id = 'cz-cursor';
   document.body.appendChild(cursor);
+
+  // 拖尾數量（越多越長，但越耗效能；建議 8-12）
+  const TRAIL_COUNT = 10;
+  const trails = [];
+  for (let i = 0; i < TRAIL_COUNT; i++) {
+    const t = document.createElement('div');
+    t.className = 'cz-trail';
+    document.body.appendChild(t);
+    trails.push({ el: t, x: 0, y: 0 });
+  }
 
   const CLICKABLE = [
     'a', 'button',
@@ -2507,6 +2525,7 @@ window.addEventListener('scroll',()=>{
 
   let x = 0, y = 0;
   let cx = 0, cy = 0;
+  let isDark = false;
   let raf = null;
   let isPressing = false;
 
@@ -2516,6 +2535,7 @@ window.addEventListener('scroll',()=>{
 
   document.addEventListener('mouseleave', () => {
     cursor.classList.remove('active', 'hovering', 'pressing', 'dark');
+    trails.forEach(t => t.el.style.opacity = '0');
   });
 
   document.addEventListener('mousemove', (e) => {
@@ -2527,28 +2547,47 @@ window.addEventListener('scroll',()=>{
 
     const target = e.target;
 
+    // hover 偵測
     if (target.closest && target.closest(CLICKABLE)) {
       cursor.classList.add('hovering');
     } else {
       cursor.classList.remove('hovering');
     }
 
-    let onDark = false;
+    // 深底偵測
+    isDark = false;
     for (const sel of DARK_BG) {
       if (target.closest && target.closest(sel)) {
-        onDark = true;
+        isDark = true;
         break;
       }
     }
-    cursor.classList.toggle('dark', onDark);
+    cursor.classList.toggle('dark', isDark);
+    trails.forEach(t => t.el.classList.toggle('dark', isDark));
 
     if (!raf) raf = requestAnimationFrame(loop);
   });
 
   function loop() {
-    cx += (x - cx) * 0.25;
-    cy += (y - cy) * 0.25;
+    // 主圓點：快速跟隨
+    cx += (x - cx) * 0.28;
+    cy += (y - cy) * 0.28;
     cursor.style.transform = `translate(${cx}px, ${cy}px)`;
+
+    // 拖尾：每顆追前一顆，越後面的越慢、越小、越透明
+    let prevX = cx, prevY = cy;
+    trails.forEach((t, i) => {
+      const ease = 0.32 - i * 0.022;     // 越後面追越慢
+      t.x += (prevX - t.x) * ease;
+      t.y += (prevY - t.y) * ease;
+      const scale = 1 - i * 0.085;       // 越後面越小
+      const op = 0.6 - i * 0.055;        // 越後面越透明
+      t.el.style.opacity = op;
+      t.el.style.transform = `translate(${t.x}px, ${t.y}px) scale(${scale})`;
+      prevX = t.x;
+      prevY = t.y;
+    });
+
     if (Math.abs(x - cx) > 0.3 || Math.abs(y - cy) > 0.3) {
       raf = requestAnimationFrame(loop);
     } else {
