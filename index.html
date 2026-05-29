@@ -1689,35 +1689,39 @@ a.c-info-val:hover{
 }
 
 /* ════════════════════════════════
-   商家方案卡 · 隱形價格區（按下透視顯示）
+   商家方案卡 · 隱形價格區（鼠標探照燈）
 ════════════════════════════════ */
 
 .bcard {
   position: relative;
 }
 
+/* 價格區：固定位置在卡片底部 (meta 上方) */
 .bcard-price {
   position: absolute;
   left: 1.75rem;
   right: 1.75rem;
   bottom: 4.5rem;
   z-index: 5;
+  pointer-events: none;
   
-  /* 自帶白底，蓋住正下方原本的「卡片描述文字」區域 */
+  /* 自帶白色底，遮住下層原本的描述文字 */
   background: #fff;
-  padding: 8px 0;
+  padding: 10px 4px;
+  border-radius: 8px;
   
   display: flex;
   flex-direction: column;
   gap: 6px;
   
+  /* 預設整個價格區隱藏（圓心半徑 0）*/
   clip-path: circle(0 at var(--bcx, 50%) var(--bcy, 50%));
   -webkit-clip-path: circle(0 at var(--bcx, 50%) var(--bcy, 50%));
-  pointer-events: none;
   
   transition: clip-path 0.15s ease, -webkit-clip-path 0.15s ease;
 }
 
+/* 按住 + 滑鼠在卡片內：clip-path 半徑開到 100px，圓心跟著滑鼠走 */
 .bcard.revealing .bcard-price {
   clip-path: circle(100px at var(--bcx, 50%) var(--bcy, 50%));
   -webkit-clip-path: circle(100px at var(--bcx, 50%) var(--bcy, 50%));
@@ -1727,6 +1731,7 @@ a.c-info-val:hover{
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  padding: 0 4px;
   font-size: 13px;
 }
 
@@ -2697,19 +2702,20 @@ window.addEventListener('scroll',()=>{
   });
 })();
 
-/* === 商家卡按下透視價格 · 透視模式版 === */
+/* === 商家卡按下透視價格 · 探照燈版 === */
 (function() {
   if (window.matchMedia('(hover: none)').matches) return;
 
   const bcards = document.querySelectorAll('.bcard');
   if (!bcards.length) return;
 
-  let pressMode = false; // 全局透視模式（按住任何地方都算）
+  let pressMode = false;
 
   function updatePos(card, e) {
     const priceEl = card.querySelector('.bcard-price');
     if (!priceEl) return;
-    const r = card.getBoundingClientRect();
+    // 座標相對於價格區自己
+    const r = priceEl.getBoundingClientRect();
     const x = e.clientX - r.left;
     const y = e.clientY - r.top;
     priceEl.style.setProperty('--bcx', x + 'px');
@@ -2717,26 +2723,21 @@ window.addEventListener('scroll',()=>{
   }
 
   bcards.forEach(card => {
-    // 滑鼠在卡片內移動 → 更新位置
     card.addEventListener('mousemove', (e) => {
       updatePos(card, e);
-      // 如果處於透視模式，並且滑鼠在卡片內 → 顯示
       if (pressMode) card.classList.add('revealing');
     });
 
-    // 滑鼠離開卡片 → 該卡片收起來（其他卡片不受影響）
-    card.addEventListener('mouseleave', () => {
-      card.classList.remove('revealing');
-    });
-
-    // 滑鼠進入卡片時，如果已經是透視模式 → 直接顯示
     card.addEventListener('mouseenter', (e) => {
       updatePos(card, e);
       if (pressMode) card.classList.add('revealing');
     });
+
+    card.addEventListener('mouseleave', () => {
+      card.classList.remove('revealing');
+    });
   });
 
-  // 按下不放（任何位置都可以觸發）→ 進入透視模式
   document.addEventListener('mousedown', () => {
     pressMode = true;
   });
