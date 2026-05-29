@@ -1687,7 +1687,82 @@ a.c-info-val:hover{
 @media (hover: none), (pointer: coarse) {
   #cz-cursor, .cz-trail { display: none !important; }
 }
-   
+
+/* ════════════════════════════════
+   商家方案卡 · 透視價格區
+════════════════════════════════ */
+
+.bcard {
+  /* 確保 clip-path 有定位基準 */
+  position: relative;
+}
+
+.bcard-price {
+  background: linear-gradient(180deg, var(--mint-50) 0%, rgba(16,185,129,0.04) 100%);
+  border: 0.5px solid var(--line-mint);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 0 0 1.25rem 0;
+  
+  /* 關鍵：用 clip-path 從圓心 0 半徑開始藏起來 */
+  clip-path: circle(0 at var(--bcx, 50%) var(--bcy, 50%));
+  -webkit-clip-path: circle(0 at var(--bcx, 50%) var(--bcy, 50%));
+  transition: clip-path 0.25s ease, -webkit-clip-path 0.25s ease;
+}
+
+/* 按下放大期間：clip-path 半徑開到 80px，正好對齊膨脹圓點 */
+.bcard.revealing .bcard-price {
+  clip-path: circle(80px at var(--bcx, 50%) var(--bcy, 50%));
+  -webkit-clip-path: circle(80px at var(--bcx, 50%) var(--bcy, 50%));
+}
+
+.bp-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--mint-700);
+  letter-spacing: 1.5px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.bp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  font-size: 13px;
+}
+
+.bp-item {
+  color: var(--mid);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.bp-val {
+  font-family: var(--display);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 14px;
+}
+.bp-val em {
+  font-style: normal;
+  color: var(--mint-700);
+  font-size: 16px;
+  margin: 0 1px;
+}
+
+.bp-hint {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 0.5px dashed var(--line-mint);
+  font-size: 11px;
+  color: var(--mint-700);
+  font-family: var(--mono);
+  letter-spacing: 0.3px;
+}
+  
 </style>
 </head>
 <body>
@@ -1996,6 +2071,18 @@ a.c-info-val:hover{
         </div>
         <h3 class="bcard-title">客製化網站建置</h3>
         <p class="bcard-text">企業官網、電商購物車、預約系統、內部工具——從規劃、設計、開發到上線部署，一站交付。RWD 響應式設計、SEO 友善、後台可維護。</p>
+        <div class="bcard-price">
+          <span class="bp-label">PRICING</span>
+          <div class="bp-row">
+            <span class="bp-item">建置</span>
+            <span class="bp-val">NT$ <em>XX,XXX</em> 起</span>
+          </div>
+          <div class="bp-row">
+            <span class="bp-item">月租</span>
+            <span class="bp-val">NT$ <em>X,XXX</em> 起 / 月</span>
+          </div>
+          <div class="bp-hint">→ 加 LINE 詳談取得完整報價</div>
+        </div>
         <div class="bcard-meta">
           <span class="for">適用 / 中小企業・個人品牌・電商</span>
           <span class="cta">索取方案介紹 <span class="arrow">→</span></span>
@@ -2018,6 +2105,18 @@ a.c-info-val:hover{
         </div>
         <h3 class="bcard-title">AI 小助手 / LINE OA</h3>
         <p class="bcard-text">打造你的專屬 AI 客服機器人——自動回覆常見問題、智慧導流選單、無縫轉接真人客服。可整合 LINE OA、官網對話框。</p>
+        <div class="bcard-price">
+          <span class="bp-label">PRICING</span>
+          <div class="bp-row">
+            <span class="bp-item">建置</span>
+            <span class="bp-val">NT$ <em>XX,XXX</em> 起</span>
+          </div>
+          <div class="bp-row">
+            <span class="bp-item">月租</span>
+            <span class="bp-val">NT$ <em>X,XXX</em> 起 / 月</span>
+          </div>
+          <div class="bp-hint">→ 加 LINE 詳談取得完整報價</div>
+        </div>
         <div class="bcard-meta">
           <span class="for">適用 / 服務業・電商・補習班</span>
           <span class="cta">索取方案介紹 <span class="arrow">→</span></span>
@@ -2039,6 +2138,18 @@ a.c-info-val:hover{
         </div>
         <h3 class="bcard-title">關鍵字 ＆ 競品分析</h3>
         <p class="bcard-text">每月固定產出關鍵字機會報告、競品排名追蹤、SEO 優化建議——讓流量真的變成生意。可整合 GA4 數據協同分析。</p>
+        <div class="bcard-price">
+          <span class="bp-label">PRICING</span>
+          <div class="bp-row">
+            <span class="bp-item">建置</span>
+            <span class="bp-val">NT$ <em>XX,XXX</em> 起</span>
+          </div>
+          <div class="bp-row">
+            <span class="bp-item">月租</span>
+            <span class="bp-val">NT$ <em>X,XXX</em> 起 / 月</span>
+          </div>
+          <div class="bp-hint">→ 加 LINE 詳談取得完整報價</div>
+        </div>
         <div class="bcard-meta">
           <span class="for">適用 / 個人品牌・電商・SME</span>
           <span class="cta">索取方案介紹 <span class="arrow">→</span></span>
@@ -2059,6 +2170,18 @@ a.c-info-val:hover{
         </div>
         <h3 class="bcard-title">標案爬蟲服務</h3>
         <p class="bcard-text">每天自動掃描最新政府標案，依你設定的關鍵字篩選，email 即時通報——商機不再錯過。可客製化篩選條件與通報頻率。</p>
+        <div class="bcard-price">
+          <span class="bp-label">PRICING</span>
+          <div class="bp-row">
+            <span class="bp-item">建置</span>
+            <span class="bp-val">NT$ <em>XX,XXX</em> 起</span>
+          </div>
+          <div class="bp-row">
+            <span class="bp-item">月租</span>
+            <span class="bp-val">NT$ <em>X,XXX</em> 起 / 月</span>
+          </div>
+          <div class="bp-hint">→ 加 LINE 詳談取得完整報價</div>
+        </div>
         <div class="bcard-meta">
           <span class="for">適用 / 顧問・接案者・服務公司</span>
           <span class="cta">索取方案介紹 <span class="arrow">→</span></span>
@@ -2615,6 +2738,62 @@ window.addEventListener('scroll',()=>{
   window.addEventListener('blur', () => {
     cursor.classList.remove('pressing');
     isPressing = false;
+  });
+})();
+
+/* === 商家方案卡 · 按下圓點透視價格 === */
+(function() {
+  if (window.matchMedia('(hover: none)').matches) return;
+
+  const bcards = document.querySelectorAll('.bcard');
+  if (!bcards.length) return;
+
+  let pressing = null; // 目前按住的卡片
+
+  bcards.forEach(card => {
+    // 鼠標位置：更新 --bcx / --bcy 給 clip-path 用
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      const priceEl = card.querySelector('.bcard-price');
+      if (priceEl) {
+        // 找 price 區的相對位置
+        const pr = priceEl.getBoundingClientRect();
+        const px = e.clientX - pr.left;
+        const py = e.clientY - pr.top;
+        priceEl.style.setProperty('--bcx', px + 'px');
+        priceEl.style.setProperty('--bcy', py + 'px');
+      }
+    });
+
+    card.addEventListener('mousedown', (e) => {
+      pressing = card;
+      card.classList.add('revealing');
+    });
+
+    card.addEventListener('mouseleave', () => {
+      if (pressing === card) {
+        pressing = null;
+        card.classList.remove('revealing');
+      }
+    });
+  });
+
+  // 全域 mouseup：放開鼠標就藏回去
+  document.addEventListener('mouseup', () => {
+    if (pressing) {
+      pressing.classList.remove('revealing');
+      pressing = null;
+    }
+  });
+
+  // 視窗失焦也藏起來
+  window.addEventListener('blur', () => {
+    if (pressing) {
+      pressing.classList.remove('revealing');
+      pressing = null;
+    }
   });
 })();
   
