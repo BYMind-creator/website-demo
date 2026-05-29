@@ -1658,7 +1658,12 @@ a.c-info-val:hover{
 #cz-cursor.dark { background: rgb(255, 255, 255); }
 #cz-cursor.dark.hovering { background: rgba(255, 255, 255, 0.85); }
 #cz-cursor.dark.pressing { background: rgba(255, 255, 255, 1); }
-
+/* 按下時尾巴隱藏，只留主圓點膨脹 */
+#cz-cursor.pressing ~ .cz-trail {
+  opacity: 0 !important;
+  transition: opacity 0.2s ease;
+}
+  
 /* ─── 拖尾 ─── */
 .cz-trail {
   position: fixed;
@@ -2582,7 +2587,7 @@ window.addEventListener('scroll',()=>{
       t.y += (prevY - t.y) * ease;
       const scale = 1 - i * 0.085;       // 越後面越小
       const op = 0.6 - i * 0.055;        // 越後面越透明
-      t.el.style.opacity = op;
+      t.el.style.opacity = isPressing ? 0 : op;
       t.el.style.transform = `translate(${t.x}px, ${t.y}px) scale(${scale})`;
       prevX = t.x;
       prevY = t.y;
