@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8"/>
@@ -1696,6 +1696,13 @@ a.c-info-val:hover{
   position: relative;
 }
 
+/* 圓心即時跟手：只讓半徑 --bcr 做動畫，圓心(--bcx/--bcy)不進 transition */
+@property --bcr {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 /* 價格區：固定位置在卡片底部 (meta 上方) */
 .bcard-price {
   position: absolute;
@@ -1714,24 +1721,26 @@ a.c-info-val:hover{
   flex-direction: column;
   gap: 6px;
   
-  /* 預設整個價格區隱藏（圓心半徑 0）*/
-  clip-path: circle(0 at var(--bcx, 50%) var(--bcy, 50%));
-  -webkit-clip-path: circle(0 at var(--bcx, 50%) var(--bcy, 50%));
+  /* 預設整個價格區隱藏（半徑 0）；圓心跟著滑鼠走、即時不延遲 */
+  --bcr: 0px;
+  clip-path: circle(var(--bcr) at var(--bcx, 50%) var(--bcy, 50%));
+  -webkit-clip-path: circle(var(--bcr) at var(--bcx, 50%) var(--bcy, 50%));
   
-  transition: clip-path 0.15s ease, -webkit-clip-path 0.15s ease;
+  /* 只動半徑，不動圓心 → 放大鏡開合平滑、位置零延遲 */
+  transition: --bcr 0.16s ease;
 }
 
-/* 按住 + 滑鼠在卡片內：clip-path 半徑開到 100px，圓心跟著滑鼠走 */
+/* 按住 + 滑鼠在卡片內：半徑開到 120px，圓心瞬間貼著滑鼠 */
 .bcard.revealing .bcard-price {
-  clip-path: circle(100px at var(--bcx, 50%) var(--bcy, 50%));
-  -webkit-clip-path: circle(100px at var(--bcx, 50%) var(--bcy, 50%));
+  --bcr: 120px;
 }
 
 .bp-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;     /* 標籤＋價格緊貼成一組、整組靠右 */
   align-items: baseline;
-  padding: 0 4px;
+  gap: 10px;
+  padding: 0 6px;
   font-size: 13px;
 }
 
@@ -1740,19 +1749,20 @@ a.c-info-val:hover{
   font-size: 10px;
   color: var(--muted);
   letter-spacing: 1px;
+  flex-shrink: 0;
 }
 
 .bp-val {
   font-family: var(--display);
   font-weight: 700;
   color: var(--ink);
-  font-size: 14px;
+  font-size: 13px;
   white-space: nowrap;
 }
 .bp-val em {
   font-style: normal;
   color: var(--mint-700);
-  font-size: 17px;
+  font-size: 15px;
   margin: 0 2px;
 }
   
@@ -2065,8 +2075,8 @@ a.c-info-val:hover{
         <h3 class="bcard-title">客製化網站建置</h3>
         <p class="bcard-text">企業官網、電商購物車、預約系統、內部工具——從規劃、設計、開發到上線部署，一站交付。RWD 響應式設計、SEO 友善、後台可維護。</p>
         <div class="bcard-price">
-          <span class="bp-row"><span class="bp-lbl">建置</span><span class="bp-val">NT$ <em>XX,XXX</em> 起</span></span>
-          <span class="bp-row"><span class="bp-lbl">月租</span><span class="bp-val">NT$ <em>X,XXX</em> 起 / 月</span></span>
+          <span class="bp-row"><span class="bp-lbl">一頁式網站</span><span class="bp-val">NT$ <em>9,999</em>（限定）</span></span>
+          <span class="bp-row"><span class="bp-lbl">形象網站</span><span class="bp-val">NT$ <em>18,000</em>（限定）</span></span>
         </div>
         <div class="bcard-meta">
           <span class="for">適用 / 中小企業・個人品牌・電商</span>
@@ -2091,8 +2101,9 @@ a.c-info-val:hover{
         <h3 class="bcard-title">AI 小助手 / LINE OA</h3>
         <p class="bcard-text">打造你的專屬 AI 客服機器人——自動回覆常見問題、智慧導流選單、無縫轉接真人客服。可整合 LINE OA、官網對話框。</p>
         <div class="bcard-price">
-          <span class="bp-row"><span class="bp-lbl">建置</span><span class="bp-val">NT$ <em>XX,XXX</em> 起</span></span>
-          <span class="bp-row"><span class="bp-lbl">月租</span><span class="bp-val">NT$ <em>X,XXX</em> 起 / 月</span></span>
+          <span class="bp-row"><span class="bp-lbl">建置費</span><span class="bp-val">NT$ <em>180,000</em></span></span>
+          <span class="bp-row"><span class="bp-lbl">LINE OA 設定費</span><span class="bp-val">NT$ <em>5,000</em></span></span>
+          <span class="bp-row"><span class="bp-lbl">流量/伺服器</span><span class="bp-val">NT$ <em>6,000–22,000</em> / 月</span></span>
         </div>
         <div class="bcard-meta">
           <span class="for">適用 / 服務業・電商・補習班</span>
@@ -2116,8 +2127,8 @@ a.c-info-val:hover{
         <h3 class="bcard-title">關鍵字 ＆ 競品分析</h3>
         <p class="bcard-text">每月固定產出關鍵字機會報告、競品排名追蹤、SEO 優化建議——讓流量真的變成生意。可整合 GA4 數據協同分析。</p>
         <div class="bcard-price">
-          <span class="bp-row"><span class="bp-lbl">建置</span><span class="bp-val">NT$ <em>XX,XXX</em> 起</span></span>
-          <span class="bp-row"><span class="bp-lbl">月租</span><span class="bp-val">NT$ <em>X,XXX</em> 起 / 月</span></span>
+          <span class="bp-row"><span class="bp-lbl">GA 建置費</span><span class="bp-val">NT$ <em>10,000</em></span></span>
+          <span class="bp-row"><span class="bp-lbl">每月分析報表</span><span class="bp-val">NT$ <em>3,000</em> / 月</span></span>
         </div>
         <div class="bcard-meta">
           <span class="for">適用 / 個人品牌・電商・SME</span>
@@ -2140,8 +2151,8 @@ a.c-info-val:hover{
         <h3 class="bcard-title">標案爬蟲服務</h3>
         <p class="bcard-text">每天自動掃描最新政府標案，依你設定的關鍵字篩選，email 即時通報——商機不再錯過。可客製化篩選條件與通報頻率。</p>
         <div class="bcard-price">
-          <span class="bp-row"><span class="bp-lbl">建置</span><span class="bp-val">NT$ <em>XX,XXX</em> 起</span></span>
-          <span class="bp-row"><span class="bp-lbl">月租</span><span class="bp-val">NT$ <em>X,XXX</em> 起 / 月</span></span>
+          <span class="bp-row"><span class="bp-lbl">基本月租</span><span class="bp-val">NT$ <em>5,000</em> / 月・含 10 組</span></span>
+          <span class="bp-row"><span class="bp-lbl">加購關鍵字</span><span class="bp-val">＋NT$ <em>1,000</em> / 10 組</span></span>
         </div>
         <div class="bcard-meta">
           <span class="for">適用 / 顧問・接案者・服務公司</span>
@@ -2440,7 +2451,7 @@ a.c-info-val:hover{
       <!-- Right: 聯絡表單 -->
       <div>
         <div class="contact-form" id="cf-wrap">
-          <div class="f-head">留下需求，我們聯繫你</div>
+          <div class="f-head">留下需求,我們聯繫你</div>
           <div class="f-sub">表單送出後會即時推送到我們的 LINE OA，24 小時內回覆。</div>
 
           <div class="f-row2">
