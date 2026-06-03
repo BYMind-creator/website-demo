@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8"/>
@@ -1694,6 +1694,17 @@ a.c-info-val:hover{
 
 .bcard {
   position: relative;
+  /* 卡片是 CTA 連結，禁止選取文字（避免誤反白） */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.bcard-title,
+.bcard-text,
+.bcard-price,
+.bcard-meta {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* 圓心即時跟手：只讓半徑 --bcr 做動畫，圓心(--bcx/--bcy)不進 transition */
