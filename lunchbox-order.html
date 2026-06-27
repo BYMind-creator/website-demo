@@ -1605,7 +1605,7 @@ function selectPayment(p) {
   $(`[data-payment="${p}"]`).classList.add('selected');
 }
 
-function submitOrder() {
+async function submitOrder() {
   const name = $('contact-name').value.trim();
   const phone = $('contact-phone').value.trim();
 
