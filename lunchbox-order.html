@@ -1620,22 +1620,55 @@ function submitOrder() {
   const { subtotal } = getCartSummary();
   const total = subtotal + SERVICE_FEE;
 
-  // 模擬訂單編號
-  const today = new Date();
-  const dateStr = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
-  const seq = String(Math.floor(Math.random() * 99) + 1).padStart(3, '0');
-  const orderNum = `${dateStr}-${seq}`;
+  // 餐點內容先組成文字，暫存進 note（下一關改成正式 order_items）
+  const itemsText = Object.values(state.cart)
+    .map(c => `${c.restaurant.name}-${c.item.name}×${c.quantity}`)
+    .join('、');
+  const userNote = $('contact-note').value.trim();
+  const note = (userNote ? userNote + '｜' : '') + itemsText;
 
-  // 填收據
-  $('order-number').textContent = orderNum;
-  $('receipt-name').textContent = name;
-  $('receipt-phone').textContent = phone;
-  $('receipt-payment').textContent = state.payment === 'cash' ? '現場付現' : 'LINE Pay 轉帳';
-  $('receipt-total').textContent = formatPrice(total);
-  $('receipt-pickup-time').textContent = state.selectedBuilding.pickup_time;
-  $('receipt-pickup-location').textContent = `${state.selectedBuilding.name}・${state.selectedBuilding.pickup_location}`;
+  // 鎖住按鈕避免連點重複下單
+  const btn = document.querySelector('#page-checkout .btn-primary');
+  const btnHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span>送出中…</span>';
 
-  goToPage('success');
+  try {
+    const resp = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contact_name: name,
+        contact_phone: phone,
+        building_id: state.selectedBuilding.id,
+        subtotal,
+        service_fee: SERVICE_FEE,
+        total,
+        payment_method: state.payment,
+        note
+      })
+    });
+
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '下單失敗');
+
+    // 用「後端回傳的真訂單編號」填收據
+    $('order-number').textContent = data.order_number;
+    $('receipt-name').textContent = name;
+    $('receipt-phone').textContent = phone;
+    $('receipt-payment').textContent = state.payment === 'cash' ? '現場付現' : 'LINE Pay 轉帳';
+    $('receipt-total').textContent = formatPrice(total);
+    $('receipt-pickup-time').textContent = state.selectedBuilding.pickup_time;
+    $('receipt-pickup-location').textContent =
+      `${state.selectedBuilding.name}・${state.selectedBuilding.pickup_location}`;
+
+    goToPage('success');
+  } catch (e) {
+    toast(e.message || '下單失敗，請再試一次');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = btnHTML;
+  }
 }
 
 function resetCart() {
