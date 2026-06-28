@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   const headers = { apikey: KEY, Authorization: `Bearer ${KEY}` };
 
   try {
-    const url = `${URL}/rest/v1/orders?select=*,buildings(name),order_items(item_name,item_price,quantity,subtotal)&order=created_at.desc`;
+    const url = `${URL}/rest/v1/orders?select=*,buildings(name),order_items(item_name,item_price,quantity,subtotal,restaurants(name))&order=created_at.desc`;
     const resp = await fetch(url, { headers });
     if (!resp.ok) {
       const detail = await resp.text();
@@ -43,6 +43,7 @@ export default async function handler(req, res) {
         price: it.item_price,
         quantity: it.quantity,
         subtotal: it.subtotal,
+        restaurant: it.restaurants?.name || '其他',
       })),
     }));
 
