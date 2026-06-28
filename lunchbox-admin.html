@@ -1800,20 +1800,7 @@ tbody tr:last-child td { border-bottom: none; }
 
 <script>
 // ============== 模擬資料 ==============
-const orders = [
-  { num: '20260526-001', name: '王小明', phone: '0912-345-678', building: '七期', restaurant: '🍱 阿明便當', items: '排骨×2、味噌湯×1', amount: 270, status: 'preparing', time: '10:12' },
-  { num: '20260526-002', name: '李美麗', phone: '0922-333-444', building: '七期', restaurant: '🍱 阿明便當', items: '雞腿便當×1', amount: 155, status: 'preparing', time: '10:15', note: '不要香菜' },
-  { num: '20260526-003', name: '陳大為', phone: '0933-555-666', building: '七期', restaurant: '🍱 阿明便當', items: '排骨×2、味噌湯×1', amount: 270, status: 'preparing', time: '10:18' },
-  { num: '20260526-004', name: '黃文琪', phone: '0900-123-456', building: '七期', restaurant: '🥗 青田輕食', items: '雞胸沙拉×1、青醬麵×1', amount: 355, status: 'pending', time: '10:22' },
-  { num: '20260526-005', name: '林志強', phone: '0911-222-333', building: '七期', restaurant: '🍱 阿明便當', items: '排骨×1、雞腿×1、味噌湯×1', amount: 290, status: 'preparing', time: '10:25' },
-  { num: '20260526-006', name: '張雅婷', phone: '0966-777-888', building: '七期', restaurant: '🍱 阿明便當', items: '魚排便當×1', amount: 145, status: 'preparing', time: '10:28' },
-  { num: '20260526-007', name: '蔡明儒', phone: '0977-555-444', building: '七期', restaurant: '🥗 青田輕食', items: '凱薩沙拉×1、青醬麵×1', amount: 375, status: 'pending', time: '10:30' },
-  { num: '20260526-008', name: '劉建宏', phone: '0988-111-222', building: '七期', restaurant: '🍱 阿明便當', items: '排骨×2', amount: 245, status: 'ready', time: '10:32' },
-  { num: '20260526-009', name: '周怡君', phone: '0922-666-777', building: '軟體園區', restaurant: '🍜 日麵屋', items: '豚骨拉麵×2', amount: 385, status: 'preparing', time: '10:35' },
-  { num: '20260526-010', name: '許安琪', phone: '0933-222-111', building: '軟體園區', restaurant: '🥗 青田輕食', items: '雞胸沙拉×1', amount: 185, status: 'pending', time: '10:38' },
-  { num: '20260526-011', name: '吳佩玲', phone: '0955-888-999', building: '七期', restaurant: '🍱 阿明便當', items: '魚排便當×1、味噌湯×1', amount: 170, status: 'ready', time: '10:41' },
-  { num: '20260526-012', name: '謝俊賢', phone: '0911-888-999', building: '軟體園區', restaurant: '🍜 日麵屋', items: '親子丼×1', amount: 175, status: 'completed', time: '10:44' }
-];
+let orders = [];
 
 const STATUS_MAP = {
   pending: { label: '待確認', class: 'status-pending' },
@@ -1837,15 +1824,33 @@ function toast(msg) {
 function doLogin() {
   const u = $('username').value;
   const p = $('password').value;
-  if (u === 'admin' && p === 'demo1234') {
+if (u === 'admin' && p === 'demo1234') {
     $('login-screen').style.display = 'none';
     $('admin-app').classList.add('active');
-    renderOrders();
+    loadOrders();          // ← 改成撈真資料
   } else {
     toast('帳號或密碼錯誤');
   }
 }
+async function loadOrders() {
+  const tbody = $('orders-tbody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--ink-light);">載入訂單中…</td></tr>';
+  try {
+    const resp = await fetch('/api/admin-orders');
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '載入失敗');
 
+    orders = data.orders || [];
+
+    if (!orders.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--ink-light);">今天還沒有訂單</td></tr>';
+      return;
+    }
+    renderOrders();
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--status-cancelled);">${e.message || '載入失敗'}</td></tr>`;
+  }
+}
 function doLogout() {
   $('login-screen').style.display = 'flex';
   $('admin-app').classList.remove('active');
