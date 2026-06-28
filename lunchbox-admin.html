@@ -1674,7 +1674,16 @@ body.role-viewer .drawer-actions { display: none !important; }
     <button class="btn-primary">推播給客人</button>
   </div>
 </div>
-
+<!-- =============== 通用彈窗 =============== -->
+<div class="drawer-backdrop" id="modal-backdrop" onclick="closeModal()"></div>
+<div id="modal" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--white);border-radius:16px;padding:2rem;width:90%;max-width:420px;z-index:1002;display:none;box-shadow:var(--shadow-lg);max-height:85vh;overflow-y:auto;">
+  <h2 id="modal-title" style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.3rem;margin-bottom:1.5rem;">標題</h2>
+  <div id="modal-body" style="display:flex;flex-direction:column;gap:1rem;"></div>
+  <div style="display:flex;gap:0.5rem;margin-top:1.5rem;">
+    <button class="btn-ghost" style="flex:1;" onclick="closeModal()">取消</button>
+    <button class="btn-solid" style="flex:1;" id="modal-save" onclick="modalSave()">儲存</button>
+  </div>
+</div>
 <!-- Toast -->
 <div class="toast" id="toast">已更新</div>
 
@@ -1935,6 +1944,7 @@ function renderMenu() {
         <div class="menu-card-title">${r.name}
           <span class="status-badge ${r.is_active ? 'status-completed' : 'status-cancelled'}">${r.is_active ? '營業中' : '已下架'}</span>
         </div>
+        <button class="btn-ghost" style="padding:0.4rem 0.8rem;font-size:0.82rem;" onclick="openAddItem('${r.id}','${r.name.replace(/'/g, "\\'")}')">+ 加餐點</button>
       </div>
       ${(r.menu_items || []).map(m => `
         <div class="menu-item-row">
@@ -1944,12 +1954,68 @@ function renderMenu() {
             <div class="desc">${m.description || ''}</div>
           </div>
           <span style="color:var(--ink-light);font-size:0.78rem;">$</span>
-          <input type="number" class="price-input" value="${m.price}"
-                 onchange="changePrice('${m.id}', this.value)">
-          <div class="toggle ${m.is_available ? 'on' : ''}"
-               onclick="toggleAvailable('${m.id}', this)"></div>
+          <input type="number" class="price-input" value="${m.price}" onchange="changePrice('${m.id}', this.value)">
+          <div class="toggle ${m.is_available ? 'on' : ''}" onclick="toggleAvailable('${m.id}', this)"></div>
+          <button class="btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.82rem;color:var(--status-cancelled);" onclick="deleteItem('${m.id}','${m.name.replace(/'/g, "\\'")}')">刪</button>
         </div>`).join('')}
     </div>`).join('');
+}
+// ===== 通用彈窗 =====
+let modalSaveFn = null;
+function openModal(title, bodyHTML, saveFn) {
+  $('modal-title').textContent = title;
+  $('modal-body').innerHTML = bodyHTML;
+  modalSaveFn = saveFn;
+  $('modal-backdrop').classList.add('active');
+  $('modal').style.display = 'block';
+}
+function closeModal() {
+  $('modal-backdrop').classList.remove('active');
+  $('modal').style.display = 'none';
+  modalSaveFn = null;
+}
+function modalSave() { if (modalSaveFn) modalSaveFn(); }
+function mField(label, id, type = 'text', val = '') {
+  return `<div class="form-field"><label>${label}</label><input class="form-input" id="${id}" type="${type}" value="${val}"></div>`;
+}
+
+// ===== 新增餐點 =====
+function openAddItem(restaurantId, restaurantName) {
+  openModal(`為「${restaurantName}」新增餐點`,
+    mField('餐點名稱', 'mi-name') +
+    mField('價格', 'mi-price', 'number') +
+    mField('分類（主餐/湯品…）', 'mi-cat') +
+    mField('描述（選填）', 'mi-desc'),
+    async () => {
+      const name = $('mi-name').value.trim();
+      const price = $('mi-price').value;
+      if (!name || price === '') { toast('請填名稱和價格'); return; }
+      try {
+        const resp = await fetch('/api/manage-menu-item', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'create', restaurant_id: restaurantId, name, price,
+            category: $('mi-cat').value.trim(), description: $('mi-desc').value.trim(),
+            _user: currentUser?._u, _pass: currentUser?._p }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || '新增失敗');
+        toast('已新增餐點'); closeModal(); loadMenu();
+      } catch (e) { toast(e.message || '新增失敗'); }
+    });
+}
+
+// ===== 刪除餐點 =====
+async function deleteItem(id, name) {
+  if (!confirm(`確定刪除「${name}」？此動作無法復原。`)) return;
+  try {
+    const resp = await fetch('/api/manage-menu-item', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', id, _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '刪除失敗');
+    toast('已刪除'); loadMenu();
+  } catch (e) { toast(e.message || '刪除失敗'); }
 }
 async function changePrice(id, value) {
   const price = Number(value);
