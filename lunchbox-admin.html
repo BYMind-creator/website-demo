@@ -2026,7 +2026,35 @@ function openOrder(num) {
   $('drawer-backdrop').classList.add('active');
   $('order-drawer').classList.add('active');
 }
+function closeDrawer() {
+  $('drawer-backdrop').classList.remove('active');
+  $('order-drawer').classList.remove('active');
+}
 
+async function setStatus(elem, label) {
+  if (!currentOrder) return;
+  const LABEL_TO_STATUS = { '待確認': 'pending', '準備中': 'preparing', '可取餐': 'ready', '已完成': 'completed' };
+  const newStatus = LABEL_TO_STATUS[label];
+
+  $$('.status-btn').forEach(b => b.classList.remove('active'));
+  elem.classList.add('active');
+
+  try {
+    const resp = await fetch('/api/update-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order_number: currentOrder.num, status: newStatus }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '更新失敗');
+
+    currentOrder.status = newStatus;
+    toast(`狀態已更新為「${label}」`);
+    renderOrders();
+  } catch (e) {
+    toast(e.message || '更新失敗');
+  }
+}
 // ============== 頁面切換 ==============
 function goToPage(page) {
   $$('.page').forEach(p => p.classList.remove('active'));
