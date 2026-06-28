@@ -1337,10 +1337,9 @@ body.role-viewer .drawer-actions { display: none !important; }
   </div>
 
   <!-- 大樓篩選 no-print -->
-  <div class="filter-bar no-print">
+  <div class="filter-bar no-print" id="printsheet-building-filter">
     <span style="color: var(--ink-light); font-size: 0.85rem;">大樓：</span>
-    <button class="filter-chip active">七期國泰商辦 <span class="chip-count">9</span></button>
-    <button class="filter-chip">台中軟體園區 A 棟 <span class="chip-count">3</span></button>
+    <!-- 按鈕由 JS 產生 -->
   </div>
 
   <div class="print-sheet" id="print-sheet">
@@ -1775,17 +1774,37 @@ async function loadOrders() {
     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--status-cancelled);">${e.message || '載入失敗'}</td></tr>`;
   }
 }
+let printsheetBuilding = 'all';
+
 function renderPrintSheet() {
   const sheet = $('print-sheet');
   if (!orders.length) {
+    $('printsheet-building-filter').innerHTML = '<span style="color:var(--ink-light);font-size:0.85rem;">大樓：</span>';
     sheet.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">今天還沒有訂單</div></div>';
     return;
   }
+function setPrintBuilding(b) {
+  printsheetBuilding = b;
+  renderPrintSheet();
+}
+  // 畫大樓篩選按鈕（從訂單裡有的大樓動態產生）
+  const buildingCounts = {};
+  for (const o of orders) buildingCounts[o.building] = (buildingCounts[o.building] || 0) + 1;
+  const buildings = Object.keys(buildingCounts);
+  $('printsheet-building-filter').innerHTML =
+    '<span style="color:var(--ink-light);font-size:0.85rem;">大樓：</span>' +
+    `<button class="filter-chip ${printsheetBuilding === 'all' ? 'active' : ''}" onclick="setPrintBuilding('all')">全部 <span class="chip-count">${orders.length}</span></button>` +
+    buildings.map(b =>
+      `<button class="filter-chip ${printsheetBuilding === b ? 'active' : ''}" onclick="setPrintBuilding('${b.replace(/'/g, "\\'")}')">${b} <span class="chip-count">${buildingCounts[b]}</span></button>`
+    ).join('');
+
+  // 只算被選中的大樓（all = 全部）
+  const useOrders = printsheetBuilding === 'all' ? orders : orders.filter(o => o.building === printsheetBuilding);
 
   const byRest = {};
-  let totalOrders = orders.length, totalDishes = 0, totalRevenue = 0;
+  let totalOrders = useOrders.length, totalDishes = 0, totalRevenue = 0;
 
-  for (const o of orders) {
+  for (const o of useOrders) {
     totalRevenue += o.amount || 0;
     const thisOrder = {};
     for (const it of (o.items || [])) {
