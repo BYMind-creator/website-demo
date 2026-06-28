@@ -2200,6 +2200,7 @@ function goToPage(page) {
   event.target.closest('.nav-item')?.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (page === 'printsheet') renderPrintSheet();
+  if (page === 'menu') loadMenu();
   if (page === 'buildings') loadBuildings();
 }
 
