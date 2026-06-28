@@ -1970,14 +1970,17 @@ function filterOrders(status, elem) {
 }
 
 // ============== 訂單明細 ==============
+let currentOrder = null;  // 記住 drawer 正在看哪一筆
+
 function openOrder(num) {
   const o = orders.find(x => x.num === num);
   if (!o) return;
+  currentOrder = o;
 
   $('d-order-num').textContent = o.num;
   $('d-name').textContent = o.name;
   $('d-phone').textContent = o.phone;
-  $('d-building').textContent = o.building === '七期' ? '七期國泰商辦' : '台中軟體園區 A 棟';
+  $('d-building').textContent = o.building;
   $('d-time').textContent = `${o.time} 下單`;
 
   const st = STATUS_MAP[o.status];
@@ -1985,26 +1988,43 @@ function openOrder(num) {
   badge.className = `status-badge ${st.class}`;
   badge.textContent = st.label;
 
-  if (o.note) {
+  // 備註：把舊的「note 塞餐點」濾掉，只留客人真備註
+  const items = o.items || [];
+  if (o.note && items.length === 0) {
     $('d-note').textContent = o.note;
     $('d-note-row').style.display = 'flex';
   } else {
     $('d-note-row').style.display = 'none';
   }
 
+  // 訂購內容（真明細）
+  $('d-items').innerHTML = items.length
+    ? items.map(it => `
+        <div class="item-row">
+          <span class="item-qty">×${it.quantity}</span>
+          <span class="item-name">${it.name}<span class="item-note">${it.restaurant || ''}</span></span>
+          <span class="item-subtotal">$${it.subtotal}</span>
+        </div>`).join('')
+    : '<div style="padding:1rem;color:var(--ink-light);font-size:0.88rem;">（這筆是舊單，沒有明細）</div>';
+
+  // 金額區塊
+  const drawerBody = $('order-drawer').querySelector('.drawer-body');
+  const amountSection = drawerBody.querySelectorAll('.drawer-section')[2];
+  if (amountSection) {
+    amountSection.innerHTML = `
+      <div class="drawer-section-title">金額</div>
+      <div class="detail-row"><span class="detail-label">商品小計</span><span class="detail-value">$${o.subtotal}</span></div>
+      <div class="detail-row"><span class="detail-label">服務費</span><span class="detail-value">$${o.service_fee}</span></div>
+      <div class="detail-row" style="font-size:1.05rem;"><span class="detail-label" style="color:var(--ink);font-weight:500;">應付總計</span><span class="detail-value" style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.2rem;color:var(--persimmon);">$${o.amount}</span></div>
+      <div class="detail-row"><span class="detail-label">付款方式</span><span class="detail-value">${o.payment_method === 'cash' ? '現場付現' : 'LINE Pay'} <span class="status-badge ${o.payment_status === 'paid' ? 'status-completed' : 'status-pending'}" style="margin-left:0.5rem;">${o.payment_status === 'paid' ? '已付' : '未付'}</span></span></div>`;
+  }
+
+  // 狀態按鈕：把目前狀態 highlight 起來
+  const map = { pending: 0, preparing: 1, ready: 2, completed: 3 };
+  $$('.status-btn').forEach((btn, i) => btn.classList.toggle('active', i === map[o.status]));
+
   $('drawer-backdrop').classList.add('active');
   $('order-drawer').classList.add('active');
-}
-
-function closeDrawer() {
-  $('drawer-backdrop').classList.remove('active');
-  $('order-drawer').classList.remove('active');
-}
-
-function setStatus(elem, label) {
-  $$('.status-btn').forEach(b => b.classList.remove('active'));
-  elem.classList.add('active');
-  toast(`狀態已更新為「${label}」`);
 }
 
 // ============== 頁面切換 ==============
