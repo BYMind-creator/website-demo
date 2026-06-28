@@ -2008,6 +2008,7 @@ function goToPage(page) {
   $$('.nav-item').forEach(n => n.classList.remove('active'));
   event.target.closest('.nav-item')?.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (page === 'printsheet') renderPrintSheet();
 }
 
 // 倒數
