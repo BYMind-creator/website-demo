@@ -1252,19 +1252,19 @@ body.role-viewer .drawer-actions { display: none !important; }
 
   <div class="filter-bar">
     <button class="filter-chip active" onclick="filterOrders('all', this)">
-      全部 <span class="chip-count">12</span>
+      全部 <span class="chip-count" id="count-all">0</span>
     </button>
     <button class="filter-chip" onclick="filterOrders('pending', this)">
-      待確認 <span class="chip-count">3</span>
+      待確認 <span class="chip-count" id="count-pending">0</span>
     </button>
     <button class="filter-chip" onclick="filterOrders('preparing', this)">
-      準備中 <span class="chip-count">6</span>
+      準備中 <span class="chip-count" id="count-preparing">0</span>
     </button>
     <button class="filter-chip" onclick="filterOrders('ready', this)">
-      可取餐 <span class="chip-count">2</span>
+      可取餐 <span class="chip-count" id="count-ready">0</span>
     </button>
     <button class="filter-chip" onclick="filterOrders('completed', this)">
-      已完成 <span class="chip-count">1</span>
+      已完成 <span class="chip-count" id="count-completed">0</span>
     </button>
     <input type="text" class="search-input" placeholder="搜尋訂單號 / 姓名" id="search">
   </div>
@@ -1738,6 +1738,17 @@ async function loadOrders() {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--ink-light);">今天還沒有訂單</td></tr>';
       renderDashboard();
       updateHeaderTexts();
+      // 篩選按鈕各狀態計數
+      const counts = { all: orders.length, pending: 0, preparing: 0, ready: 0, completed: 0 };
+      for (const o of orders) {
+        if (counts[o.status] !== undefined) counts[o.status]++;
+      }
+      const setCount = (id, n) => { const el = $(id); if (el) el.textContent = n; };
+      setCount('count-all', counts.all);
+      setCount('count-pending', counts.pending);
+      setCount('count-preparing', counts.preparing);
+      setCount('count-ready', counts.ready);
+      setCount('count-completed', counts.completed);
       return;
     }
     renderOrders();
