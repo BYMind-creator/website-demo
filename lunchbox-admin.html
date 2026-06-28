@@ -1072,6 +1072,9 @@ tbody tr:last-child td { border-bottom: none; }
   th, td { padding: 0.7rem 0.6rem; }
   .drawer { width: 100vw; }
 }
+/* viewer 唯讀：藏掉改狀態按鈕 */
+body.role-viewer .status-actions,
+body.role-viewer .drawer-actions { display: none !important; }  
 </style>
 </head>
 <body>
@@ -1865,9 +1868,30 @@ async function doLogin() {
   }
 }
 
-// 第 3 段會把這個函式內容填滿，現在先放一個空的，避免報錯
 function applyRolePermissions() {
-  // 待第 3 段實作
+  const role = currentUser?.role || 'viewer';
+  const navItems = [...document.querySelectorAll('.nav-item')];
+  const find = (text) => navItems.find(n => n.textContent.includes(text));
+  const show = (el, yes) => { if (el) el.style.display = yes ? '' : 'none'; };
+
+  document.body.classList.remove('role-viewer');
+
+  if (role === 'viewer') {
+    document.body.classList.add('role-viewer');
+    show(find('總覽'), false);
+    show(find('餐廳與菜單'), false);
+    show(find('合作大樓'), false);
+    const dataTitle = [...document.querySelectorAll('.nav-section-title')].find(t => t.textContent.includes('資料管理'));
+    show(dataTitle, false);
+
+    // 若停在被藏的頁，跳去訂單列表
+    const active = document.querySelector('.page.active');
+    if (active && ['page-dashboard', 'page-menu', 'page-buildings'].includes(active.id)) {
+      goToPage('orders');
+    }
+  }
+  // superadmin / ops：畫面全開（資料管理能不能改，等塊 1 接 DB 再處理）
+}
 }
 async function loadOrders() {
   const tbody = $('orders-tbody');
