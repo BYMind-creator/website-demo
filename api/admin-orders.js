@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   const headers = { apikey: KEY, Authorization: `Bearer ${KEY}` };
 
   try {
-    const url = `${URL}/rest/v1/orders?select=*,buildings(name)&order=created_at.desc`;
+    const url = `${URL}/rest/v1/orders?select=*,buildings(name),order_items(item_name,item_price,quantity,subtotal)&order=created_at.desc`;
     const resp = await fetch(url, { headers });
     if (!resp.ok) {
       const detail = await resp.text();
@@ -38,6 +38,12 @@ export default async function handler(req, res) {
       time: new Date(o.created_at).toLocaleTimeString('zh-TW', {
         timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit', hour12: false
       }),
+      items: (o.order_items || []).map(it => ({
+        name: it.item_name,
+        price: it.item_price,
+        quantity: it.quantity,
+        subtotal: it.subtotal,
+      })),
     }));
 
     return res.status(200).json({ orders });
