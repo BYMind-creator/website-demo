@@ -31,11 +31,12 @@ export default async function handler(req, res) {
     // 綠界交易編號：英數、≤20碼。用訂單號去掉橫線 + 時間尾碼
     const tradeNo = (orderNumber.replace(/-/g, '') + Date.now().toString().slice(-6)).slice(0, 20);
 
-    const now = new Date();
-    const tradeDate = now.toLocaleString('zh-TW', {
-      timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
-    }).replace(/\//g, '/');
+    // 用台灣時區組出綠界要的精確格式：yyyy/MM/dd HH:mm:ss
+    const tw = new Date(Date.now() + 8 * 3600 * 1000); // UTC+8 台灣時間
+    const pad = (n) => String(n).padStart(2, '0');
+    const tradeDate =
+      `${tw.getUTCFullYear()}/${pad(tw.getUTCMonth() + 1)}/${pad(tw.getUTCDate())} ` +
+      `${pad(tw.getUTCHours())}:${pad(tw.getUTCMinutes())}:${pad(tw.getUTCSeconds())}`;
 
     // 回調網址：用你的 Vercel 網域
     const base = `https://${req.headers.host}`;
