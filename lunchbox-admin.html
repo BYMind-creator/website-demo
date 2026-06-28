@@ -1947,7 +1947,13 @@ function renderOrders(filter = 'all') {
           <div class="cell-strong">${o.name}</div>
           <div class="cell-meta mono">${o.phone}</div>
         </td>
-        <td><span class="restaurant-tag">${o.restaurant}</span><div class="cell-meta">${o.items}</div></td>
+        <td>
+          <div class="cell-meta">${
+            (o.items && o.items.length)
+              ? o.items.map(it => `${it.name}×${it.quantity}`).join('、')
+              : (o.note || '—')
+          }</div>
+        </td>
         <td>${o.building}</td>
         <td style="text-align: right;" class="cell-amount">$${o.amount}</td>
         <td><span class="status-badge ${st.class}">${st.label}</span></td>
