@@ -1261,81 +1261,8 @@ textarea.form-input { resize: vertical; min-height: 70px; }
 
 <script>
 // ============== 模擬資料（之後改成從 Supabase 拉） ==============
-const buildings = [
-  {
-    id: '11111111-1111-1111-1111-111111111111',
-    name: '七期國泰商辦',
-    district: '西屯區',
-    address: '台中市西屯區市政北二路號',
-    pickup_location: '1F 大廳警衛處',
-    pickup_time: '12:00',
-    cutoff_time: '10:00'
-  },
-  {
-    id: '22222222-2222-2222-2222-222222222222',
-    name: '台中軟體園區 A 棟',
-    district: '南屯區',
-    address: '台中市南屯區精科路號',
-    pickup_location: 'B1 取餐櫃',
-    pickup_time: '12:15',
-    cutoff_time: '10:45'
-  }
-];
-
-const restaurants = [
-  {
-    id: 'r1',
-    name: '阿明便當',
-    emoji: '🍱',
-    thumbClass: 'bento',
-    description: '台中老字號家常便當，主菜可換，配菜每日變化',
-    priceRange: '$50-130',
-    itemCount: 6,
-    categories: ['主餐', '配菜', '湯品'],
-    menu: [
-      { id: 'm1', name: '排骨便當', desc: '招牌酥炸排骨 + 三樣配菜 + 白飯', price: 110, category: '主餐' },
-      { id: 'm2', name: '雞腿便當', desc: '香烤雞腿 + 三樣配菜 + 白飯', price: 130, category: '主餐' },
-      { id: 'm3', name: '魚排便當', desc: '酥炸魚排 + 三樣配菜 + 白飯', price: 120, category: '主餐' },
-      { id: 'm4', name: '滷肉飯', desc: '古早味滷肉飯（小）', price: 50, category: '主餐' },
-      { id: 'm5', name: '燙青菜', desc: '當季時蔬', price: 30, category: '配菜' },
-      { id: 'm6', name: '味噌湯', desc: '日式味噌湯', price: 25, category: '湯品' }
-    ]
-  },
-  {
-    id: 'r2',
-    name: '青田輕食',
-    emoji: '🥗',
-    thumbClass: 'salad',
-    description: '低卡輕食、沙拉、義大利麵，適合健身與輕食族',
-    priceRange: '$160-190',
-    itemCount: 5,
-    categories: ['沙拉', '義大利麵', '飲料'],
-    menu: [
-      { id: 'm7', name: '香煎雞胸沙拉', desc: '低卡高蛋白，附油醋醬', price: 160, category: '沙拉' },
-      { id: 'm8', name: '鮮蝦凱薩沙拉', desc: '蝦仁 + 凱薩醬 + 帕瑪森起司', price: 180, category: '沙拉' },
-      { id: 'm9', name: '青醬雞肉義大利麵', desc: '羅勒青醬 + 嫩煎雞肉', price: 170, category: '義大利麵' },
-      { id: 'm10', name: '蕃茄海鮮義大利麵', desc: '蛤蜊 + 蝦仁 + 蕃茄醬', price: 190, category: '義大利麵' },
-      { id: 'm11', name: '無糖鮮奶茶', desc: '350ml', price: 55, category: '飲料' }
-    ]
-  },
-  {
-    id: 'r3',
-    name: '日麵屋拉麵',
-    emoji: '🍜',
-    thumbClass: 'ramen',
-    description: '日式拉麵、丼飯，湯頭每日現熬，叉燒手工製作',
-    priceRange: '$150-180',
-    itemCount: 5,
-    categories: ['拉麵', '丼飯'],
-    menu: [
-      { id: 'm12', name: '豚骨拉麵', desc: '濃郁豚骨湯頭 + 叉燒 2 片', price: 180, category: '拉麵' },
-      { id: 'm13', name: '醬油拉麵', desc: '清爽醬油湯頭 + 叉燒 2 片', price: 170, category: '拉麵' },
-      { id: 'm14', name: '味噌拉麵', desc: '北海道風味噌湯頭', price: 175, category: '拉麵' },
-      { id: 'm15', name: '親子丼', desc: '雞肉 + 半熟蛋', price: 150, category: '丼飯' },
-      { id: 'm16', name: '炸雞丼', desc: '日式唐揚雞', price: 160, category: '丼飯' }
-    ]
-  }
-];
+let buildings = [];
+let restaurants = [];
 
 // ============== 狀態 ==============
 const state = {
@@ -1343,7 +1270,7 @@ const state = {
   previousPage: null,
   currentRestaurant: null,
   currentCategory: '全部',
-  selectedBuilding: buildings[0],
+  selectedBuilding: null,
   cart: {}, // { itemId: { item, quantity } }
   payment: 'cash'
 };
@@ -1751,7 +1678,33 @@ function updateCountdown() {
 }
 
 // ============== 初始化 ==============
-renderRestaurants();
+async function loadData() {
+  const listEl = $('restaurant-list');
+  listEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🍽️</div><div class="empty-text">載入今日餐廳中…</div></div>';
+  try {
+    const resp = await fetch('/api/menu');
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '載入失敗');
+
+    buildings = data.buildings || [];
+    restaurants = data.restaurants || [];
+
+    if (!buildings.length || !restaurants.length) {
+      listEl.innerHTML = '<div class="empty-state"><div class="empty-icon">😴</div><div class="empty-text">今天還沒有上架的餐廳</div></div>';
+      return;
+    }
+
+    // 預設選第一棟大樓
+    state.selectedBuilding = buildings[0];
+    $('current-building-name').textContent = state.selectedBuilding.name;
+
+    renderRestaurants();
+  } catch (e) {
+    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">${e.message || '載入失敗，請重新整理'}</div></div>`;
+  }
+}
+
+loadData();
 updateCountdown();
 setInterval(updateCountdown, 60000);
 </script>
