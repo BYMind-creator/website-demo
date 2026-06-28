@@ -1510,7 +1510,7 @@ body.role-viewer .drawer-actions { display: none !important; }
       <h1 class="page-title">餐廳與菜單</h1>
       <p class="page-subtitle">管理今日開放的餐廳、上下架餐點、調整價格</p>
     </div>
-    <button class="btn-solid">+ 新增餐廳</button>
+    <button class="btn-solid" onclick="openAddRestaurant()">+ 新增餐廳</button>
   </div>
 
   <div id="menu-list">
@@ -1526,41 +1526,16 @@ body.role-viewer .drawer-actions { display: none !important; }
       <h1 class="page-title">合作大樓</h1>
       <p class="page-subtitle">2 棟服務中・規劃增加更多</p>
     </div>
-    <button class="btn-solid">+ 新增大樓</button>
+    <button class="btn-solid" onclick="openAddBuilding()">+ 新增大樓</button>
   </div>
 
   <div class="table-wrap">
     <table>
       <thead>
-        <tr>
-          <th>大樓名稱</th>
-          <th>區域</th>
-          <th>取餐地點</th>
-          <th>截單時間</th>
-          <th>取餐時間</th>
-          <th>狀態</th>
-          <th></th>
-        </tr>
+        <tr><th>大樓名稱</th><th>區域</th><th>取餐地點</th><th>截單</th><th>取餐</th><th>狀態</th></tr>
       </thead>
-      <tbody>
-        <tr>
-          <td class="cell-strong">七期國泰商辦</td>
-          <td>西屯區</td>
-          <td>1F 大廳警衛處</td>
-          <td class="mono">10:30</td>
-          <td class="mono">12:00</td>
-          <td><span class="status-badge status-completed">營運中</span></td>
-          <td><span style="opacity: 0.3;">→</span></td>
-        </tr>
-        <tr>
-          <td class="cell-strong">台中軟體園區 A 棟</td>
-          <td>南屯區</td>
-          <td>B1 取餐櫃</td>
-          <td class="mono">10:45</td>
-          <td class="mono">12:15</td>
-          <td><span class="status-badge status-completed">營運中</span></td>
-          <td><span style="opacity: 0.3;">→</span></td>
-        </tr>
+      <tbody id="buildings-tbody">
+        <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-light);">載入中…</td></tr>
       </tbody>
     </table>
   </div>
@@ -2034,7 +2009,81 @@ async function changePrice(id, value) {
     loadMenu(); // 失敗就重載，把畫面退回 DB 真值
   }
 }
+function openAddRestaurant() {
+  openModal('新增餐廳',
+    mField('餐廳名稱', 'r-name') +
+    mField('描述（選填）', 'r-desc'),
+    async () => {
+      const name = $('r-name').value.trim();
+      if (!name) { toast('請填餐廳名稱'); return; }
+      try {
+        const resp = await fetch('/api/manage-restaurant', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'create', name, description: $('r-desc').value.trim(),
+            _user: currentUser?._u, _pass: currentUser?._p }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || '新增失敗');
+        toast('已新增餐廳'); closeModal(); loadMenu();
+      } catch (e) { toast(e.message || '新增失敗'); }
+    });
+}
+let buildingsData = [];
 
+async function loadBuildings() {
+  const tb = $('buildings-tbody');
+  tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-light);">載入中…</td></tr>';
+  try {
+    const resp = await fetch('/api/admin-menu'); // admin-menu 沒有大樓，改打 menu
+    // 上面那支沒大樓，改用客人端 menu API（它有 buildings）
+    const r2 = await fetch('/api/menu');
+    const data = await r2.json();
+    if (!r2.ok) throw new Error(data.error || '載入失敗');
+    buildingsData = data.buildings || [];
+    if (!buildingsData.length) {
+      tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-light);">還沒有大樓</td></tr>';
+      return;
+    }
+    tb.innerHTML = buildingsData.map(b => `
+      <tr>
+        <td class="cell-strong">${b.name}</td>
+        <td>${b.district || '—'}</td>
+        <td>${b.pickup_location || '—'}</td>
+        <td class="mono">${b.cutoff_time || '—'}</td>
+        <td class="mono">${b.pickup_time || '—'}</td>
+        <td><span class="status-badge status-completed">營運中</span></td>
+      </tr>`).join('');
+  } catch (e) {
+    tb.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--status-cancelled);">${e.message || '載入失敗'}</td></tr>`;
+  }
+}
+
+function openAddBuilding() {
+  openModal('新增大樓',
+    mField('大樓名稱', 'b-name') +
+    mField('區域（如 西屯區）', 'b-district') +
+    mField('取餐地點', 'b-pickup') +
+    mField('截單時間（如 10:30）', 'b-cutoff') +
+    mField('取餐時間（如 12:00）', 'b-ptime'),
+    async () => {
+      const name = $('b-name').value.trim();
+      if (!name) { toast('請填大樓名稱'); return; }
+      try {
+        const resp = await fetch('/api/manage-building', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'create', name,
+            district: $('b-district').value.trim(),
+            pickup_location: $('b-pickup').value.trim(),
+            cutoff_time: $('b-cutoff').value.trim() || null,
+            pickup_time: $('b-ptime').value.trim() || null,
+            _user: currentUser?._u, _pass: currentUser?._p }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || '新增失敗');
+        toast('已新增大樓'); closeModal(); loadBuildings();
+      } catch (e) { toast(e.message || '新增失敗'); }
+    });
+}  
 async function toggleAvailable(id, elem) {
   const turningOn = !elem.classList.contains('on');
   elem.classList.toggle('on'); // 先樂觀切換，失敗再退回
@@ -2151,7 +2200,7 @@ function goToPage(page) {
   event.target.closest('.nav-item')?.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (page === 'printsheet') renderPrintSheet();
-  if (page === 'menu') loadMenu();
+  if (page === 'buildings') loadBuildings();
 }
 
 // 倒數
