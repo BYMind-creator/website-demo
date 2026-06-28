@@ -1737,10 +1737,12 @@ async function loadOrders() {
     if (!orders.length) {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--ink-light);">今天還沒有訂單</td></tr>';
       renderDashboard();
+      updateHeaderTexts();
       return;
     }
     renderOrders();
     renderDashboard();
+    updateHeaderTexts();
   } catch (e) {
     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--status-cancelled);">${e.message || '載入失敗'}</td></tr>`;
   }
@@ -1922,6 +1924,28 @@ function renderDashboard() {
       : '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--ink-light);">今天還沒有訂單</td></tr>';
   }
 }
+
+function updateHeaderTexts() {
+  // 真日期
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  const dateShort = now.toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  // Dashboard 副標：日期 + 倒數（倒數那段由 updateCountdown 維護，這裡只換日期前綴）
+  const dash = $('today-date');
+  if (dash) dash.innerHTML = `${dateStr}・截單剩 <span id="cutoff-countdown" style="color: var(--persimmon); font-weight: 600;">—</span>`;
+
+  // 訂單列表副標：日期 + 真筆數
+  const ordSub = document.querySelector('#page-orders .page-subtitle');
+  if (ordSub) ordSub.textContent = `${dateShort}・共 ${orders.length} 筆`;
+
+  // 左側選單 badge：真筆數
+  const badge = $('nav-order-count');
+  if (badge) badge.textContent = orders.length;
+
+  updateCountdown(); // 換完日期立刻補上倒數數字
+}  
+  
 function filterOrders(status, elem) {
   $$('.filter-chip').forEach(c => c.classList.remove('active'));
   if (elem) elem.classList.add('active');
