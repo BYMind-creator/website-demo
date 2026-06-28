@@ -1102,7 +1102,7 @@ tbody tr:last-child td { border-bottom: none; }
       </button>
     </div>
     <div class="login-tip">
-      Demo 帳號：<code>admin</code> / <code>demo1234</code>
+      請使用你的帳號登入
     </div>
   </div>
 </div>
@@ -1821,16 +1821,51 @@ function toast(msg) {
 }
 
 // ============== 登入 ==============
-function doLogin() {
-  const u = $('username').value;
+let currentUser = null;  // 記住登入者是誰、什麼 role
+
+async function doLogin() {
+  const u = $('username').value.trim();
   const p = $('password').value;
-if (u === 'admin' && p === 'demo1234') {
+  if (!u || !p) { toast('請輸入帳號與密碼'); return; }
+
+  const btn = document.querySelector('.login-card .btn-primary');
+  const btnHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '登入中…';
+
+  try {
+    const resp = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: p }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '登入失敗');
+
+    currentUser = { username: data.username, role: data.role, name: data.display_name };
+
     $('login-screen').style.display = 'none';
     $('admin-app').classList.add('active');
-    loadOrders();          // ← 改成撈真資料
-  } else {
-    toast('帳號或密碼錯誤');
+
+    // 左下角顯示登入者
+    const nameEl = document.querySelector('.user-name');
+    const roleEl = document.querySelector('.user-role');
+    if (nameEl) nameEl.textContent = currentUser.name;
+    if (roleEl) roleEl.textContent = { superadmin: '系統管理員', ops: '營運人員', viewer: '檢視者' }[currentUser.role] || currentUser.role;
+
+    applyRolePermissions();   // 按 role 顯示/隱藏（第 3 段會用到，先放著）
+    loadOrders();
+  } catch (e) {
+    toast(e.message || '登入失敗');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = btnHTML;
   }
+}
+
+// 第 3 段會把這個函式內容填滿，現在先放一個空的，避免報錯
+function applyRolePermissions() {
+  // 待第 3 段實作
 }
 async function loadOrders() {
   const tbody = $('orders-tbody');
