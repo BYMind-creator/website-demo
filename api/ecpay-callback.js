@@ -37,13 +37,18 @@ export default async function handler(req, res) {
 
     // 3) 付款成功：RtnCode = 1
     if (String(body.RtnCode) === '1') {
-      const orderNumber = body.CustomField1; // 我們塊1帶進去的訂單號
+      const orderNumber = body.CustomField1;
       if (orderNumber) {
-        const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-        await supabase
-          .from('orders')
-          .update({ payment_status: 'paid' })
-          .eq('order_number', orderNumber);
+        await fetch(`${process.env.SUPABASE_URL}/rest/v1/orders?order_number=eq.${encodeURIComponent(orderNumber)}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': process.env.SUPABASE_SERVICE_ROLE_KEY,
+            'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({ payment_status: 'paid' }),
+        });
       }
     }
 
