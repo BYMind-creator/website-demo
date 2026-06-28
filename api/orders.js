@@ -76,7 +76,32 @@ export default async function handler(req, res) {
 
     const inserted = await insResp.json();
     const order = Array.isArray(inserted) ? inserted[0] : inserted;
+    // ↓↓↓ 新增這一段 ↓↓↓
 
+    // 寫入訂單明細 order_items
+    const items = Array.isArray(b.items) ? b.items : [];
+    if (items.length) {
+      const rows = items.map(it => ({
+        order_id: order.id,
+        restaurant_id: it.restaurant_id,
+        menu_item_id: it.menu_item_id,
+        item_name: it.item_name,
+        item_price: it.item_price,
+        quantity: it.quantity,
+        subtotal: it.subtotal,
+      }));
+      const itemResp = await fetch(`${URL}/rest/v1/order_items`, {
+        method: 'POST',
+        headers: { ...headers, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify(rows),
+      });
+      if (!itemResp.ok) {
+        const detail = await itemResp.text();
+        return res.status(500).json({ error: '寫入訂單明細失敗', detail });
+      }
+    }
+
+    // ↑↑↑ 新增結束 ↑↑↑
     return res.status(200).json({
       order_number: order.order_number,
       order_id: order.id,
