@@ -1187,23 +1187,23 @@ body.role-viewer .drawer-actions { display: none !important; }
   <div class="stat-row">
     <div class="stat-card">
       <div class="stat-label">總訂單數</div>
-      <div class="stat-value">12<span class="unit">單</span></div>
-      <div class="stat-meta"><span class="up">↑ 4</span> 較昨天</div>
+      <div class="stat-value"><span id="stat-total-orders">—</span><span class="unit">單</span></div>
+      <div class="stat-meta">今日累計</div>
     </div>
     <div class="stat-card persimmon">
       <div class="stat-label">總營業額</div>
-      <div class="stat-value">$1,860</div>
-      <div class="stat-meta">含服務費 $300</div>
+      <div class="stat-value">$<span id="stat-revenue">—</span></div>
+      <div class="stat-meta" id="stat-fee">—</div>
     </div>
     <div class="stat-card amber">
       <div class="stat-label">待處理訂單</div>
-      <div class="stat-value">3<span class="unit">單</span></div>
-      <div class="stat-meta">需確認</div>
+      <div class="stat-value"><span id="stat-pending">—</span><span class="unit">單</span></div>
+      <div class="stat-meta">待確認</div>
     </div>
     <div class="stat-card blue">
-      <div class="stat-label">服務大樓</div>
-      <div class="stat-value">2<span class="unit">棟</span></div>
-      <div class="stat-meta">3 家餐廳供應</div>
+      <div class="stat-label">餐點總數</div>
+      <div class="stat-value"><span id="stat-dishes">—</span><span class="unit">份</span></div>
+      <div class="stat-meta">今日總份數</div>
     </div>
   </div>
 
@@ -1766,9 +1766,11 @@ async function loadOrders() {
 
     if (!orders.length) {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--ink-light);">今天還沒有訂單</td></tr>';
+      renderDashboard();
       return;
     }
     renderOrders();
+    renderDashboard();
   } catch (e) {
     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--status-cancelled);">${e.message || '載入失敗'}</td></tr>`;
   }
@@ -1884,7 +1886,22 @@ function renderOrders(filter = 'all') {
     `;
   }).join('');
 }
-
+function renderDashboard() {
+  let totalOrders = orders.length;
+  let revenue = 0, fee = 0, pending = 0, dishes = 0;
+  for (const o of orders) {
+    revenue += o.amount || 0;
+    fee += o.service_fee || 0;
+    if (o.status === 'pending') pending++;
+    for (const it of (o.items || [])) dishes += it.quantity || 0;
+  }
+  const set = (id, val) => { const el = $(id); if (el) el.textContent = val; };
+  set('stat-total-orders', totalOrders);
+  set('stat-revenue', revenue.toLocaleString());
+  set('stat-fee', `含服務費 $${fee.toLocaleString()}`);
+  set('stat-pending', pending);
+  set('stat-dishes', dishes);
+}
 function filterOrders(status, elem) {
   $$('.filter-chip').forEach(c => c.classList.remove('active'));
   if (elem) elem.classList.add('active');
