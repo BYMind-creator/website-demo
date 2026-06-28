@@ -1783,10 +1783,7 @@ function renderPrintSheet() {
     sheet.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">今天還沒有訂單</div></div>';
     return;
   }
-function setPrintBuilding(b) {
-  printsheetBuilding = b;
-  renderPrintSheet();
-}
+
   // 畫大樓篩選按鈕（從訂單裡有的大樓動態產生）
   const buildingCounts = {};
   for (const o of orders) buildingCounts[o.building] = (buildingCounts[o.building] || 0) + 1;
@@ -1870,7 +1867,13 @@ function setPrintBuilding(b) {
     </div>`;
 
   sheet.innerHTML = html;
+} 
+
+function setPrintBuilding(b) {
+  printsheetBuilding = b;
+  renderPrintSheet();
 }  
+  
 function doLogout() {
   $('login-screen').style.display = 'flex';
   $('admin-app').classList.remove('active');
