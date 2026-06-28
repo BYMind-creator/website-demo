@@ -1,6 +1,5 @@
-// api/ecpay-callback.js — 接收綠界付款結果通知
+// api/ecpay-callback.js — 接收綠界付款結果通知（零套件版）
 import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
 
 const HASH_KEY = 'pwFHCqoQZGmho4w6';
 const HASH_IV = 'EkRm7iFT261dpevs';
@@ -18,24 +17,17 @@ function genCheckMacValue(params) {
 export default async function handler(req, res) {
   try {
     const body = req.body || {};
-
-    // 1) 驗證檢查碼：把綠界送來的參數(去掉 CheckMacValue)重算一次，比對
     const received = body.CheckMacValue;
     const params = { ...body };
     delete params.CheckMacValue;
     const calculated = genCheckMacValue(params);
 
     if (received !== calculated) {
-      // 算出來不一樣 → 可能是偽造，拒絕
       return res.status(200).send('0|FAIL');
     }
-
-    // 2) 模擬付款通知（後台按「模擬付款」會送這個）→ 不可改訂單狀態
     if (String(body.SimulatePaid) === '1') {
       return res.status(200).send('1|OK');
     }
-
-    // 3) 付款成功：RtnCode = 1
     if (String(body.RtnCode) === '1') {
       const orderNumber = body.CustomField1;
       if (orderNumber) {
@@ -51,10 +43,8 @@ export default async function handler(req, res) {
         });
       }
     }
-
-    // 4) 不管成功失敗，最後一定回 1|OK 告訴綠界「我收到了」
     return res.status(200).send('1|OK');
   } catch (e) {
-    return res.status(200).send('1|OK'); // 出錯也回 200，避免綠界一直重送
+    return res.status(200).send('1|OK');
   }
 }
