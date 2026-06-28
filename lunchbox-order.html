@@ -1141,10 +1141,10 @@ textarea.form-input { resize: vertical; min-height: 70px; }
         <div class="pay-name">現場付現</div>
         <div class="pay-meta">取餐時付</div>
       </div>
-      <div class="payment-option" data-payment="line_pay" onclick="selectPayment('line_pay')">
-        <div class="pay-icon">📱</div>
-        <div class="pay-name">LINE Pay 轉帳</div>
-        <div class="pay-meta">下單後給帳號</div>
+      <div class="payment-option" data-payment="online" onclick="selectPayment('online')">
+        <div class="pay-icon">💳</div>
+        <div class="pay-name">線上付款</div>
+        <div class="pay-meta">信用卡 / LINE Pay / 街口</div>
       </div>
     </div>
   </div>
@@ -1529,7 +1529,8 @@ function selectBuilding(bid, elem) {
 function selectPayment(p) {
   state.payment = p;
   $$('.payment-option').forEach(o => o.classList.remove('selected'));
-  $(`[data-payment="${p}"]`).classList.add('selected');
+  const el = document.querySelector(`[data-payment="${p}"]`);
+  if (el) el.classList.add('selected');
 }
 
 async function submitOrder() {
@@ -1587,11 +1588,26 @@ async function submitOrder() {
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || '下單失敗');
 
-    // 用「後端回傳的真訂單編號」填收據
+    // 線上付款：導向綠界付款頁
+    if (state.payment === 'online') {
+      const payResp = await fetch('/api/ecpay-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: total, order_number: data.order_number }),
+      });
+      const payHtml = await payResp.text();
+      // 把綠界的自動送出表單寫進畫面，瀏覽器會自動跳轉
+      document.open();
+      document.write(payHtml);
+      document.close();
+      return;
+    }
+
+    // 現場付現：照舊填收據、跳成功頁
     $('order-number').textContent = data.order_number;
     $('receipt-name').textContent = name;
     $('receipt-phone').textContent = phone;
-    $('receipt-payment').textContent = state.payment === 'cash' ? '現場付現' : 'LINE Pay 轉帳';
+    $('receipt-payment').textContent = '現場付現';
     $('receipt-total').textContent = formatPrice(total);
     $('receipt-pickup-time').textContent = state.selectedBuilding.pickup_time;
     $('receipt-pickup-location').textContent =
