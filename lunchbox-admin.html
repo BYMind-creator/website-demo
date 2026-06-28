@@ -1843,6 +1843,8 @@ async function doLogin() {
     if (!resp.ok) throw new Error(data.error || '登入失敗');
 
     currentUser = { username: data.username, role: data.role, name: data.display_name };
+    currentUser._u = u;
+    currentUser._p = p;
 
     $('login-screen').style.display = 'none';
     $('admin-app').classList.add('active');
@@ -2078,7 +2080,12 @@ async function setStatus(elem, label) {
     const resp = await fetch('/api/update-status', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ order_number: currentOrder.num, status: newStatus }),
+      body: JSON.stringify({
+        order_number: currentOrder.num,
+        status: newStatus,
+        _user: currentUser?._u,
+        _pass: currentUser?._p,
+      }),
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || '更新失敗');
