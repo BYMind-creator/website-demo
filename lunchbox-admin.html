@@ -1894,6 +1894,33 @@ function renderDashboard() {
   set('stat-fee', `含服務費 $${fee.toLocaleString()}`);
   set('stat-pending', pending);
   set('stat-dishes', dishes);
+
+  // 餐廳出餐狀況：按餐廳分組統計
+  const restStats = {};
+  for (const o of orders) {
+    for (const it of (o.items || [])) {
+      const r = it.restaurant || '其他';
+      restStats[r] ||= { orders: new Set(), dishes: 0, revenue: 0 };
+      restStats[r].orders.add(o.num);
+      restStats[r].dishes += it.quantity || 0;
+      restStats[r].revenue += it.subtotal || 0;
+    }
+  }
+  const rtbody = $('dashboard-rest-tbody');
+  if (rtbody) {
+    const rows = Object.entries(restStats);
+    rtbody.innerHTML = rows.length
+      ? rows.map(([name, s]) => `
+        <tr onclick="goToPage('printsheet')">
+          <td><span class="restaurant-tag">${name}</span></td>
+          <td style="text-align:right;" class="cell-strong">${s.orders.size}</td>
+          <td style="text-align:right;" class="cell-strong">${s.dishes}</td>
+          <td style="text-align:right;" class="cell-amount">$${s.revenue.toLocaleString()}</td>
+          <td><span class="status-badge status-completed">供應中</span></td>
+          <td><span style="opacity:0.3;">→</span></td>
+        </tr>`).join('')
+      : '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--ink-light);">今天還沒有訂單</td></tr>';
+  }
 }
 function filterOrders(status, elem) {
   $$('.filter-chip').forEach(c => c.classList.remove('active'));
