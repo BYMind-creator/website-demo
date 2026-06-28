@@ -1808,11 +1808,13 @@ function renderPrintSheet() {
 
   const today = new Date().toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: 'long', day: 'numeric' });
 
+  const buildingLabel = printsheetBuilding === 'all' ? '全部大樓' : printsheetBuilding;
   let html = `
     <div class="print-header">
       <div class="print-title">當日訂單對單表</div>
       <div class="print-meta">
         <span><strong>日期：</strong>${today}</span>
+        <span><strong>大樓：</strong>${buildingLabel}</span>
         <span><strong>總訂單：</strong>${totalOrders} 筆</span>
       </div>
     </div>`;
