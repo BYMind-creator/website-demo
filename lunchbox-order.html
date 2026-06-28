@@ -1572,7 +1572,15 @@ async function submitOrder() {
         service_fee: SERVICE_FEE,
         total,
         payment_method: state.payment,
-        note
+        note,
+        items: Object.values(state.cart).map(c => ({
+          menu_item_id: c.item.id,
+          restaurant_id: c.restaurant.id,
+          item_name: c.item.name,
+          item_price: c.item.price,
+          quantity: c.quantity,
+          subtotal: c.item.price * c.quantity
+        }))
       })
     });
 
