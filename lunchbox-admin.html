@@ -1851,6 +1851,83 @@ async function loadOrders() {
     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--status-cancelled);">${e.message || '載入失敗'}</td></tr>`;
   }
 }
+function renderPrintSheet() {
+  const sheet = $('print-sheet');
+  if (!orders.length) {
+    sheet.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">今天還沒有訂單</div></div>';
+    return;
+  }
+
+  const byRest = {};
+  let totalOrders = orders.length, totalDishes = 0, totalRevenue = 0;
+
+  for (const o of orders) {
+    totalRevenue += o.amount || 0;
+    const thisOrder = {};
+    for (const it of (o.items || [])) {
+      const rest = it.restaurant || '其他';
+      totalDishes += it.quantity;
+      byRest[rest] ||= { agg: {}, individuals: [] };
+      byRest[rest].agg[it.name] = (byRest[rest].agg[it.name] || 0) + it.quantity;
+      thisOrder[rest] ||= { items: [], amount: 0 };
+      thisOrder[rest].items.push(`${it.name}×${it.quantity}`);
+      thisOrder[rest].amount += it.subtotal;
+    }
+    for (const rest in thisOrder) {
+      byRest[rest].individuals.push({
+        num: o.num, name: o.name, phone: o.phone,
+        itemsText: thisOrder[rest].items.join('、'),
+        amount: thisOrder[rest].amount,
+      });
+    }
+  }
+
+  const today = new Date().toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: 'long', day: 'numeric' });
+
+  let html = `
+    <div class="print-header">
+      <div class="print-title">當日訂單對單表</div>
+      <div class="print-meta">
+        <span><strong>日期：</strong>${today}</span>
+        <span><strong>總訂單：</strong>${totalOrders} 筆</span>
+      </div>
+    </div>`;
+
+  for (const rest in byRest) {
+    const { agg, individuals } = byRest[rest];
+    const qty = Object.values(agg).reduce((a, b) => a + b, 0);
+    html += `
+      <div class="restaurant-block">
+        <div class="rb-header">
+          <div class="rb-name">${rest}</div>
+          <div class="rb-summary">${individuals.length} 筆訂單・<strong>合計 ${qty} 份</strong></div>
+        </div>
+        <div class="rb-items">
+          ${Object.entries(agg).map(([name, q]) =>
+            `<div class="rb-item"><span class="rb-item-name">${name}</span><span class="rb-item-qty">× ${q}</span></div>`).join('')}
+        </div>
+        <div class="individual-list">
+          <div class="individual-list-title">個別訂單明細（給配送用）</div>
+          ${individuals.map(ind =>
+            `<div class="individual-item">
+              <span class="order-num-small">#${(ind.num || '').split('-')[1] || ind.num}</span>
+              <span><strong>${ind.name}</strong> ${ind.phone}</span>
+              <span>${ind.itemsText}</span>
+              <span class="cell-amount">$${ind.amount}</span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  html += `
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:2px solid var(--ink);display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;text-align:center;">
+      <div><div style="font-size:0.78rem;color:var(--ink-light);margin-bottom:0.3rem;">總訂單數</div><div style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.8rem;">${totalOrders} 單</div></div>
+      <div><div style="font-size:0.78rem;color:var(--ink-light);margin-bottom:0.3rem;">總餐點數</div><div style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.8rem;">${totalDishes} 份</div></div>
+      <div><div style="font-size:0.78rem;color:var(--ink-light);margin-bottom:0.3rem;">總營業額</div><div style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.8rem;color:var(--persimmon);">$${totalRevenue}</div></div>
+    </div>`;
+
+  sheet.innerHTML = html;
+}  
 function doLogout() {
   $('login-screen').style.display = 'flex';
   $('admin-app').classList.remove('active');
