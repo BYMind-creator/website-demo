@@ -1944,10 +1944,47 @@ function renderMenu() {
             <div class="desc">${m.description || ''}</div>
           </div>
           <span style="color:var(--ink-light);font-size:0.78rem;">$</span>
-          <input type="number" class="price-input" value="${m.price}" disabled>
-          <div class="toggle ${m.is_available ? 'on' : ''}"></div>
+          <input type="number" class="price-input" value="${m.price}"
+                 onchange="changePrice('${m.id}', this.value)">
+          <div class="toggle ${m.is_available ? 'on' : ''}"
+               onclick="toggleAvailable('${m.id}', this)"></div>
         </div>`).join('')}
     </div>`).join('');
+}
+async function changePrice(id, value) {
+  const price = Number(value);
+  if (!Number.isFinite(price) || price < 0) { toast('價格不合法'); loadMenu(); return; }
+  try {
+    const resp = await fetch('/api/update-menu-item', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, price, _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '更新失敗');
+    toast('價格已更新');
+  } catch (e) {
+    toast(e.message || '更新失敗');
+    loadMenu(); // 失敗就重載，把畫面退回 DB 真值
+  }
+}
+
+async function toggleAvailable(id, elem) {
+  const turningOn = !elem.classList.contains('on');
+  elem.classList.toggle('on'); // 先樂觀切換，失敗再退回
+  try {
+    const resp = await fetch('/api/update-menu-item', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, is_available: turningOn, _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '更新失敗');
+    toast(turningOn ? '已上架' : '已下架');
+  } catch (e) {
+    elem.classList.toggle('on'); // 退回
+    toast(e.message || '更新失敗');
+  }
 }
 // ============== 訂單明細 ==============
 let currentOrder = null;  // 記住 drawer 正在看哪一筆
