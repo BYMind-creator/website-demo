@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   try {
     // 一次撈餐廳 + 它的菜單（用 Supabase 的關聯查詢）
     const resp = await fetch(
-      `${URL}/rest/v1/restaurants?select=id,name,is_active,menu_items(id,name,description,price,category,is_available)&order=name`,
+      `${URL}/rest/v1/restaurants?select=id,name,is_active,service_fee,menu_items(id,name,description,price,category,is_available)&order=name`,
       { headers }
     );
     if (!resp.ok) {
