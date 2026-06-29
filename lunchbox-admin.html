@@ -1731,6 +1731,15 @@ function applyRolePermissions() {
 
   document.body.classList.remove('role-viewer', 'role-ops');
   if (role === 'ops') document.body.classList.add('role-ops');
+  // 月報表有營收機密：只有 superadmin 看得到
+  if (role !== 'superadmin') {
+    show(find('月報表'), false);
+    // 若 ops 正停在月報表頁，踢回訂單列表
+    const activeNow = document.querySelector('.page.active');
+    if (activeNow && activeNow.id === 'page-report') {
+      goToPage('orders');
+    }
+  }
 
   if (role === 'viewer') {
     document.body.classList.add('role-viewer');
