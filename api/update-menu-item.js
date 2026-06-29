@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     );
     const u = (await uResp.json())[0];
     if (!u || u.password_hash !== inputHash) return res.status(401).json({ error: '身分驗證失敗' });
-    if (u.role !== 'superadmin') return res.status(403).json({ error: '權限不足，只有管理員能修改菜單' });
+    if (u.role !== 'superadmin' && u.role !== 'ops') return res.status(403).json({ error: '權限不足' });
     // —— 驗身分結束 ——
 
     if (!b.id) return res.status(400).json({ error: '缺少餐點 id' });
