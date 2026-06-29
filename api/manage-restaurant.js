@@ -45,6 +45,7 @@ export default async function handler(req, res) {
       if (b.name !== undefined) patch.name = b.name;
       if (b.description !== undefined) patch.description = b.description;
       if (b.is_active !== undefined) patch.is_active = !!b.is_active;
+      if (b.service_fee !== undefined) patch.service_fee = parseInt(b.service_fee, 10);
       if (!Object.keys(patch).length) return res.status(400).json({ error: '沒有要更新的內容' });
       const resp = await fetch(`${URL}/rest/v1/restaurants?id=eq.${encodeURIComponent(b.id)}`,
         { method: 'PATCH', headers: { ...headers, Prefer: 'return=representation' }, body: JSON.stringify(patch) });
