@@ -1993,7 +1993,14 @@ function renderMenu() {
         <div class="menu-card-title">${r.name}
           <span class="status-badge ${r.is_active ? 'status-completed' : 'status-cancelled'}">${r.is_active ? '營業中' : '已下架'}</span>
         </div>
-        <button class="btn-ghost" style="padding:0.4rem 0.8rem;font-size:0.82rem;" onclick="openAddItem('${r.id}','${r.name.replace(/'/g, "\\'")}')">+ 加餐點</button>
+        <div style="display:flex;align-items:center;gap:0.8rem;">
+          <label style="font-size:0.8rem;color:var(--ink-light);display:flex;align-items:center;gap:0.4rem;">
+            服務費 $
+            <input type="number" value="${r.service_fee ?? 25}" onchange="changeServiceFee('${r.id}', this.value)"
+              style="width:64px;background:var(--rice);border:1.5px solid var(--line);border-radius:6px;padding:0.3rem 0.5rem;font-weight:700;text-align:right;">
+          </label>
+          <button class="btn-ghost" style="padding:0.4rem 0.8rem;font-size:0.82rem;" onclick="openAddItem('${r.id}','${r.name.replace(/'/g, "\\'")}')">+ 加餐點</button>
+        </div>
       </div>
       ${(r.menu_items || []).map(m => `
         <div class="menu-item-row">
@@ -2081,6 +2088,23 @@ async function changePrice(id, value) {
   } catch (e) {
     toast(e.message || '更新失敗');
     loadMenu(); // 失敗就重載，把畫面退回 DB 真值
+  }
+}
+async function changeServiceFee(id, value) {
+  const fee = Number(value);
+  if (!Number.isFinite(fee) || fee < 0) { toast('服務費不合法'); loadMenu(); return; }
+  try {
+    const resp = await fetch('/api/update-service-fee', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, service_fee: fee, _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '更新失敗');
+    toast('服務費已更新');
+  } catch (e) {
+    toast(e.message || '更新失敗');
+    loadMenu();
   }
 }
 function openAddRestaurant() {
