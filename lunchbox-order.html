@@ -1556,8 +1556,18 @@ async function submitOrder() {
     return;
   }
 
-  const { subtotal } = getCartSummary();
-  const total = subtotal + SERVICE_FEE;
+  // 拆分：餐費（給餐廳的店內價）vs 服務費（我們的收入）
+  let foodSubtotal = 0;   // 餐費 = Σ 店內價 × 數量
+  let feeTotal = 0;       // 服務費 = Σ 每份服務費 × 數量
+  for (const itemId in state.cart) {
+    const c = state.cart[itemId];
+    const base = c.item.base_price ?? c.item.price;        // 沒 base_price 就退回 price
+    const fee = c.item.service_fee ?? 0;
+    foodSubtotal += base * c.quantity;
+    feeTotal += fee * c.quantity;
+  }
+  const subtotal = foodSubtotal;          // 餐費
+  const total = foodSubtotal + feeTotal;  // 客人付的總額（不變）
 
   // 餐點內容先組成文字，暫存進 note（下一關改成正式 order_items）
   const itemsText = Object.values(state.cart)
