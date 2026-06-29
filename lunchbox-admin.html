@@ -1075,6 +1075,9 @@ tbody tr:last-child td { border-bottom: none; }
 /* viewer 唯讀：藏掉改狀態按鈕 */
 body.role-viewer .status-actions,
 body.role-viewer .drawer-actions { display: none !important; }  
+/* ops 與 viewer：看不到服務費（商業機密） */
+body.role-ops .fee-control,
+body.role-viewer .fee-control { display: none !important; }
 </style>
 </head>
 <body>
@@ -1705,7 +1708,8 @@ function applyRolePermissions() {
   const find = (text) => navItems.find(n => n.textContent.includes(text));
   const show = (el, yes) => { if (el) el.style.display = yes ? '' : 'none'; };
 
-  document.body.classList.remove('role-viewer');
+  document.body.classList.remove('role-viewer', 'role-ops');
+  if (role === 'ops') document.body.classList.add('role-ops');
 
   if (role === 'viewer') {
     document.body.classList.add('role-viewer');
@@ -1994,7 +1998,7 @@ function renderMenu() {
           <span class="status-badge ${r.is_active ? 'status-completed' : 'status-cancelled'}">${r.is_active ? '營業中' : '已下架'}</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.8rem;">
-          <label style="font-size:0.8rem;color:var(--ink-light);display:flex;align-items:center;gap:0.4rem;">
+          <label class="fee-control" style="font-size:0.8rem;color:var(--ink-light);display:flex;align-items:center;gap:0.4rem;">
             服務費 $
             <input type="number" value="${r.service_fee ?? 25}" onchange="changeServiceFee('${r.id}', this.value)"
               style="width:64px;background:var(--rice);border:1.5px solid var(--line);border-radius:6px;padding:0.3rem 0.5rem;font-weight:700;text-align:right;">
