@@ -1017,6 +1017,16 @@ textarea.form-input { resize: vertical; min-height: 70px; }
   .restaurant-card { padding: 1rem; }
   .rest-thumb { width: 64px; height: 64px; font-size: 2rem; }
 }
+.rest-thumb.law-article {
+  background: var(--moss);
+  color: var(--rice);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-align: center;
+}
 </style>
 </head>
 <body>
@@ -1291,11 +1301,13 @@ function toast(msg) {
 function formatPrice(n) { return '$' + n.toLocaleString('zh-TW'); }
 
 // ============== 渲染：餐廳列表 ==============
+function lawArticle(i) { return `第 ${i + 1} 條`; }
+
 function renderRestaurants() {
   const list = $('restaurant-list');
-  list.innerHTML = restaurants.map(r => `
+  list.innerHTML = restaurants.map((r, i) => `
     <div class="restaurant-card" onclick="openRestaurant('${r.id}')">
-      <div class="rest-thumb ${r.thumbClass}">${r.emoji}</div>
+      <div class="rest-thumb law-article">${lawArticle(i)}</div>
       <div class="rest-info">
         <h3>${r.name}</h3>
         <p class="desc">${r.description}</p>
