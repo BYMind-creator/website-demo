@@ -1143,6 +1143,10 @@ body.role-viewer .fee-control { display: none !important; }
       <span class="nav-icon">⎙</span>
       <span>對單表</span>
     </div>
+    <div class="nav-item" onclick="goToPage('report')">
+      <span class="nav-icon">📊</span>
+      <span>月報表</span>
+    </div>
 
     <div class="nav-section-title">資料管理</div>
     <div class="nav-item" onclick="goToPage('menu')">
@@ -1474,7 +1478,24 @@ body.role-viewer .fee-control { display: none !important; }
     </div>
   </div>
 </div>
+<!-- ===== 月報表 ===== -->
+<div class="page" id="page-report">
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="page-eyebrow">monthly report</span>
+      <h1 class="page-title">月營運報表</h1>
+      <p class="page-subtitle">選擇月份，查看營收、餐廳與餐點排行</p>
+    </div>
+    <div class="btn-group">
+      <input type="month" id="report-month" onchange="loadReport()"
+        style="background:var(--white);border:1.5px solid var(--line);border-radius:8px;padding:0.6rem 1rem;font-size:0.9rem;">
+    </div>
+  </div>
 
+  <div id="report-content">
+    <div class="empty"><div class="empty-icon">📊</div><div class="empty-text">選擇月份載入報表…</div></div>
+  </div>
+</div>
 <!-- ===== 菜單管理 ===== -->
 <div class="page" id="page-menu">
   <div class="page-header">
@@ -1942,6 +1963,37 @@ function renderDashboard() {
   }
 }
 
+let reportData = [];
+
+async function loadReport() {
+  const month = $('report-month').value; // YYYY-MM
+  const box = $('report-content');
+  if (!month) {
+    box.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">選擇月份載入報表…</div></div>';
+    return;
+  }
+  box.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><div class="empty-text">載入中…</div></div>';
+  try {
+    const resp = await fetch(`/api/admin-orders?month=${month}`);
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '載入失敗');
+    reportData = data.orders || [];
+    renderReport(month);
+  } catch (e) {
+    box.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">${e.message || '載入失敗'}</div></div>`;
+  }
+}
+
+function renderReport(month) {
+  const box = $('report-content');
+  if (!reportData.length) {
+    box.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">${month} 沒有訂單資料</div></div>`;
+    return;
+  }
+  // 先簡單顯示「這個月幾筆」——塊 C 再做完整統計
+  box.innerHTML = `<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">${month} 共 ${reportData.length} 筆訂單<br>（統計區塊下一步做）</div></div>`;
+}
+  
 function updateHeaderTexts() {
   // 真日期
   const now = new Date();
@@ -2304,7 +2356,14 @@ function goToPage(page) {
   if (page === 'printsheet') renderPrintSheet();
   if (page === 'menu') loadMenu();
   if (page === 'buildings') loadBuildings();
-}
+  if (page === 'report') {
+    const mEl = $('report-month');
+    if (mEl && !mEl.value) {
+      const now = new Date();
+      mEl.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    }
+    loadReport();
+  }
 
 // 倒數
 function updateCountdown() {
