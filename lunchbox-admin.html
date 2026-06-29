@@ -1990,8 +1990,135 @@ function renderReport(month) {
     box.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">${month} 沒有訂單資料</div></div>`;
     return;
   }
-  // 先簡單顯示「這個月幾筆」——塊 C 再做完整統計
-  box.innerHTML = `<div class="empty"><div class="empty-icon">✅</div><div class="empty-text">${month} 共 ${reportData.length} 筆訂單<br>（統計區塊下一步做）</div></div>`;
+
+  // ===== 統計計算 =====
+  let totalRevenue = 0;   // 客人付的總額
+  let totalFee = 0;       // 我們的服務費收入
+  let totalBase = 0;      // 餐費（給餐廳的成本）
+  let totalDishes = 0;    // 總餐點份數
+
+  const restStats = {};       // 餐廳：金額、份數、訂單數
+  const dishStats = {};       // 餐點：份數
+  const buildingStats = {};   // 大樓：訂單數、人數
+
+  for (const o of reportData) {
+    totalRevenue += o.amount || 0;
+    totalFee += o.service_fee || 0;
+    totalBase += o.subtotal || 0;
+
+    // 大樓統計
+    const b = o.building || '—';
+    buildingStats[b] ||= { orders: 0, revenue: 0 };
+    buildingStats[b].orders += 1;
+    buildingStats[b].revenue += o.amount || 0;
+
+    for (const it of (o.items || [])) {
+      const qty = it.quantity || 0;
+      totalDishes += qty;
+
+      // 餐廳統計
+      const r = it.restaurant || '其他';
+      restStats[r] ||= { orders: new Set(), dishes: 0, revenue: 0 };
+      restStats[r].orders.add(o.num);
+      restStats[r].dishes += qty;
+      restStats[r].revenue += it.subtotal || 0;
+
+      // 餐點統計
+      const key = `${it.name}__${r}`;
+      dishStats[key] ||= { name: it.name, rest: r, qty: 0 };
+      dishStats[key].qty += qty;
+    }
+  }
+
+  // 排序
+  const restRank = Object.entries(restStats).sort((a, b) => b[1].dishes - a[1].dishes);
+  const dishRank = Object.values(dishStats).sort((a, b) => b.qty - a.qty).slice(0, 10);
+  const buildingRank = Object.entries(buildingStats).sort((a, b) => b[1].orders - a[1].orders);
+
+  // ===== 渲染 =====
+  box.innerHTML = `
+    <!-- 營收拆分 -->
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">總訂單數</div>
+        <div class="stat-value">${reportData.length}<span class="unit">單</span></div>
+        <div class="stat-meta">${totalDishes} 份餐點</div>
+      </div>
+      <div class="stat-card persimmon">
+        <div class="stat-label">總營業額</div>
+        <div class="stat-value">$${totalRevenue.toLocaleString()}</div>
+        <div class="stat-meta">客人支付總額</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">餐費（給餐廳）</div>
+        <div class="stat-value">$${totalBase.toLocaleString()}</div>
+        <div class="stat-meta">店內原價成本</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-label">服務費收入</div>
+        <div class="stat-value">$${totalFee.toLocaleString()}</div>
+        <div class="stat-meta">我們的收入</div>
+      </div>
+    </div>
+
+    <!-- 餐廳排行 -->
+    <div class="page-header" style="margin-bottom:1rem;">
+      <div class="page-header-left"><h2 style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.3rem;">餐廳排行</h2></div>
+    </div>
+    <div class="table-wrap" style="margin-bottom:2rem;">
+      <table>
+        <thead><tr><th>排名</th><th>餐廳</th><th style="text-align:right;">訂單數</th><th style="text-align:right;">餐點份數</th><th style="text-align:right;">餐費</th></tr></thead>
+        <tbody>
+          ${restRank.map(([name, s], i) => `
+            <tr>
+              <td><span class="order-num">#${i + 1}</span></td>
+              <td><span class="restaurant-tag">${name}</span></td>
+              <td style="text-align:right;" class="cell-strong">${s.orders.size}</td>
+              <td style="text-align:right;" class="cell-strong">${s.dishes}</td>
+              <td style="text-align:right;" class="cell-amount">$${s.revenue.toLocaleString()}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 餐點排行 -->
+    <div class="page-header" style="margin-bottom:1rem;">
+      <div class="page-header-left"><h2 style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.3rem;">熱門餐點 TOP 10</h2></div>
+    </div>
+    <div class="table-wrap" style="margin-bottom:2rem;">
+      <table>
+        <thead><tr><th>排名</th><th>餐點</th><th>餐廳</th><th style="text-align:right;">售出份數</th></tr></thead>
+        <tbody>
+          ${dishRank.map((d, i) => `
+            <tr>
+              <td><span class="order-num">#${i + 1}</span></td>
+              <td class="cell-strong">${d.name}</td>
+              <td><span class="restaurant-tag">${d.rest}</span></td>
+              <td style="text-align:right;" class="cell-amount">${d.qty}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 大樓排行 -->
+    <div class="page-header" style="margin-bottom:1rem;">
+      <div class="page-header-left"><h2 style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.3rem;">大樓點餐排行</h2></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>排名</th><th>大樓</th><th style="text-align:right;">訂單數</th><th style="text-align:right;">營業額</th></tr></thead>
+        <tbody>
+          ${buildingRank.map(([name, s], i) => `
+            <tr>
+              <td><span class="order-num">#${i + 1}</span></td>
+              <td class="cell-strong">${name}</td>
+              <td style="text-align:right;" class="cell-strong">${s.orders}</td>
+              <td style="text-align:right;" class="cell-amount">$${s.revenue.toLocaleString()}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
   
 function updateHeaderTexts() {
