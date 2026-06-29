@@ -1095,8 +1095,8 @@ textarea.form-input { resize: vertical; min-height: 70px; }
   </div>
 
   <div class="page-title-wrap">
-    <span class="page-eyebrow">your order</span>
-    <h1 class="page-title">我的訂單</h1>
+    <span class="page-eyebrow">your penalty</span>
+    <h1 class="page-title">我的罰單</h1>
   </div>
 
   <div id="cart-content">
@@ -1112,9 +1112,9 @@ textarea.form-input { resize: vertical; min-height: 70px; }
   </div>
 
   <div class="page-title-wrap">
-    <span class="page-eyebrow">checkout</span>
-    <h1 class="page-title">填寫取餐資訊</h1>
-    <p class="page-subtitle">準時 12:00 在大廳等你</p>
+    <span class="page-eyebrow">penalty notice</span>
+    <h1 class="page-title">填寫罰餐資訊</h1>
+    <p class="page-subtitle">準時 12:00 在大廳領取你的今日判決</p>
   </div>
 
   <!-- 取餐地點 -->
@@ -1161,24 +1161,14 @@ textarea.form-input { resize: vertical; min-height: 70px; }
 
   <!-- 總計 -->
   <div class="summary-box">
-    <div class="summary-row">
-      <span>商品小計</span>
-      <span id="checkout-subtotal">$0</span>
-    </div>
-    <div class="summary-row">
-        <span>罰鍰 ⚖️
-          <span class="label-meta">不抽餐廳成，固定罰鍰</span>
-        </span>
-        <span>$25</span>
-      </div>
     <div class="summary-row total">
-      <span>應付總計</span>
+      <span>應繳罰鍰 ⚖️</span>
       <span id="checkout-total">$25</span>
     </div>
   </div>
 
   <button class="btn-primary" onclick="submitOrder()">
-    <span>確認下單</span>
+    <span>我認罪</span>
     <span>→</span>
   </button>
 </div>
@@ -1187,12 +1177,12 @@ textarea.form-input { resize: vertical; min-height: 70px; }
 <div class="page" id="page-success">
   <div class="success-page">
     <div class="success-icon">✓</div>
-    <h1 class="success-title">訂單已成立</h1>
-    <p class="success-subtitle">餐廳已收到通知，準備幫你料理</p>
+    <h1 class="success-title">罰單已開立</h1>
+    <p class="success-subtitle">餐廳已收到通知，你的罰餐即將依飯量刑</p>
 
     <div class="order-receipt">
       <div class="receipt-header">
-        <div class="receipt-label">order no.</div>
+        <div class="receipt-label">penalty no.</div>
         <div class="receipt-order-num" id="order-number">20260526-001</div>
       </div>
 
@@ -1229,7 +1219,7 @@ textarea.form-input { resize: vertical; min-height: 70px; }
     </div>
 
     <button class="btn-primary" onclick="goToPage('restaurants'); resetCart();">
-      <span>再訂一單</span>
+      <span>再領一張罰單</span>
     </button>
     <button class="btn-secondary" onclick="goToPage('restaurants'); resetCart();">回到首頁</button>
   </div>
@@ -1485,24 +1475,14 @@ function renderCart() {
 
   html += `
     <div class="summary-box">
-      <div class="summary-row">
-        <span>商品小計</span>
-        <span>${formatPrice(subtotal)}</span>
-      </div>
-      <div class="summary-row">
-        <span>罰鍰 ⚖️
-          <span class="label-meta">不抽餐廳成，固定罰鍰</span>
-        </span>
-        <span>${formatPrice(SERVICE_FEE)}</span>
-      </div>
       <div class="summary-row total">
-        <span>應付總計</span>
+        <span>應繳罰鍰 ⚖️</span>
         <span>${formatPrice(subtotal + SERVICE_FEE)}</span>
       </div>
     </div>
 
     <button class="btn-primary" onclick="goToCheckout()">
-      <span>填寫取餐資訊</span>
+      <span>前往開單</span>
       <span>→</span>
     </button>
   `;
@@ -1512,7 +1492,6 @@ function renderCart() {
 // ============== 結帳 ==============
 function goToCheckout() {
   const { subtotal } = getCartSummary();
-  $('checkout-subtotal').textContent = formatPrice(subtotal);
   $('checkout-total').textContent = formatPrice(subtotal + SERVICE_FEE);
 
   // 渲染大樓選項
@@ -1571,7 +1550,7 @@ async function submitOrder() {
   const btn = document.querySelector('#page-checkout .btn-primary');
   const btnHTML = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = '<span>送出中…</span>';
+  btn.innerHTML = '<span>開立中…</span>';
 
   try {
     const resp = await fetch('/api/orders', {
