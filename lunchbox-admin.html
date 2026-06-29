@@ -418,7 +418,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; color: var(--in
 /* ============== STATS ============== */
 .stat-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -1196,11 +1196,6 @@ body.role-viewer .fee-control { display: none !important; }
       <div class="stat-value"><span id="stat-total-orders">—</span><span class="unit">單</span></div>
       <div class="stat-meta">今日累計</div>
     </div>
-    <div class="stat-card persimmon">
-      <div class="stat-label">總營業額</div>
-      <div class="stat-value">$<span id="stat-revenue">—</span></div>
-      <div class="stat-meta" id="stat-fee">—</div>
-    </div>
     <div class="stat-card amber">
       <div class="stat-label">待處理訂單</div>
       <div class="stat-value"><span id="stat-pending">—</span><span class="unit">單</span></div>
@@ -1879,10 +1874,9 @@ function renderPrintSheet() {
   }
 
   html += `
-    <div style="margin-top:2rem;padding-top:1.5rem;border-top:2px solid var(--ink);display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;text-align:center;">
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:2px solid var(--ink);display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;text-align:center;">
       <div><div style="font-size:0.78rem;color:var(--ink-light);margin-bottom:0.3rem;">總訂單數</div><div style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.8rem;">${totalOrders} 單</div></div>
       <div><div style="font-size:0.78rem;color:var(--ink-light);margin-bottom:0.3rem;">總餐點數</div><div style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.8rem;">${totalDishes} 份</div></div>
-      <div><div style="font-size:0.78rem;color:var(--ink-light);margin-bottom:0.3rem;">總營業額</div><div style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.8rem;color:var(--persimmon);">$${totalRevenue}</div></div>
     </div>`;
 
   sheet.innerHTML = html;
