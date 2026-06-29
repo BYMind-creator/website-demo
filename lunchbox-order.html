@@ -1027,6 +1027,17 @@ textarea.form-input { resize: vertical; min-height: 70px; }
   line-height: 1.2;
   text-align: center;
 }
+.cart-rest-article {
+  display: inline-block;
+  background: var(--moss);
+  color: var(--rice);
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  margin-right: 0.5rem;
+}  
 </style>
 </head>
 <body>
@@ -1324,7 +1335,7 @@ function renderMenu() {
   if (!r) return;
 
   $('rest-hero').innerHTML = `
-    <div class="rest-thumb ${r.thumbClass}">${r.emoji}</div>
+    <div class="rest-thumb law-article">${r._article || ''}</div>
     <div>
       <h2>${r.name}</h2>
       <p class="desc">${r.description}</p>
@@ -1454,9 +1465,8 @@ function renderCart() {
   for (const rid in byRestaurant) {
     const { restaurant, items } = byRestaurant[rid];
     html += `
-      <div class="cart-section">
-        <div class="cart-section-header">
-          <h3><span class="cart-rest-emoji">${restaurant.emoji}</span>${restaurant.name}</h3>
+      <div class="cart-section-header">
+          <h3><span class="cart-rest-article">${restaurant._article || ''}</span>${restaurant.name}</h3>
         </div>
         ${items.map(c => `
           <div class="cart-item">
@@ -1703,6 +1713,7 @@ async function loadData() {
 
     buildings = data.buildings || [];
     restaurants = data.restaurants || [];
+    restaurants.forEach((r, i) => { r._article = `第 ${i + 1} 條`; });
 
     if (!buildings.length || !restaurants.length) {
       listEl.innerHTML = '<div class="empty-state"><div class="empty-icon">😴</div><div class="empty-text">今天還沒有上架的餐廳</div></div>';
