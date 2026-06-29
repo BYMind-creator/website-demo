@@ -45,7 +45,7 @@ export default async function handler(req, res) {
 
     // 2) 餐廳（只取上架，sort_order 大的在前）
     const rResp = await fetch(
-      `${URL}/rest/v1/restaurants?is_active=eq.true&order=sort_order.desc`,
+      `${URL}/rest/v1/restaurants?is_active=eq.true&select=id,name,description,sort_order,service_fee&order=sort_order.desc`,
       { headers }
     );
     if (!rResp.ok) {
@@ -79,19 +79,27 @@ export default async function handler(req, res) {
 
     // 4) 組成前端要的「胖」物件
     const restaurants = restaurantsRaw.map((r, i) => {
-      const menu = menuByRest[r.id] || [];
+      const fee = r.service_fee ?? 0;
+      // 把該餐廳的服務費灌進每道菜：顯示價 = 店內價 + 服務費
+      const menu = (menuByRest[r.id] || []).map(m => ({
+        ...m,
+        base_price: m.price,            // 保留店內原價（之後對帳/給餐廳用）
+        service_fee: fee,               // 這道菜含的服務費
+        price: m.price + fee,           // 客人看到、要付的價（含服務費）
+      }));
       const prices = menu.map(x => x.price);
       const priceRange = prices.length
         ? `$${Math.min(...prices)}-${Math.max(...prices)}`
         : '—';
       const categories = [...new Set(menu.map(x => x.category))];
-      const look = THUMBS[i % THUMBS.length];   // 依順序輪流配外觀
+      const look = THUMBS[i % THUMBS.length];
       return {
         id: r.id,
         name: r.name,
         emoji: look.emoji,
         thumbClass: look.thumbClass,
         description: r.description || '',
+        service_fee: fee,
         priceRange,
         itemCount: menu.length,
         categories,
