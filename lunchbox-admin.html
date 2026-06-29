@@ -2094,10 +2094,10 @@ async function changeServiceFee(id, value) {
   const fee = Number(value);
   if (!Number.isFinite(fee) || fee < 0) { toast('服務費不合法'); loadMenu(); return; }
   try {
-    const resp = await fetch('/api/update-service-fee', {
+    const resp = await fetch('/api/manage-restaurant', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, service_fee: fee, _user: currentUser?._u, _pass: currentUser?._p }),
+      body: JSON.stringify({ action: 'update', id, service_fee: fee, _user: currentUser?._u, _pass: currentUser?._p }),
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || '更新失敗');
