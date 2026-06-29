@@ -1782,10 +1782,25 @@ async function loadOrders() {
     renderOrders();
     renderDashboard();
     updateHeaderTexts();
+    updateFilterCounts();
   } catch (e) {
     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--status-cancelled);">${e.message || '載入失敗'}</td></tr>`;
   }
 }
+
+function updateFilterCounts() {
+  const counts = { all: orders.length, pending: 0, preparing: 0, ready: 0, completed: 0 };
+  for (const o of orders) {
+    if (counts[o.status] !== undefined) counts[o.status]++;
+  }
+  const setCount = (id, n) => { const el = $(id); if (el) el.textContent = n; };
+  setCount('count-all', counts.all);
+  setCount('count-pending', counts.pending);
+  setCount('count-preparing', counts.preparing);
+  setCount('count-ready', counts.ready);
+  setCount('count-completed', counts.completed);
+}  
+  
 let printsheetBuilding = 'all';
 
 function renderPrintSheet() {
