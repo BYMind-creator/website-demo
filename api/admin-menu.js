@@ -43,6 +43,20 @@ export default async function handler(req, res) {
       restaurants.forEach(r => { r.active_days = []; });
     }
 
+    // #7：分類手續費（分開查）。後台附上 category_fees = {category: fee} 供設定 UI 顯示現況。
+    try {
+      const cfResp = await fetch(`${URL}/rest/v1/category_fees?select=restaurant_id,category,fee`, { headers });
+      if (cfResp.ok) {
+        const byRest = {};
+        for (const x of await cfResp.json()) (byRest[x.restaurant_id] ||= {})[(x.category || '').trim()] = x.fee;
+        restaurants.forEach(r => { r.category_fees = byRest[r.id] || {}; });
+      } else {
+        restaurants.forEach(r => { r.category_fees = {}; });
+      }
+    } catch (_) {
+      restaurants.forEach(r => { r.category_fees = {}; });
+    }
+
     return res.status(200).json({ restaurants });
   } catch (e) {
     console.error('[admin-menu]', e);
