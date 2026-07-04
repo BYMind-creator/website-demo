@@ -2352,7 +2352,7 @@ async function loadBuildings() {
         <td>${b.pickup_location || '—'}</td>
         <td class="mono">${(b.order_start_time ? b.order_start_time + '–' : '') + (b.cutoff_time || '—')}</td>
         <td class="mono">${b.pickup_time || '—'}</td>
-        <td><span class="status-badge status-completed">營運中</span></td>
+        <td><div class="toggle ${b.is_active !== false ? 'on' : ''}" onclick="toggleBuildingActive('${b.id}', this)"></div></td>
         <td><button class="btn-ghost" style="padding:0.35rem 0.8rem;font-size:0.82rem;" onclick="openEditBuilding('${b.id}')">編輯</button></td>
       </tr>`).join('');
   } catch (e) {
@@ -2443,6 +2443,22 @@ async function toggleRestaurantActive(id, elem) {
     if (!resp.ok) throw new Error(data.error || '更新失敗');
     toast(turningOn ? '餐廳已上架' : '餐廳已下架');
     loadMenu(); // 重載，讓上下架 badge 同步
+  } catch (e) {
+    elem.classList.toggle('on'); // 退回
+    toast(e.message || '更新失敗');
+  }
+}
+async function toggleBuildingActive(id, elem) {
+  const turningOn = !elem.classList.contains('on');
+  elem.classList.toggle('on'); // 樂觀切換，失敗退回
+  try {
+    const resp = await fetch('/api/manage-building', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'update', id, is_active: turningOn, _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '更新失敗');
+    toast(turningOn ? '大樓已啟用' : '大樓已停用');
   } catch (e) {
     elem.classList.toggle('on'); // 退回
     toast(e.message || '更新失敗');
