@@ -1520,7 +1520,7 @@ body.role-viewer .fee-control { display: none !important; }
   <div class="table-wrap">
     <table>
       <thead>
-        <tr><th>大樓名稱</th><th>區域</th><th>取餐地點</th><th>截單</th><th>取餐</th><th>狀態</th></tr>
+        <tr><th>大樓名稱</th><th>區域</th><th>負責人</th><th>取餐地點</th><th>下單時段</th><th>取餐</th><th>狀態</th><th></th></tr>
       </thead>
       <tbody id="buildings-tbody">
         <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-light);">載入中…</td></tr>
@@ -2194,6 +2194,10 @@ function renderMenu() {
           <span class="status-badge ${r.is_active ? 'status-completed' : 'status-cancelled'}">${r.is_active ? '營業中' : '已下架'}</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.8rem;">
+          <label style="font-size:0.8rem;color:var(--ink-light);display:flex;align-items:center;gap:0.5rem;">
+            營業
+            <div class="toggle ${r.is_active ? 'on' : ''}" onclick="toggleRestaurantActive('${r.id}', this)"></div>
+          </label>
           <label class="fee-control" style="font-size:0.8rem;color:var(--ink-light);display:flex;align-items:center;gap:0.4rem;">
             服務費 $
             <input type="number" value="${r.service_fee ?? 25}" onchange="changeServiceFee('${r.id}', this.value)"
@@ -2330,58 +2334,85 @@ let buildingsData = [];
 
 async function loadBuildings() {
   const tb = $('buildings-tbody');
-  tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-light);">載入中…</td></tr>';
+  tb.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--ink-light);">載入中…</td></tr>';
   try {
-    const resp = await fetch('/api/admin-menu'); // admin-menu 沒有大樓，改打 menu
-    // 上面那支沒大樓，改用客人端 menu API（它有 buildings）
-    const r2 = await fetch('/api/menu');
+    const r2 = await fetch('/api/menu'); // buildings 掛在客人端 menu API
     const data = await r2.json();
     if (!r2.ok) throw new Error(data.error || '載入失敗');
     buildingsData = data.buildings || [];
     if (!buildingsData.length) {
-      tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--ink-light);">還沒有大樓</td></tr>';
+      tb.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--ink-light);">還沒有大樓</td></tr>';
       return;
     }
     tb.innerHTML = buildingsData.map(b => `
       <tr>
         <td class="cell-strong">${b.name}</td>
         <td>${b.district || '—'}</td>
+        <td>${b.manager_name ? `${b.manager_name}${b.manager_phone ? `<div class="cell-meta mono">${b.manager_phone}</div>` : ''}` : '—'}</td>
         <td>${b.pickup_location || '—'}</td>
-        <td class="mono">${b.cutoff_time || '—'}</td>
+        <td class="mono">${(b.order_start_time ? b.order_start_time + '–' : '') + (b.cutoff_time || '—')}</td>
         <td class="mono">${b.pickup_time || '—'}</td>
         <td><span class="status-badge status-completed">營運中</span></td>
+        <td><button class="btn-ghost" style="padding:0.35rem 0.8rem;font-size:0.82rem;" onclick="openEditBuilding('${b.id}')">編輯</button></td>
       </tr>`).join('');
   } catch (e) {
-    tb.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--status-cancelled);">${e.message || '載入失敗'}</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--status-cancelled);">${e.message || '載入失敗'}</td></tr>`;
   }
 }
 
+let editingBuildingId = null; // null=新增，有值=編輯中的大樓 id
+
+function buildingFormHTML(b = {}) {
+  return mField('大樓名稱', 'b-name', 'text', b.name || '') +
+    mField('區域（如 西屯區）', 'b-district', 'text', b.district || '') +
+    mField('取餐地點', 'b-pickup', 'text', b.pickup_location || '') +
+    mField('下單開始時間', 'b-start', 'time', b.order_start_time || '') +
+    mField('下單截止時間（截單）', 'b-cutoff', 'time', b.cutoff_time || '') +
+    mField('取餐時間', 'b-ptime', 'time', b.pickup_time || '') +
+    mField('負責人姓名', 'b-manager', 'text', b.manager_name || '') +
+    mField('負責人電話', 'b-manager-phone', 'tel', b.manager_phone || '');
+}
+
 function openAddBuilding() {
-  openModal('新增大樓',
-    mField('大樓名稱', 'b-name') +
-    mField('區域（如 西屯區）', 'b-district') +
-    mField('取餐地點', 'b-pickup') +
-    mField('截單時間（如 10:30）', 'b-cutoff') +
-    mField('取餐時間（如 12:00）', 'b-ptime'),
-    async () => {
-      const name = $('b-name').value.trim();
-      if (!name) { toast('請填大樓名稱'); return; }
-      try {
-        const resp = await fetch('/api/manage-building', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'create', name,
-            district: $('b-district').value.trim(),
-            pickup_location: $('b-pickup').value.trim(),
-            cutoff_time: $('b-cutoff').value.trim() || null,
-            pickup_time: $('b-ptime').value.trim() || null,
-            _user: currentUser?._u, _pass: currentUser?._p }),
-        });
-        const data = await resp.json();
-        if (!resp.ok) throw new Error(data.error || '新增失敗');
-        toast('已新增大樓'); closeModal(); loadBuildings();
-      } catch (e) { toast(e.message || '新增失敗'); }
+  editingBuildingId = null;
+  openModal('新增大樓', buildingFormHTML(), saveBuilding);
+}
+
+function openEditBuilding(id) {
+  const b = buildingsData.find(x => x.id === id);
+  if (!b) return;
+  editingBuildingId = id;
+  openModal(`編輯「${b.name}」`, buildingFormHTML(b), saveBuilding);
+}
+
+async function saveBuilding() {
+  const name = $('b-name').value.trim();
+  if (!name) { toast('請填大樓名稱'); return; }
+  const payload = {
+    action: editingBuildingId ? 'update' : 'create',
+    name,
+    district: $('b-district').value.trim(),
+    pickup_location: $('b-pickup').value.trim(),
+    order_start_time: $('b-start').value || null,
+    cutoff_time: $('b-cutoff').value || null,
+    pickup_time: $('b-ptime').value || null,
+    manager_name: $('b-manager').value.trim() || null,
+    manager_phone: $('b-manager-phone').value.trim() || null,
+    _user: currentUser?._u, _pass: currentUser?._p,
+  };
+  if (editingBuildingId) payload.id = editingBuildingId;
+  try {
+    const resp = await fetch('/api/manage-building', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
-}  
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '儲存失敗');
+    toast(editingBuildingId ? '大樓已更新' : '已新增大樓');
+    closeModal();
+    loadBuildings();
+  } catch (e) { toast(e.message || '儲存失敗'); }
+}
 async function toggleAvailable(id, elem) {
   const turningOn = !elem.classList.contains('on');
   elem.classList.toggle('on'); // 先樂觀切換，失敗再退回
@@ -2394,6 +2425,24 @@ async function toggleAvailable(id, elem) {
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || '更新失敗');
     toast(turningOn ? '已上架' : '已下架');
+  } catch (e) {
+    elem.classList.toggle('on'); // 退回
+    toast(e.message || '更新失敗');
+  }
+}
+async function toggleRestaurantActive(id, elem) {
+  const turningOn = !elem.classList.contains('on');
+  elem.classList.toggle('on'); // 樂觀切換，失敗退回
+  try {
+    const resp = await fetch('/api/manage-restaurant', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'update', id, is_active: turningOn, _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '更新失敗');
+    toast(turningOn ? '餐廳已上架' : '餐廳已下架');
+    loadMenu(); // 重載，讓上下架 badge 同步
   } catch (e) {
     elem.classList.toggle('on'); // 退回
     toast(e.message || '更新失敗');
