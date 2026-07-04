@@ -1759,7 +1759,7 @@ async function loadData() {
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || '載入失敗');
 
-    buildings = data.buildings || [];
+    buildings = (data.buildings || []).filter(b => b.is_active !== false);
     restaurants = data.restaurants || [];
     restaurants.forEach((r, i) => { r._article = `第 ${i + 1} 條`; });
 
