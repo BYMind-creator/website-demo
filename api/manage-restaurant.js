@@ -95,6 +95,23 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    if (action === 'set-category-fees') {
+      if (!b.restaurant_id) return res.status(400).json({ error: '缺少 restaurant_id' });
+      const fees = Array.isArray(b.fees) ? b.fees : [];
+      // 全量覆蓋：先刪這家所有分類費，再插入有填的（沒填的分類→客人端回退餐廳 service_fee）
+      await fetch(`${URL}/rest/v1/category_fees?restaurant_id=eq.${encodeURIComponent(b.restaurant_id)}`,
+        { method: 'DELETE', headers });
+      const rows = fees
+        .filter(x => x && x.category && x.fee !== '' && x.fee !== null && x.fee !== undefined)
+        .map(x => ({ restaurant_id: b.restaurant_id, category: String(x.category).trim(), fee: parseInt(x.fee, 10) || 0 }));
+      if (rows.length) {
+        const r = await fetch(`${URL}/rest/v1/category_fees`,
+          { method: 'POST', headers, body: JSON.stringify(rows) });
+        if (!r.ok) return res.status(500).json({ error: '分類手續費存檔失敗', detail: await r.text() });
+      }
+      return res.status(200).json({ ok: true });
+    }
+
     return res.status(400).json({ error: '未知的 action（要 create 或 update）' });
   } catch (e) {
     console.error('[manage-restaurant]', e);
