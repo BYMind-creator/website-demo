@@ -942,12 +942,28 @@ tbody tr:last-child td { border-bottom: none; }
 
 .menu-card-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--line);
   margin-bottom: 1rem;
 }
+.rest-head-main { display: flex; align-items: flex-start; gap: 0.5rem; flex: 1; min-width: 200px; }
+.rest-move { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
+.rest-address {
+  margin-top: 0.4rem; width: 100%; box-sizing: border-box;
+  background: var(--rice); border: 1.5px solid var(--line); border-radius: 6px;
+  padding: 0.35rem 0.6rem; font-size: 0.8rem; color: var(--ink-light);
+}
+.rest-head-controls { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+.rest-ctl { font-size: 0.8rem; color: var(--ink-light); display: flex; align-items: center; gap: 0.4rem; }
+.rest-fee {
+  width: 64px; background: var(--rice); border: 1.5px solid var(--line);
+  border-radius: 6px; padding: 0.3rem 0.5rem; font-weight: 700; text-align: right;
+}
+.rest-additem { padding: 0.4rem 0.8rem; font-size: 0.82rem; }
 
 .menu-card-title {
   font-family: 'Noto Serif TC', serif;
@@ -960,40 +976,59 @@ tbody tr:last-child td { border-bottom: none; }
 
 .menu-item-row {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.65rem 0;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.8rem 0;
   border-bottom: 1px dashed var(--line);
-  flex-wrap: nowrap;
 }
-.menu-item-row .item-info { flex: 1; min-width: 0; }
-.menu-item-row .price-input { flex-shrink: 0; }
 .menu-item-row:last-child { border-bottom: none; }
 
-.menu-item-row .item-info { flex: 1; }
-.menu-item-row .item-info .name { font-weight: 500; font-size: 0.92rem; }
-.menu-item-row .item-info .desc { font-size: 0.78rem; color: var(--ink-light); margin-top: 0.15rem; }
-
-.menu-item-row .cat-badge {
-  font-size: 0.72rem;
-  background: var(--paper);
-  color: var(--ink-light);
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
+/* 上排：縮圖 + 名稱 + 價格 */
+.mi-top { display: flex; align-items: flex-start; gap: 0.6rem; }
+.mi-thumbs { display: flex; gap: 5px; overflow-x: auto; flex-shrink: 0; max-width: 130px; padding-bottom: 2px; }
+.mi-thumb-wrap { position: relative; flex-shrink: 0; }
+.mi-thumb { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; display: block; }
+.mi-thumb-del {
+  position: absolute; top: -6px; right: -6px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--status-cancelled); color: #fff;
+  border: 2px solid var(--white); font-size: 12px; line-height: 1;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
 }
-
-.menu-item-row .price-input {
-  width: 90px;
-  background: var(--rice);
-  border: 1.5px solid var(--line);
-  border-radius: 6px;
-  padding: 0.35rem 0.6rem;
-  font-family: 'Noto Serif TC', serif;
-  font-weight: 700;
-  font-size: 0.92rem;
-  text-align: right;
+.mi-addimg {
+  width: 52px; height: 52px; border-radius: 8px; flex-shrink: 0;
+  border: 1.5px dashed var(--line); background: var(--rice);
+  color: var(--ink-light); font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
-.menu-item-row .price-input:focus { outline: none; border-color: var(--moss); }
+.mi-info { flex: 1; min-width: 0; }
+.mi-info .cat-badge {
+  font-size: 0.7rem; background: var(--paper); color: var(--ink-light);
+  padding: 0.1rem 0.45rem; border-radius: 4px; display: inline-block; margin-bottom: 0.2rem;
+}
+.mi-info .name { font-weight: 600; font-size: 0.95rem; }
+.mi-info .desc { font-size: 0.78rem; color: var(--ink-light); margin-top: 0.1rem; word-break: break-word; }
+.mi-price { display: flex; align-items: center; gap: 4px; flex-shrink: 0; color: var(--ink-light); font-size: 0.85rem; }
+.mi-price .price-input {
+  width: 72px; background: var(--rice); border: 1.5px solid var(--line);
+  border-radius: 6px; padding: 0.35rem 0.5rem; font-weight: 700; font-size: 0.92rem; text-align: right;
+}
+.mi-price .price-input:focus { outline: none; border-color: var(--moss); }
+
+/* 下排：排序箭頭 + 供應開關 + 刪 */
+.mi-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.mi-move {
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1.5px solid var(--line); background: var(--white); color: var(--ink);
+  font-size: 1rem; display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.mi-move:disabled { opacity: 0.3; cursor: default; }
+.mi-avail { display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: var(--ink-light); }
+.mi-textbtn {
+  font-size: 0.82rem; padding: 0.35rem 0.7rem; border-radius: 6px;
+  border: 1.5px solid var(--line); background: var(--white); cursor: pointer; color: var(--ink);
+}
+.mi-textbtn.danger { color: var(--status-cancelled); }
 
 /* Toggle switch */
 .toggle {
@@ -2189,45 +2224,143 @@ function renderMenu() {
     box.innerHTML = '<div class="empty"><div class="empty-icon">🍽️</div><div class="empty-text">還沒有餐廳</div></div>';
     return;
   }
-  box.innerHTML = menuData.map(r => `
+  box.innerHTML = menuData.map((r, ri) => {
+    const items = (r.menu_items || []).slice().sort((a, b) => (b.sort_order || 0) - (a.sort_order || 0));
+    const escName = r.name.replace(/'/g, "\\'");
+    return `
     <div class="menu-card">
       <div class="menu-card-header">
-        <div>
-          <div class="menu-card-title">${r.name}
-            <span class="status-badge ${r.is_active ? 'status-completed' : 'status-cancelled'}">${r.is_active ? '營業中' : '已下架'}</span>
+        <div class="rest-head-main">
+          <div class="rest-move">
+            <button class="mi-move" ${ri === 0 ? 'disabled' : ''} onclick="moveRestaurant('${r.id}','up')">↑</button>
+            <button class="mi-move" ${ri === menuData.length - 1 ? 'disabled' : ''} onclick="moveRestaurant('${r.id}','down')">↓</button>
           </div>
-          <input type="text" value="${r.address || ''}" placeholder="餐廳地址（後台自用）"
-            onchange="changeRestaurantAddress('${r.id}', this.value)"
-            style="margin-top:0.4rem;width:280px;max-width:100%;background:var(--rice);border:1.5px solid var(--line);border-radius:6px;padding:0.3rem 0.6rem;font-size:0.8rem;color:var(--ink-light);">
+          <div style="flex:1;min-width:0;">
+            <div class="menu-card-title">${r.name}
+              <span class="status-badge ${r.is_active ? 'status-completed' : 'status-cancelled'}">${r.is_active ? '營業中' : '已下架'}</span>
+            </div>
+            <input type="text" value="${(r.address || '').replace(/"/g, '&quot;')}" placeholder="餐廳地址（後台自用）"
+              onchange="changeRestaurantAddress('${r.id}', this.value)" class="rest-address">
+          </div>
         </div>
-        <div style="display:flex;align-items:center;gap:0.8rem;">
-          <label style="font-size:0.8rem;color:var(--ink-light);display:flex;align-items:center;gap:0.5rem;">
-            營業
+        <div class="rest-head-controls">
+          <label class="rest-ctl">營業
             <div class="toggle ${r.is_active ? 'on' : ''}" onclick="toggleRestaurantActive('${r.id}', this)"></div>
           </label>
-          <label class="fee-control" style="font-size:0.8rem;color:var(--ink-light);display:flex;align-items:center;gap:0.4rem;">
-            服務費 $
-            <input type="number" value="${r.service_fee ?? 25}" onchange="changeServiceFee('${r.id}', this.value)"
-              style="width:64px;background:var(--rice);border:1.5px solid var(--line);border-radius:6px;padding:0.3rem 0.5rem;font-weight:700;text-align:right;">
+          <label class="rest-ctl">服務費 $
+            <input type="number" value="${r.service_fee ?? 25}" onchange="changeServiceFee('${r.id}', this.value)" class="rest-fee">
           </label>
-          <button class="btn-ghost" style="padding:0.4rem 0.8rem;font-size:0.82rem;" onclick="openAddItem('${r.id}','${r.name.replace(/'/g, "\\'")}')">+ 加餐點</button>
+          <button class="btn-ghost rest-additem" onclick="openAddItem('${r.id}','${escName}')">+ 加餐點</button>
         </div>
       </div>
-      ${(r.menu_items || []).map(m => `
+      ${items.map((m, ii) => {
+        const imgs = (m.menu_item_images || []).slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+        const escItem = m.name.replace(/'/g, "\\'");
+        return `
         <div class="menu-item-row">
-          ${m.image_url ? `<img src="${m.image_url}" alt="" style="width:40px;height:40px;border-radius:6px;object-fit:cover;">` : `<div style="width:40px;"></div>`}
-          <div class="cat-badge">${m.category || '—'}</div>
-          <div class="item-info">
-            <div class="name">${m.name}</div>
-            <div class="desc">${m.description || ''}</div>
+          <div class="mi-top">
+            <div class="mi-thumbs">
+              ${imgs.map(img => `<div class="mi-thumb-wrap"><img class="mi-thumb" src="${img.url}" alt=""><button class="mi-thumb-del" onclick="deleteMenuImage('${img.id}')">×</button></div>`).join('')}
+              <button class="mi-addimg" onclick="addImageToItem('${m.id}')" title="加圖">＋</button>
+            </div>
+            <div class="mi-info">
+              <span class="cat-badge">${m.category || '—'}</span>
+              <div class="name">${m.name}</div>
+              <div class="desc">${m.description || ''}</div>
+            </div>
+            <div class="mi-price">$<input type="number" class="price-input" value="${m.price}" onchange="changePrice('${m.id}', this.value)"></div>
           </div>
-          <span style="color:var(--ink-light);font-size:0.78rem;">$</span>
-          <input type="number" class="price-input" value="${m.price}" onchange="changePrice('${m.id}', this.value)">
-          <div class="toggle ${m.is_available ? 'on' : ''}" onclick="toggleAvailable('${m.id}', this)"></div>
-          <button class="btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.82rem;color:var(--status-cancelled);" onclick="deleteItem('${m.id}','${m.name.replace(/'/g, "\\'")}')">刪</button>
-        </div>`).join('')}
-    </div>`).join('');
+          <div class="mi-actions">
+            <button class="mi-move" ${ii === 0 ? 'disabled' : ''} onclick="moveMenuItem('${r.id}','${m.id}','up')">↑</button>
+            <button class="mi-move" ${ii === items.length - 1 ? 'disabled' : ''} onclick="moveMenuItem('${r.id}','${m.id}','down')">↓</button>
+            <label class="mi-avail">供應<div class="toggle ${m.is_available ? 'on' : ''}" onclick="toggleAvailable('${m.id}', this)"></div></label>
+            <button class="mi-textbtn danger" onclick="deleteItem('${m.id}','${escItem}')">刪</button>
+          </div>
+        </div>`;
+      }).join('')}
+      ${items.length === 0 ? '<div style="padding:0.8rem 0;color:var(--ink-light);font-size:0.85rem;">還沒有餐點，點右上「＋加餐點」</div>' : ''}
+    </div>`;
+  }).join('');
 }
+// ===== 排序 / 多圖管理（Part B）=====
+async function moveRestaurant(restaurantId, dir) {
+  const list = menuData.slice(); // 已是顯示順序（sort_order.desc）
+  const i = list.findIndex(r => r.id === restaurantId);
+  const j = dir === 'up' ? i - 1 : i + 1;
+  if (i < 0 || j < 0 || j >= list.length) return;
+  [list[i], list[j]] = [list[j], list[i]];
+  try {
+    for (let idx = 0; idx < list.length; idx++) {
+      const resp = await fetch('/api/manage-restaurant', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update', id: list[idx].id, sort_order: list.length - idx,
+          _user: currentUser?._u, _pass: currentUser?._p }),
+      });
+      if (!resp.ok) throw new Error((await resp.json()).error || '排序失敗');
+    }
+    loadMenu();
+  } catch (e) { toast(e.message || '排序失敗'); }
+}
+
+async function moveMenuItem(restaurantId, itemId, dir) {
+  const rest = menuData.find(r => r.id === restaurantId);
+  if (!rest) return;
+  const items = (rest.menu_items || []).slice().sort((a, b) => (b.sort_order || 0) - (a.sort_order || 0));
+  const i = items.findIndex(x => x.id === itemId);
+  const j = dir === 'up' ? i - 1 : i + 1;
+  if (i < 0 || j < 0 || j >= items.length) return;
+  [items[i], items[j]] = [items[j], items[i]];
+  const payload = items.map((it, idx) => ({ id: it.id, sort_order: items.length - idx }));
+  try {
+    const resp = await fetch('/api/manage-menu-item', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'reorder', items: payload, _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    if (!resp.ok) throw new Error((await resp.json()).error || '排序失敗');
+    loadMenu();
+  } catch (e) { toast(e.message || '排序失敗'); }
+}
+
+async function deleteMenuImage(imageId) {
+  if (!confirm('刪掉這張圖？')) return;
+  try {
+    const resp = await fetch('/api/manage-menu-item', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete-image', image_id: imageId, _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    if (!resp.ok) throw new Error((await resp.json()).error || '刪圖失敗');
+    toast('已刪圖'); loadMenu();
+  } catch (e) { toast(e.message || '刪圖失敗'); }
+}
+
+function addImageToItem(itemId) {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    toast('上傳中…');
+    try {
+      const dataUrl = await compressImage(file);
+      const up = await fetch('/api/manage-menu-item', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'upload-image', data: dataUrl, content_type: 'image/jpeg',
+          _user: currentUser?._u, _pass: currentUser?._p }),
+      });
+      const upd = await up.json();
+      if (!up.ok) throw new Error(upd.error || '上傳失敗');
+      const add = await fetch('/api/manage-menu-item', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'add-image', menu_item_id: itemId, url: upd.url,
+          _user: currentUser?._u, _pass: currentUser?._p }),
+      });
+      if (!add.ok) throw new Error((await add.json()).error || '加圖失敗');
+      toast('已加圖'); loadMenu();
+    } catch (e) { toast(e.message || '加圖失敗'); }
+  };
+  input.click();
+}
+
 // ===== 通用彈窗 =====
 let modalSaveFn = null;
 function openModal(title, bodyHTML, saveFn) {
@@ -2248,7 +2381,6 @@ function mField(label, id, type = 'text', val = '') {
 }
 
 // ===== 新增餐點 =====
-let uploadedImageUrl = null; // 這次新增餐點要帶的圖片網址
 
 // 瀏覽器端壓縮：回傳 dataURL（JPEG）
 function compressImage(file, maxWidth = 1200, quality = 0.8) {
@@ -2271,32 +2403,6 @@ function compressImage(file, maxWidth = 1200, quality = 0.8) {
   });
 }
 
-// 選檔 → 壓縮 → 上傳 → 顯示預覽
-async function handleMenuImagePick(input) {
-  const file = input.files && input.files[0];
-  if (!file) return;
-  const statusEl = $('mi-image-status');
-  const previewEl = $('mi-image-preview');
-  statusEl.textContent = '壓縮中…';
-  try {
-    const dataUrl = await compressImage(file);
-    statusEl.textContent = '上傳中…';
-    const resp = await fetch('/api/manage-menu-item', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'upload-image', data: dataUrl, content_type: 'image/jpeg',
-        _user: currentUser?._u, _pass: currentUser?._p }),
-    });
-    const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error || '上傳失敗');
-    uploadedImageUrl = data.url;
-    previewEl.src = data.url;
-    previewEl.style.display = 'block';
-    statusEl.textContent = '✓ 已上傳';
-  } catch (e) {
-    uploadedImageUrl = null;
-    statusEl.textContent = '✗ ' + (e.message || '上傳失敗');
-  }
-}
 let uploadedImageUrls = []; // 這次新增餐點的多張圖網址
 
 async function handleMenuImagePick(input) {
