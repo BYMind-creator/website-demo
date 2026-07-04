@@ -29,6 +29,20 @@ export default async function handler(req, res) {
       restaurants.forEach(r => { r.building_ids = []; });
     }
 
+    // #4：營業日（分開查）。後台附上 active_days 供勾選 UI 顯示現況。
+    try {
+      const adResp = await fetch(`${URL}/rest/v1/restaurants?select=id,active_days`, { headers });
+      if (adResp.ok) {
+        const daysByRest = {};
+        for (const x of await adResp.json()) daysByRest[x.id] = x.active_days || [];
+        restaurants.forEach(r => { r.active_days = daysByRest[r.id] || []; });
+      } else {
+        restaurants.forEach(r => { r.active_days = []; });
+      }
+    } catch (_) {
+      restaurants.forEach(r => { r.active_days = []; });
+    }
+
     return res.status(200).json({ restaurants });
   } catch (e) {
     console.error('[admin-menu]', e);
