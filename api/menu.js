@@ -73,6 +73,17 @@ export default async function handler(req, res) {
       }
     } catch (_) { rbActive = false; }
 
+    // 2c) #4 餐廳營業日（分開查；欄位還沒建 / 查詢失敗 → adActive=false → 客人端不以星期過濾）
+    let adActive = false;
+    const daysByRest = {};
+    try {
+      const adResp = await fetch(`${URL}/rest/v1/restaurants?select=id,active_days`, { headers });
+      if (adResp.ok) {
+        adActive = true;
+        for (const x of await adResp.json()) daysByRest[x.id] = x.active_days; // 可能是 null 或 [1,3,5]
+      }
+    } catch (_) { adActive = false; }
+
     // 3) 菜單（只取供應中，一次撈全部；不 embed 圖片，改下一步分開撈）
     const mResp = await fetch(
       `${URL}/rest/v1/menu_items?is_available=eq.true&select=id,restaurant_id,name,description,price,category,sort_order,image_url&order=sort_order.desc`,
@@ -148,6 +159,7 @@ export default async function handler(req, res) {
         categories,
         menu,
         building_ids: rbActive ? (bidsByRest[r.id] || []) : null, // null=功能未啟用→客人端全顯示；[]=沒設大樓→客人端隱藏
+        active_days: adActive ? (daysByRest[r.id] || []) : null,  // null=功能未啟用→不以星期過濾；[]=沒設營業日→隱藏(b-1)
       };
     });
 
