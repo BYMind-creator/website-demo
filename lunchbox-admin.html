@@ -2286,7 +2286,7 @@ function renderMenu() {
           <label class="rest-ctl">服務費 $
             <input type="number" value="${r.service_fee ?? 25}" onchange="changeServiceFee('${r.id}', this.value)" class="rest-fee">
           </label>
-          <button class="btn-ghost rest-additem" onclick="openRestaurantBuildings('${r.id}')">🏢 服務大樓</button>
+          <button class="btn-ghost rest-additem" onclick="openRestaurantBuildings('${r.id}')">🏢 出現設定</button>
           <button class="btn-ghost rest-additem" onclick="openAddItem('${r.id}','${escName}')">+ 加餐點</button>
         </div>
       </div>
@@ -2584,23 +2584,42 @@ function buildingCheckboxes(selectedIds = []) {
 function getCheckedBuildings() {
   return [...document.querySelectorAll('.rb-check:checked')].map(el => el.value);
 }
+const DAY_LABELS = ['週一', '週二', '週三', '週四', '週五', '週六', '週日']; // index0=週一(=1) … 週日(=7)
+function dayCheckboxes(selectedDays = []) {
+  const sel = new Set((selectedDays || []).map(Number));
+  return `<div class="form-field"><label>營業日（必選，沒選不能存）</label>
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.4rem;">
+      ${DAY_LABELS.map((lbl, i) => {
+        const d = i + 1;
+        return `<label style="display:flex;align-items:center;gap:0.35rem;font-size:0.88rem;cursor:pointer;border:1.5px solid var(--line);border-radius:8px;padding:0.35rem 0.6rem;">
+          <input type="checkbox" class="ad-check" value="${d}" ${sel.has(d) ? 'checked' : ''} style="width:16px;height:16px;">${lbl}
+        </label>`;
+      }).join('')}
+    </div></div>`;
+}
+function getCheckedDays() {
+  return [...document.querySelectorAll('.ad-check:checked')].map(el => Number(el.value));
+}
 
 async function openAddRestaurant() {
   await ensureBuildings();
   openModal('新增餐廳',
     mField('餐廳名稱', 'r-name') +
     mField('描述（選填）', 'r-desc') +
-    buildingCheckboxes(),
+    buildingCheckboxes() +
+    dayCheckboxes(),
     async () => {
       const name = $('r-name').value.trim();
       if (!name) { toast('請填餐廳名稱'); return; }
       const building_ids = getCheckedBuildings();
       if (!building_ids.length) { toast('請至少選一棟服務大樓'); return; }
+      const active_days = getCheckedDays();
+      if (!active_days.length) { toast('請至少選一個營業日'); return; }
       try {
         const resp = await fetch('/api/manage-restaurant', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'create', name, description: $('r-desc').value.trim(),
-            building_ids, _user: currentUser?._u, _pass: currentUser?._p }),
+            building_ids, active_days, _user: currentUser?._u, _pass: currentUser?._p }),
         });
         const data = await resp.json();
         if (!resp.ok) throw new Error(data.error || '新增失敗');
@@ -2609,25 +2628,29 @@ async function openAddRestaurant() {
     });
 }
 
-// 編輯現有餐廳的「服務大樓」
+// 編輯現有餐廳的「服務大樓 + 營業日」（出現設定）
 async function openRestaurantBuildings(restaurantId) {
   await ensureBuildings();
   const rest = menuData.find(r => r.id === restaurantId);
-  const current = rest?.building_ids || [];
-  openModal(`「${rest?.name || ''}」服務哪些大樓`,
-    buildingCheckboxes(current),
+  const curBld = rest?.building_ids || [];
+  const curDay = rest?.active_days || [];
+  openModal(`「${rest?.name || ''}」出現設定`,
+    buildingCheckboxes(curBld) +
+    dayCheckboxes(curDay),
     async () => {
       const building_ids = getCheckedBuildings();
       if (!building_ids.length) { toast('請至少選一棟服務大樓'); return; }
+      const active_days = getCheckedDays();
+      if (!active_days.length) { toast('請至少選一個營業日'); return; }
       try {
         const resp = await fetch('/api/manage-restaurant', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'update', id: restaurantId, building_ids,
+          body: JSON.stringify({ action: 'update', id: restaurantId, building_ids, active_days,
             _user: currentUser?._u, _pass: currentUser?._p }),
         });
         const data = await resp.json();
         if (!resp.ok) throw new Error(data.error || '更新失敗');
-        toast('服務大樓已更新'); closeModal(); loadMenu();
+        toast('出現設定已更新'); closeModal(); loadMenu();
       } catch (e) { toast(e.message || '更新失敗'); }
     });
 }
