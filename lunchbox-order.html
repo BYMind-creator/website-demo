@@ -1306,9 +1306,22 @@ function formatPrice(n) { return '$' + n.toLocaleString('zh-TW'); }
 // ============== 渲染：餐廳列表 ==============
 function lawArticle(i) { return `第 ${i + 1} 條`; }
 
+function visibleRestaurants() {
+  const bid = state.selectedBuilding?.id;
+  return restaurants.filter(r => {
+    if (r.building_ids == null) return true;      // 功能未啟用（表還沒建）→ 全顯示
+    return bid && r.building_ids.includes(bid);   // 有設定 → 只顯示服務這棟樓的餐廳
+  });
+}
+
 function renderRestaurants() {
   const list = $('restaurant-list');
-  list.innerHTML = restaurants.map((r, i) => `
+  const vis = visibleRestaurants();
+  if (!vis.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🏢</div><div class="empty-text">這棟大樓今天沒有合作餐廳</div></div>';
+    return;
+  }
+  list.innerHTML = vis.map((r, i) => `
     <div class="restaurant-card" onclick="openRestaurant('${r.id}')">
       <div class="rest-thumb law-article">${lawArticle(i)}</div>
       <div class="rest-info">
@@ -1543,6 +1556,7 @@ function selectBuilding(bid, elem) {
   $$('.building-option').forEach(o => o.classList.remove('selected'));
   if (elem) elem.classList.add('selected');
   updateCountdown(); // 換大樓 → banner 立刻跟著換時間
+  renderRestaurants(); // #5：換大樓 → 重新過濾餐廳
 }
 
 function selectPayment(p) {
