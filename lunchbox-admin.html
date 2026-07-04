@@ -959,13 +959,15 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 .menu-item-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto auto;
-  gap: 1rem;
+  display: flex;
   align-items: center;
+  gap: 0.75rem;
   padding: 0.65rem 0;
   border-bottom: 1px dashed var(--line);
+  flex-wrap: nowrap;
 }
+.menu-item-row .item-info { flex: 1; min-width: 0; }
+.menu-item-row .price-input { flex-shrink: 0; }
 .menu-item-row:last-child { border-bottom: none; }
 
 .menu-item-row .item-info { flex: 1; }
