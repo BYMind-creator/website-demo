@@ -1038,13 +1038,8 @@ textarea.form-input { resize: vertical; min-height: 70px; }
   border-radius: 6px;
   margin-right: 0.5rem;
 }
-.menu-thumb {
-  width: 64px;
-  height: 64px;
-  border-radius: 10px;
-  object-fit: cover;
-  flex-shrink: 0;
-}  
+.menu-thumbs { display:flex; gap:6px; overflow-x:auto; max-width:170px; flex-shrink:0; }
+.menu-thumb { width:64px; height:64px; border-radius:10px; object-fit:cover; flex-shrink:0; }  
 </style>
 </head>
 <body>
@@ -1363,7 +1358,9 @@ function renderMenu() {
     const qty = inCart ? inCart.quantity : 0;
     return `
       <div class="menu-item">
-        ${m.image_url ? `<img class="menu-thumb" src="${m.image_url}" alt="${m.name}" loading="lazy">` : ''}
+        ${(m.images && m.images.length)
+          ? `<div class="menu-thumbs">${m.images.map(u => `<img class="menu-thumb" src="${u}" alt="${m.name}" loading="lazy">`).join('')}</div>`
+          : (m.image_url ? `<img class="menu-thumb" src="${m.image_url}" alt="${m.name}" loading="lazy">` : '')}
         <div class="menu-info">
           <h4>${m.name}</h4>
           <p class="desc">${m.desc}</p>
