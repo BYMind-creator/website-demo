@@ -1,6 +1,9 @@
 // api/menu.js
 // 從 Supabase 撈「上架餐廳 + 供應中菜單 + 大樓」，整形成前端畫面要的形狀。
 // 跟 orders.js 一樣：service_role key 只待在這層，前端不碰。
+//
+// 註：菜單與圖片改成「分兩次查詢、程式端合併」，不用 PostgREST 巢狀 embed，
+//     避免新表 FK 沒被 schema cache 認得時整包撈空的問題。
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -23,7 +26,7 @@ export default async function handler(req, res) {
   ];
 
   try {
-    // 1) 大樓（只取上架，依取餐時間排序）
+    // 1) 大樓（依取餐時間排序；停用與否交給前端過濾）
     const bResp = await fetch(
       `${URL}/rest/v1/buildings?order=pickup_time.asc`,
       { headers }
@@ -58,9 +61,9 @@ export default async function handler(req, res) {
     }
     const restaurantsRaw = await rResp.json();
 
-    // 3) 菜單（只取供應中，一次撈全部，再依餐廳分組）
+    // 3) 菜單（只取供應中，一次撈全部；不 embed 圖片，改下一步分開撈）
     const mResp = await fetch(
-      `${URL}/rest/v1/menu_items?is_available=eq.true&select=id,name,description,price,category,sort_order,image_url,menu_item_images(url,sort_order)&order=sort_order.desc`,
+      `${URL}/rest/v1/menu_items?is_available=eq.true&select=id,restaurant_id,name,description,price,category,sort_order,image_url&order=sort_order.desc`,
       { headers }
     );
     if (!mResp.ok) {
@@ -69,18 +72,39 @@ export default async function handler(req, res) {
     }
     const menuRaw = await mResp.json();
 
-    // 把菜單依 restaurant_id 分組
+    // 3b) 圖片（單獨撈一次 menu_item_images，再依 menu_item_id 分組）
+    //     用 try 包起來：就算圖片表出問題，菜單照樣出得來，不會整頁空。
+    const imagesByItem = {};
+    try {
+      const imgResp = await fetch(
+        `${URL}/rest/v1/menu_item_images?select=menu_item_id,url,sort_order&order=sort_order.asc`,
+        { headers }
+      );
+      if (imgResp.ok) {
+        const imgRaw = await imgResp.json();
+        for (const img of imgRaw) {
+          (imagesByItem[img.menu_item_id] ||= []).push(img);
+        }
+      }
+    } catch (_) {
+      // 圖片撈失敗就當作沒有圖，不影響菜單
+    }
+
+    // 把菜單依 restaurant_id 分組，並掛上各自的圖片陣列
     const menuByRest = {};
     for (const m of menuRaw) {
-      const imgs = (m.menu_item_images || []).slice().sort((a,b)=>a.sort_order-b.sort_order).map(x=>x.url);
+      const imgs = (imagesByItem[m.id] || [])
+        .slice()
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .map(x => x.url);
       (menuByRest[m.restaurant_id] ||= []).push({
         id: m.id,
         name: m.name,
         desc: m.description || '',
         price: m.price,
         category: m.category || '其他',
-        images: imgs,                             // 多圖陣列
-        image_url: imgs[0] || m.image_url || null, // 封面（相容）
+        images: imgs,                              // 多圖陣列
+        image_url: imgs[0] || m.image_url || null, // 封面（相容舊單圖）
       });
     }
 
@@ -116,6 +140,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ buildings, restaurants });
   } catch (e) {
+    console.error('[menu]', e);
     return res.status(500).json({ error: e.message || '未知錯誤' });
   }
 }
