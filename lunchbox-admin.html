@@ -1044,6 +1044,13 @@ tbody tr:last-child td { border-bottom: none; }
 }
 .mi-textbtn.danger { color: var(--status-cancelled); }
 
+/* 桌機專用：餐點列收攏靠左，消除中間大片留白。手機（<=768px）完全不受影響 */
+@media (min-width: 769px) {
+  .mi-top { max-width: 640px; }
+  .mi-info { flex: 0 1 auto; margin-right: 1.5rem; }
+  .mi-price { margin-left: auto; }
+}
+
 /* Toggle switch */
 .toggle {
   position: relative;
