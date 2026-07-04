@@ -27,7 +27,24 @@ export default async function handler(req, res) {
     if (u.role !== 'superadmin' && u.role !== 'ops') return res.status(403).json({ error: '權限不足' });
     // ——
 
-    const action = b.action; // 'create' 或 'delete'
+    const action = b.action; // 'create' / 'delete' / 'upload-image'
+
+    if (action === 'upload-image') {
+      if (!b.data) return res.status(400).json({ error: '沒有收到圖片資料' });
+      const clean = String(b.data).replace(/^data:[^;]+;base64,/, '');
+      const buffer = Buffer.from(clean, 'base64');
+      if (buffer.length > 5 * 1024 * 1024) return res.status(413).json({ error: '圖片太大（請壓到 5MB 以內）' });
+      const type = b.content_type || 'image/jpeg';
+      const ext = type.includes('png') ? 'png' : (type.includes('webp') ? 'webp' : 'jpg');
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const upResp = await fetch(`${URL}/storage/v1/object/menu-images/${path}`, {
+        method: 'POST',
+        headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': type, 'x-upsert': 'true' },
+        body: buffer,
+      });
+      if (!upResp.ok) return res.status(500).json({ error: '圖片上傳失敗', detail: await upResp.text() });
+      return res.status(200).json({ ok: true, url: `${URL}/storage/v1/object/public/menu-images/${path}` });
+    }
 
     if (action === 'delete') {
       if (!b.id) return res.status(400).json({ error: '缺少餐點 id' });
@@ -50,6 +67,7 @@ export default async function handler(req, res) {
         price,
         category: b.category || '其他',
         description: b.description || '',
+        image_url: b.image_url || null,
         is_available: true,
       };
       const resp = await fetch(`${URL}/rest/v1/menu_items`,
