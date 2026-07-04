@@ -2208,6 +2208,7 @@ function renderMenu() {
       </div>
       ${(r.menu_items || []).map(m => `
         <div class="menu-item-row">
+          ${m.image_url ? `<img src="${m.image_url}" alt="" style="width:40px;height:40px;border-radius:6px;object-fit:cover;">` : `<div style="width:40px;"></div>`}
           <div class="cat-badge">${m.category || '—'}</div>
           <div class="item-info">
             <div class="name">${m.name}</div>
