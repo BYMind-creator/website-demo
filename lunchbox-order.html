@@ -1306,11 +1306,19 @@ function formatPrice(n) { return '$' + n.toLocaleString('zh-TW'); }
 // ============== 渲染：餐廳列表 ==============
 function lawArticle(i) { return `第 ${i + 1} 條`; }
 
+function todayDow() {
+  const d = new Date().getDay(); // 0=日..6=六
+  return d === 0 ? 7 : d;        // 轉成 1=一..7=日
+}
 function visibleRestaurants() {
   const bid = state.selectedBuilding?.id;
+  const dow = todayDow();
   return restaurants.filter(r => {
-    if (r.building_ids == null) return true;      // 功能未啟用（表還沒建）→ 全顯示
-    return bid && r.building_ids.includes(bid);   // 有設定 → 只顯示服務這棟樓的餐廳
+    // #5 服務大樓：null=功能未啟用→放行；否則要包含我這棟樓
+    const bldOk = (r.building_ids == null) ? true : (bid && r.building_ids.includes(bid));
+    // #4 營業日：null=功能未啟用→放行；否則今天星期要在營業日內（空陣列=不營業=隱藏, b-1）
+    const dayOk = (r.active_days == null) ? true : (Array.isArray(r.active_days) && r.active_days.includes(dow));
+    return bldOk && dayOk;
   });
 }
 
