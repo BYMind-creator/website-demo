@@ -38,11 +38,14 @@ export default async function handler(req, res) {
       if (!b.name) return res.status(400).json({ error: '缺少餐廳名稱' });
       const building_ids = Array.isArray(b.building_ids) ? b.building_ids.filter(Boolean) : [];
       if (building_ids.length === 0) return res.status(400).json({ error: '請至少選一棟服務大樓' }); // #5 必填
+      const active_days = Array.isArray(b.active_days) ? b.active_days.map(Number).filter(n => n >= 1 && n <= 7) : [];
+      if (active_days.length === 0) return res.status(400).json({ error: '請至少選一個營業日' }); // #4 必填(b-1)
       const row = {
         name: b.name,
         description: b.description || '',
         address: b.address || null,
         sort_order: b.sort_order !== undefined ? parseInt(b.sort_order, 10) : 0,
+        active_days,
         is_active: b.is_active !== undefined ? !!b.is_active : true,
       };
       const resp = await fetch(`${URL}/rest/v1/restaurants`,
@@ -64,6 +67,13 @@ export default async function handler(req, res) {
       if (b.is_active !== undefined) patch.is_active = !!b.is_active;
       if (b.address !== undefined) patch.address = b.address;
       if (b.sort_order !== undefined) patch.sort_order = parseInt(b.sort_order, 10);
+
+      // #4：有帶 active_days 才動（必填、存進 restaurants.active_days）
+      if (Array.isArray(b.active_days)) {
+        const active_days = b.active_days.map(Number).filter(n => n >= 1 && n <= 7);
+        if (active_days.length === 0) return res.status(400).json({ error: '請至少選一個營業日' });
+        patch.active_days = active_days;
+      }
 
       // #5：有帶 building_ids 才動關聯（全量覆蓋，必填）
       let touchedBuildings = false;
