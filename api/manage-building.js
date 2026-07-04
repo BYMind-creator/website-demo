@@ -34,6 +34,9 @@ export default async function handler(req, res) {
         pickup_location: b.pickup_location || '',
         cutoff_time: b.cutoff_time || null,
         pickup_time: b.pickup_time || null,
+        order_start_time: b.order_start_time || null,
+        manager_name: b.manager_name || null,
+        manager_phone: b.manager_phone || null,
         is_active: b.is_active !== undefined ? !!b.is_active : true,
       };
       const resp = await fetch(`${URL}/rest/v1/buildings`,
@@ -45,7 +48,7 @@ export default async function handler(req, res) {
     if (action === 'update') {
       if (!b.id) return res.status(400).json({ error: '缺少大樓 id' });
       const patch = {};
-      ['name', 'district', 'pickup_location', 'cutoff_time', 'pickup_time'].forEach(k => {
+      ['name', 'district', 'pickup_location', 'cutoff_time', 'pickup_time', 'order_start_time', 'manager_name', 'manager_phone'].forEach(k => {
         if (b[k] !== undefined) patch[k] = b[k] || null;
       });
       if (b.is_active !== undefined) patch.is_active = !!b.is_active;
