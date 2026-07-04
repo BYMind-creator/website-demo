@@ -2240,12 +2240,69 @@ function mField(label, id, type = 'text', val = '') {
 }
 
 // ===== 新增餐點 =====
+let uploadedImageUrl = null; // 這次新增餐點要帶的圖片網址
+
+// 瀏覽器端壓縮：回傳 dataURL（JPEG）
+function compressImage(file, maxWidth = 1200, quality = 0.8) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = () => { img.src = reader.result; };
+    reader.onerror = reject;
+    img.onload = () => {
+      const scale = Math.min(1, maxWidth / img.width);
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// 選檔 → 壓縮 → 上傳 → 顯示預覽
+async function handleMenuImagePick(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const statusEl = $('mi-image-status');
+  const previewEl = $('mi-image-preview');
+  statusEl.textContent = '壓縮中…';
+  try {
+    const dataUrl = await compressImage(file);
+    statusEl.textContent = '上傳中…';
+    const resp = await fetch('/api/manage-menu-item', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'upload-image', data: dataUrl, content_type: 'image/jpeg',
+        _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '上傳失敗');
+    uploadedImageUrl = data.url;
+    previewEl.src = data.url;
+    previewEl.style.display = 'block';
+    statusEl.textContent = '✓ 已上傳';
+  } catch (e) {
+    uploadedImageUrl = null;
+    statusEl.textContent = '✗ ' + (e.message || '上傳失敗');
+  }
+}
 function openAddItem(restaurantId, restaurantName) {
+  uploadedImageUrl = null; // 每次開視窗先清掉上一張
   openModal(`為「${restaurantName}」新增餐點`,
     mField('餐點名稱', 'mi-name') +
     mField('價格', 'mi-price', 'number') +
     mField('分類（主餐/湯品…）', 'mi-cat') +
-    mField('描述（選填）', 'mi-desc'),
+    mField('描述（選填）', 'mi-desc') +
+    `<div class="form-field">
+       <label>餐點圖片（選填）</label>
+       <input type="file" accept="image/*" id="mi-image" onchange="handleMenuImagePick(this)"
+              class="form-input" style="padding:0.5rem;">
+       <div id="mi-image-status" style="font-size:0.8rem;color:var(--ink-light);margin-top:0.4rem;"></div>
+       <img id="mi-image-preview" style="display:none;margin-top:0.5rem;max-width:120px;border-radius:8px;border:1px solid var(--line);">
+     </div>`,
     async () => {
       const name = $('mi-name').value.trim();
       const price = $('mi-price').value;
@@ -2255,6 +2312,7 @@ function openAddItem(restaurantId, restaurantName) {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'create', restaurant_id: restaurantId, name, price,
             category: $('mi-cat').value.trim(), description: $('mi-desc').value.trim(),
+            image_url: uploadedImageUrl,
             _user: currentUser?._u, _pass: currentUser?._p }),
         });
         const data = await resp.json();
@@ -2263,7 +2321,6 @@ function openAddItem(restaurantId, restaurantName) {
       } catch (e) { toast(e.message || '新增失敗'); }
     });
 }
-
 // ===== 刪除餐點 =====
 async function deleteItem(id, name) {
   if (!confirm(`確定刪除「${name}」？此動作無法復原。`)) return;
