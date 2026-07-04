@@ -2190,8 +2190,13 @@ function renderMenu() {
   box.innerHTML = menuData.map(r => `
     <div class="menu-card">
       <div class="menu-card-header">
-        <div class="menu-card-title">${r.name}
-          <span class="status-badge ${r.is_active ? 'status-completed' : 'status-cancelled'}">${r.is_active ? '營業中' : '已下架'}</span>
+        <div>
+          <div class="menu-card-title">${r.name}
+            <span class="status-badge ${r.is_active ? 'status-completed' : 'status-cancelled'}">${r.is_active ? '營業中' : '已下架'}</span>
+          </div>
+          <input type="text" value="${r.address || ''}" placeholder="餐廳地址（後台自用）"
+            onchange="changeRestaurantAddress('${r.id}', this.value)"
+            style="margin-top:0.4rem;width:280px;max-width:100%;background:var(--rice);border:1.5px solid var(--line);border-radius:6px;padding:0.3rem 0.6rem;font-size:0.8rem;color:var(--ink-light);">
         </div>
         <div style="display:flex;align-items:center;gap:0.8rem;">
           <label style="font-size:0.8rem;color:var(--ink-light);display:flex;align-items:center;gap:0.5rem;">
@@ -2290,19 +2295,47 @@ async function handleMenuImagePick(input) {
     statusEl.textContent = '✗ ' + (e.message || '上傳失敗');
   }
 }
+let uploadedImageUrls = []; // 這次新增餐點的多張圖網址
+
+async function handleMenuImagePick(input) {
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
+  const statusEl = $('mi-image-status');
+  const previewEl = $('mi-image-preview');
+  statusEl.textContent = `處理 0/${files.length}…`;
+  for (let i = 0; i < files.length; i++) {
+    try {
+      const dataUrl = await compressImage(files[i]);
+      const resp = await fetch('/api/manage-menu-item', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'upload-image', data: dataUrl, content_type: 'image/jpeg',
+          _user: currentUser?._u, _pass: currentUser?._p }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || '上傳失敗');
+      uploadedImageUrls.push(data.url);
+      previewEl.insertAdjacentHTML('beforeend',
+        `<img src="${data.url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;margin:2px;border:1px solid var(--line);">`);
+      statusEl.textContent = `已上傳 ${uploadedImageUrls.length}/${files.length}`;
+    } catch (e) {
+      statusEl.textContent = '✗ ' + (e.message || '上傳失敗');
+    }
+  }
+}
+
 function openAddItem(restaurantId, restaurantName) {
-  uploadedImageUrl = null; // 每次開視窗先清掉上一張
+  uploadedImageUrls = [];
   openModal(`為「${restaurantName}」新增餐點`,
     mField('餐點名稱', 'mi-name') +
     mField('價格', 'mi-price', 'number') +
     mField('分類（主餐/湯品…）', 'mi-cat') +
     mField('描述（選填）', 'mi-desc') +
     `<div class="form-field">
-       <label>餐點圖片（選填）</label>
-       <input type="file" accept="image/*" id="mi-image" onchange="handleMenuImagePick(this)"
+       <label>餐點圖片（可多張，選填）</label>
+       <input type="file" accept="image/*" multiple id="mi-image" onchange="handleMenuImagePick(this)"
               class="form-input" style="padding:0.5rem;">
        <div id="mi-image-status" style="font-size:0.8rem;color:var(--ink-light);margin-top:0.4rem;"></div>
-       <img id="mi-image-preview" style="display:none;margin-top:0.5rem;max-width:120px;border-radius:8px;border:1px solid var(--line);">
+       <div id="mi-image-preview" style="display:flex;flex-wrap:wrap;margin-top:0.5rem;"></div>
      </div>`,
     async () => {
       const name = $('mi-name').value.trim();
@@ -2313,7 +2346,7 @@ function openAddItem(restaurantId, restaurantName) {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'create', restaurant_id: restaurantId, name, price,
             category: $('mi-cat').value.trim(), description: $('mi-desc').value.trim(),
-            image_url: uploadedImageUrl,
+            image_urls: uploadedImageUrls,
             _user: currentUser?._u, _pass: currentUser?._p }),
         });
         const data = await resp.json();
@@ -2368,6 +2401,18 @@ async function changeServiceFee(id, value) {
     toast(e.message || '更新失敗');
     loadMenu();
   }
+}
+async function changeRestaurantAddress(id, value) {
+  try {
+    const resp = await fetch('/api/manage-restaurant', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'update', id, address: value,
+        _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || '更新失敗');
+    toast('地址已更新');
+  } catch (e) { toast(e.message || '更新失敗'); loadMenu(); }
 }
 function openAddRestaurant() {
   openModal('新增餐廳',
