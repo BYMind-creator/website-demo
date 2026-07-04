@@ -9,8 +9,7 @@ export default async function handler(req, res) {
   try {
     // 一次撈餐廳 + 它的菜單（用 Supabase 的關聯查詢）
     const resp = await fetch(
-      `${URL}/rest/v1/restaurants?select=id,name,is_active,service_fee,menu_items(id,name,description,price,category,is_available)&order=name`,
-      { headers }
+      `${URL}/rest/v1/restaurants?select=id,name,is_active,service_fee,menu_items(id,name,description,price,category,is_available,image_url)&order=name`,      { headers }
     );
     if (!resp.ok) {
       return res.status(500).json({ error: '載入餐廳菜單失敗', detail: await resp.text() });
