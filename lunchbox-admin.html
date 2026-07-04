@@ -1904,40 +1904,61 @@ function updateFilterCounts() {
 }  
   
 let printsheetBuilding = 'all';
+let printsheetRestaurant = 'all'; // 備餐單：'all'=每家一頁 | 某餐廳名=只印那家
 let printsheetMode = 'restaurant'; // 'restaurant'=備餐單(依餐廳) | 'building'=派餐單(依大樓)
 
 function renderPrintSheet() {
   const sheet = $('print-sheet');
+  const filterBar = $('printsheet-building-filter');
   if (!orders.length) {
-    $('printsheet-building-filter').innerHTML = '<span style="color:var(--ink-light);font-size:0.85rem;">大樓：</span>';
+    filterBar.innerHTML = '';
     sheet.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">今天還沒有訂單</div></div>';
     return;
   }
 
-  // 大樓計數
+  const today = new Date().toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: 'long', day: 'numeric' });
+
+  // 大樓清單（派餐單用）
   const buildingCounts = {};
   for (const o of orders) buildingCounts[o.building] = (buildingCounts[o.building] || 0) + 1;
   const buildings = Object.keys(buildingCounts);
 
-  // 篩選/切換列（模式 + 大樓）
-  $('printsheet-building-filter').innerHTML =
+  // 餐廳清單（備餐單用）
+  const restCounts = {};
+  for (const o of orders) for (const it of (o.items || [])) restCounts[it.restaurant || '其他'] = (restCounts[it.restaurant || '其他'] || 0) + 1;
+  const restNames = Object.keys(restCounts);
+
+  // ===== 篩選/切換列 =====
+  const modeRow =
     `<div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap;">
        <button class="filter-chip ${printsheetMode === 'restaurant' ? 'active' : ''}" onclick="setPrintMode('restaurant')">備餐單（依餐廳）</button>
        <button class="filter-chip ${printsheetMode === 'building' ? 'active' : ''}" onclick="setPrintMode('building')">派餐單（依大樓）</button>
-     </div>
-     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
-       <span style="color:var(--ink-light);font-size:0.85rem;">大樓：</span>` +
-       `<button class="filter-chip ${printsheetBuilding === 'all' ? 'active' : ''}" onclick="setPrintBuilding('all')">全部 <span class="chip-count">${orders.length}</span></button>` +
-       buildings.map(b =>
-         `<button class="filter-chip ${printsheetBuilding === b ? 'active' : ''}" onclick="setPrintBuilding('${b.replace(/'/g, "\\'")}')">${b} <span class="chip-count">${buildingCounts[b]}</span></button>`
-       ).join('') +
-     `</div>`;
+     </div>`;
+  let scopeRow = '';
+  if (printsheetMode === 'restaurant') {
+    scopeRow =
+      `<div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+         <span style="color:var(--ink-light);font-size:0.85rem;">餐廳：</span>` +
+         `<button class="filter-chip ${printsheetRestaurant === 'all' ? 'active' : ''}" onclick="setPrintRestaurant('all')">全部（每家一頁）</button>` +
+         restNames.map(r =>
+           `<button class="filter-chip ${printsheetRestaurant === r ? 'active' : ''}" onclick="setPrintRestaurant('${r.replace(/'/g, "\\'")}')">${r}</button>`
+         ).join('') +
+       `</div>`;
+  } else {
+    scopeRow =
+      `<div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+         <span style="color:var(--ink-light);font-size:0.85rem;">大樓：</span>` +
+         `<button class="filter-chip ${printsheetBuilding === 'all' ? 'active' : ''}" onclick="setPrintBuilding('all')">全部 <span class="chip-count">${orders.length}</span></button>` +
+         buildings.map(b =>
+           `<button class="filter-chip ${printsheetBuilding === b ? 'active' : ''}" onclick="setPrintBuilding('${b.replace(/'/g, "\\'")}')">${b} <span class="chip-count">${buildingCounts[b]}</span></button>`
+         ).join('') +
+       `</div>`;
+  }
+  filterBar.innerHTML = modeRow + scopeRow;
 
-  const useOrders = printsheetBuilding === 'all' ? orders : orders.filter(o => o.building === printsheetBuilding);
-  const today = new Date().toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: 'long', day: 'numeric' });
-
-  // ===== 派餐單（依大樓）：給營運去大樓發餐用。每棟一頁（page-break）=====
+  // ===== 派餐單（依大樓）：給營運去大樓發餐。每棟一頁 =====
   if (printsheetMode === 'building') {
+    const useOrders = printsheetBuilding === 'all' ? orders : orders.filter(o => o.building === printsheetBuilding);
     const byBuilding = {};
     for (const o of useOrders) (byBuilding[o.building || '未指定大樓'] ||= []).push(o);
     const blds = Object.keys(byBuilding);
@@ -1951,14 +1972,9 @@ function renderPrintSheet() {
         <div class="dispatch-block"${notLast ? ' style="page-break-after:always;"' : ''}>
           <div class="print-header">
             <div class="print-title">派餐單 — ${bld}</div>
-            <div class="print-meta">
-              <span><strong>日期：</strong>${today}</span>
-              <span><strong>${list.length} 筆・${dishes} 份</strong></span>
-            </div>
+            <div class="print-meta"><span><strong>日期：</strong>${today}</span><span><strong>${list.length} 筆・${dishes} 份</strong></span></div>
           </div>
-          <div class="dispatch-head">
-            <span class="d-num">編號</span><span class="d-name">姓名</span><span class="d-phone">電話</span><span class="d-items">餐點</span>
-          </div>
+          <div class="dispatch-head"><span class="d-num">編號</span><span class="d-name">姓名</span><span class="d-phone">電話</span><span class="d-items">餐點</span></div>
           <div class="dispatch-list">
             ${list.map(o => `
               <div class="dispatch-row">
@@ -1974,53 +1990,40 @@ function renderPrintSheet() {
     return;
   }
 
-  // ===== 備餐單（依餐廳）：給餐廳備餐用（原本的）=====
+  // ===== 備餐單（依餐廳）：可傳給該餐廳。餐廳篩選時忽略大樓；全部=每家一頁；只含該家訂單(資料隔離) =====
+  // 先把每家餐廳的「聚合份數 + 個別明細」算好（跨所有大樓）
   const byRest = {};
-  let totalOrders = useOrders.length, totalDishes = 0, totalRevenue = 0;
-  for (const o of useOrders) {
-    totalRevenue += o.amount || 0;
-    const thisOrder = {};
+  for (const o of orders) {
+    const perRest = {};
     for (const it of (o.items || [])) {
       const rest = it.restaurant || '其他';
-      totalDishes += it.quantity;
       byRest[rest] ||= { agg: {}, individuals: [] };
       byRest[rest].agg[it.name] = (byRest[rest].agg[it.name] || 0) + it.quantity;
-      thisOrder[rest] ||= { items: [], amount: 0 };
-      thisOrder[rest].items.push(`${it.name}×${it.quantity}`);
-      thisOrder[rest].amount += it.subtotal;
+      perRest[rest] ||= { items: [], amount: 0 };
+      perRest[rest].items.push(`${it.name}×${it.quantity}`);
+      perRest[rest].amount += it.subtotal;
     }
-    for (const rest in thisOrder) {
-      byRest[rest].individuals.push({
-        num: o.num, name: o.name, phone: o.phone,
-        itemsText: thisOrder[rest].items.join('、'),
-        amount: thisOrder[rest].amount,
-      });
+    for (const rest in perRest) {
+      byRest[rest].individuals.push({ num: o.num, name: o.name, phone: o.phone, building: o.building, itemsText: perRest[rest].items.join('、'), amount: perRest[rest].amount });
     }
   }
 
-  const buildingLabel = printsheetBuilding === 'all' ? '全部大樓' : printsheetBuilding;
-  let html = `
-    <div class="print-header">
-      <div class="print-title">當日訂單對單表</div>
-      <div class="print-meta">
-        <span><strong>日期：</strong>${today}</span>
-        <span><strong>大樓：</strong>${buildingLabel}</span>
-        <span><strong>總訂單：</strong>${totalOrders} 筆</span>
-      </div>
-    </div>`;
+  const showRests = printsheetRestaurant === 'all' ? restNames : restNames.filter(r => r === printsheetRestaurant);
+  if (!showRests.length) { sheet.innerHTML = '<div class="empty"><div class="empty-text">找不到這家餐廳的訂單</div></div>'; return; }
 
-  for (const rest in byRest) {
+  let html = '';
+  showRests.forEach((rest, idx) => {
     const { agg, individuals } = byRest[rest];
     const qty = Object.values(agg).reduce((a, b) => a + b, 0);
+    const notLast = idx < showRests.length - 1;
     html += `
-      <div class="restaurant-block">
-        <div class="rb-header">
-          <div class="rb-name">${rest}</div>
-          <div class="rb-summary">${individuals.length} 筆訂單・<strong>合計 ${qty} 份</strong></div>
+      <div class="restaurant-block"${notLast ? ' style="page-break-after:always;"' : ''}>
+        <div class="print-header">
+          <div class="print-title">備餐單 — ${rest}</div>
+          <div class="print-meta"><span><strong>日期：</strong>${today}</span><span><strong>${individuals.length} 筆訂單・合計 ${qty} 份</strong></span></div>
         </div>
         <div class="rb-items">
-          ${Object.entries(agg).map(([name, q]) =>
-            `<div class="rb-item"><span class="rb-item-name">${name}</span><span class="rb-item-qty">× ${q}</span></div>`).join('')}
+          ${Object.entries(agg).map(([name, q]) => `<div class="rb-item"><span class="rb-item-name">${name}</span><span class="rb-item-qty">× ${q}</span></div>`).join('')}
         </div>
         <div class="individual-list">
           <div class="individual-list-title">個別訂單明細（給配送用）</div>
@@ -2033,14 +2036,7 @@ function renderPrintSheet() {
             </div>`).join('')}
         </div>
       </div>`;
-  }
-
-  html += `
-    <div style="margin-top:2rem;padding-top:1.5rem;border-top:2px solid var(--ink);display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;text-align:center;">
-      <div><div style="font-size:0.78rem;color:var(--ink-light);margin-bottom:0.3rem;">總訂單數</div><div style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.8rem;">${totalOrders} 單</div></div>
-      <div><div style="font-size:0.78rem;color:var(--ink-light);margin-bottom:0.3rem;">總餐點數</div><div style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:1.8rem;">${totalDishes} 份</div></div>
-    </div>`;
-
+  });
   sheet.innerHTML = html;
 }
 
@@ -2050,6 +2046,10 @@ function setPrintBuilding(b) {
 }
 function setPrintMode(m) {
   printsheetMode = m;
+  renderPrintSheet();
+}
+function setPrintRestaurant(r) {
+  printsheetRestaurant = r;
   renderPrintSheet();
 }  
   
