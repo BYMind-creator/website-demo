@@ -2282,6 +2282,7 @@ function renderMenu() {
           <label class="rest-ctl">服務費 $
             <input type="number" value="${r.service_fee ?? 25}" onchange="changeServiceFee('${r.id}', this.value)" class="rest-fee">
           </label>
+          <button class="btn-ghost rest-additem" onclick="openRestaurantBuildings('${r.id}')">🏢 服務大樓</button>
           <button class="btn-ghost rest-additem" onclick="openAddItem('${r.id}','${escName}')">+ 加餐點</button>
         </div>
       </div>
@@ -2554,23 +2555,76 @@ async function changeRestaurantAddress(id, value) {
     toast('地址已更新');
   } catch (e) { toast(e.message || '更新失敗'); loadMenu(); }
 }
-function openAddRestaurant() {
+// ===== #5 服務大樓：勾選 helper =====
+async function ensureBuildings() {
+  if (buildingsData && buildingsData.length) return buildingsData;
+  try {
+    const r = await fetch('/api/menu');
+    const d = await r.json();
+    buildingsData = d.buildings || [];
+  } catch (_) {}
+  return buildingsData;
+}
+function buildingCheckboxes(selectedIds = []) {
+  const sel = new Set(selectedIds);
+  if (!buildingsData.length) return '<div class="form-field" style="color:var(--ink-light);font-size:0.85rem;">目前沒有大樓可選，請先到「合作大樓」新增</div>';
+  return `<div class="form-field"><label>服務大樓（必選，沒選不能存）</label>
+    <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.4rem;">
+      ${buildingsData.map(b => `
+        <label style="display:flex;align-items:center;gap:0.55rem;font-size:0.9rem;cursor:pointer;">
+          <input type="checkbox" class="rb-check" value="${b.id}" ${sel.has(b.id) ? 'checked' : ''} style="width:18px;height:18px;flex-shrink:0;">
+          ${b.name}${b.district ? `（${b.district}）` : ''}
+        </label>`).join('')}
+    </div></div>`;
+}
+function getCheckedBuildings() {
+  return [...document.querySelectorAll('.rb-check:checked')].map(el => el.value);
+}
+
+async function openAddRestaurant() {
+  await ensureBuildings();
   openModal('新增餐廳',
     mField('餐廳名稱', 'r-name') +
-    mField('描述（選填）', 'r-desc'),
+    mField('描述（選填）', 'r-desc') +
+    buildingCheckboxes(),
     async () => {
       const name = $('r-name').value.trim();
       if (!name) { toast('請填餐廳名稱'); return; }
+      const building_ids = getCheckedBuildings();
+      if (!building_ids.length) { toast('請至少選一棟服務大樓'); return; }
       try {
         const resp = await fetch('/api/manage-restaurant', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'create', name, description: $('r-desc').value.trim(),
-            _user: currentUser?._u, _pass: currentUser?._p }),
+            building_ids, _user: currentUser?._u, _pass: currentUser?._p }),
         });
         const data = await resp.json();
         if (!resp.ok) throw new Error(data.error || '新增失敗');
         toast('已新增餐廳'); closeModal(); loadMenu();
       } catch (e) { toast(e.message || '新增失敗'); }
+    });
+}
+
+// 編輯現有餐廳的「服務大樓」
+async function openRestaurantBuildings(restaurantId) {
+  await ensureBuildings();
+  const rest = menuData.find(r => r.id === restaurantId);
+  const current = rest?.building_ids || [];
+  openModal(`「${rest?.name || ''}」服務哪些大樓`,
+    buildingCheckboxes(current),
+    async () => {
+      const building_ids = getCheckedBuildings();
+      if (!building_ids.length) { toast('請至少選一棟服務大樓'); return; }
+      try {
+        const resp = await fetch('/api/manage-restaurant', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'update', id: restaurantId, building_ids,
+            _user: currentUser?._u, _pass: currentUser?._p }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || '更新失敗');
+        toast('服務大樓已更新'); closeModal(); loadMenu();
+      } catch (e) { toast(e.message || '更新失敗'); }
     });
 }
 let buildingsData = [];
