@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   try {
     // 1) 大樓（只取上架，依取餐時間排序）
     const bResp = await fetch(
-      `${URL}/rest/v1/buildings?is_active=eq.true&order=pickup_time.asc`,
+      `${URL}/rest/v1/buildings?order=pickup_time.asc`,
       { headers }
     );
     if (!bResp.ok) {
@@ -41,6 +41,10 @@ export default async function handler(req, res) {
       pickup_location: b.pickup_location,
       pickup_time: (b.pickup_time || '').slice(0, 5),   // "12:00:00" → "12:00"
       cutoff_time: (b.cutoff_time || '').slice(0, 5),
+      order_start_time: (b.order_start_time || '').slice(0, 5),
+      manager_name: b.manager_name || null,
+      manager_phone: b.manager_phone || null,
+      is_active: b.is_active,
     }));
 
     // 2) 餐廳（只取上架，sort_order 大的在前）
