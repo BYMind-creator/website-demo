@@ -1060,7 +1060,7 @@ textarea.form-input { resize: vertical; min-height: 70px; }
 <!-- 截單倒數 banner -->
 <div class="info-banner">
   <span class="dot"></span>
-  <span>今日截單剩 <span class="countdown" id="countdown">2 小時 17 分</span>・12:00 大廳取餐</span>
+  <span id="order-line">載入中…</span>
 </div>
 
 <!-- =============== PAGE 1: 餐廳列表 =============== -->
@@ -1390,6 +1390,7 @@ function findMenuItem(itemId) {
 }
 
 function addToCart(itemId) {
+  if (!isOrderingOpen()) { toast('今日已截單，暫停點餐'); return; }
   const found = findMenuItem(itemId);
   if (!found) return;
 
@@ -1501,6 +1502,7 @@ function renderCart() {
 
 // ============== 結帳 ==============
 function goToCheckout() {
+  if (!isOrderingOpen()) { toast('今日已截單，無法結帳'); return; }
   // 拆分：餐費（給餐廳的店內價）vs 服務費（我們的收入）
   let foodSubtotal = 0;   // 餐費 = Σ 店內價 × 數量
   let feeTotal = 0;       // 服務費 = Σ 每份服務費 × 數量
@@ -1535,6 +1537,7 @@ function selectBuilding(bid, elem) {
   $('current-building-name').textContent = state.selectedBuilding.name;
   $$('.building-option').forEach(o => o.classList.remove('selected'));
   if (elem) elem.classList.add('selected');
+  updateCountdown(); // 換大樓 → banner 立刻跟著換時間
 }
 
 function selectPayment(p) {
@@ -1555,6 +1558,7 @@ async function submitOrder() {
     $('contact-phone').focus();
     return;
   }
+  if (!isOrderingOpen()) { toast('今日已截單，無法送出'); return; }
 
   // 拆分：餐費（給餐廳的店內價）vs 服務費（我們的收入）
   let foodSubtotal = 0;   // 餐費 = Σ 店內價 × 數量
@@ -1703,23 +1707,47 @@ function closeModalIfBackdrop(e) {
 }
 
 // ============== 倒數計時 ==============
-function updateCountdown() {
-  // 模擬截單時間 = 今天 10:00
+function parseTimeToday(hhmm) {
+  if (!hhmm) return null;
+  const [h, m] = hhmm.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, m || 0, 0, 0);
+  return d;
+}
+
+function isOrderingOpen() {
+  const b = state.selectedBuilding;
+  if (!b) return true; // 資料還沒到，先不擋
   const now = new Date();
-  const cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 30);
+  const start = parseTimeToday(b.order_start_time); // 沒設=不限開始
+  const end = parseTimeToday(b.cutoff_time);         // 沒設=不擋截止
+  if (start && now < start) return false;
+  if (end && now > end) return false;
+  return true;
+}
 
-  // 如果已過 10:00，顯示明天的
-  if (now > cutoff) {
-    cutoff.setDate(cutoff.getDate() + 1);
+function updateCountdown() {
+  const b = state.selectedBuilding;
+  const line = $('order-line');
+  if (!b || !line) return;
+  const now = new Date();
+  const start = parseTimeToday(b.order_start_time);
+  const end = parseTimeToday(b.cutoff_time);
+  const pk = b.pickup_time ? `・<span class="countdown">${b.pickup_time}</span> 取餐` : '';
+  let status;
+  if (start && now < start) {
+    status = `<span class="countdown">${b.order_start_time}</span> 開放點餐`;
+  } else if (end && now > end) {
+    status = `今日已截單`;
+  } else if (end) {
+    const diff = end - now;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    status = `今日截單剩 <span class="countdown">${h} 小時 ${m} 分</span>`;
+  } else {
+    status = `開放點餐中`;
   }
-
-  const diff = cutoff - now;
-  if (diff <= 0) return;
-
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-  $('countdown').textContent = `${hours} 小時 ${mins} 分`;
+  line.innerHTML = status + pk;
 }
 
 // ============== 初始化 ==============
@@ -1745,6 +1773,7 @@ async function loadData() {
     $('current-building-name').textContent = state.selectedBuilding.name;
 
     renderRestaurants();
+    updateCountdown(); // 有大樓資料了，banner 依它顯示（原本寫死 10:30/12:00 的問題就修掉了）
   } catch (e) {
     listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">${e.message || '載入失敗，請重新整理'}</div></div>`;
   }
