@@ -61,6 +61,18 @@ export default async function handler(req, res) {
     }
     const restaurantsRaw = await rResp.json();
 
+    // 2b) 餐廳↔大樓 關聯（分開查，不用巢狀 embed）
+    //     表還沒建 / 查詢失敗 → rbActive=false → 客人端不過濾（全顯示），避免上線順序踩到開天窗
+    let rbActive = false;
+    const bidsByRest = {};
+    try {
+      const rbResp = await fetch(`${URL}/rest/v1/restaurant_buildings?select=restaurant_id,building_id`, { headers });
+      if (rbResp.ok) {
+        rbActive = true;
+        for (const x of await rbResp.json()) (bidsByRest[x.restaurant_id] ||= []).push(x.building_id);
+      }
+    } catch (_) { rbActive = false; }
+
     // 3) 菜單（只取供應中，一次撈全部；不 embed 圖片，改下一步分開撈）
     const mResp = await fetch(
       `${URL}/rest/v1/menu_items?is_available=eq.true&select=id,restaurant_id,name,description,price,category,sort_order,image_url&order=sort_order.desc`,
@@ -135,6 +147,7 @@ export default async function handler(req, res) {
         itemCount: menu.length,
         categories,
         menu,
+        building_ids: rbActive ? (bidsByRest[r.id] || []) : null, // null=功能未啟用→客人端全顯示；[]=沒設大樓→客人端隱藏
       };
     });
 
