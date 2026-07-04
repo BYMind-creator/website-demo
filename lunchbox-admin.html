@@ -964,6 +964,16 @@ tbody tr:last-child td { border-bottom: none; }
 .dispatch-row .d-num { font-family: monospace; color: var(--ink-light); }
 .dispatch-row .d-phone { color: var(--ink-light); font-size: 0.85rem; }
 .dispatch-block + .dispatch-block { margin-top: 2.5rem; }
+
+/* 備餐單：大樓分區 */
+.bld-section { margin-top: 1.25rem; }
+.bld-section-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 1.5px solid var(--ink); padding-bottom: 0.35rem;
+}
+.bld-section-name { font-weight: 700; font-size: 1rem; }
+.bld-section-qty { font-size: 0.95rem; }
+.bld-addr { font-size: 0.82rem; color: var(--ink-light); margin-top: 0.3rem; }
 @media (max-width: 768px) {
   .dispatch-head { display: none; }
   .dispatch-row {
@@ -1397,7 +1407,7 @@ body.role-viewer .fee-control { display: none !important; }
   <div class="page-header">
     <div class="page-header-left">
       <span class="page-eyebrow">order summary sheet</span>
-      <h1 class="page-title">餐廳對單表</h1>
+      <h1 class="page-title">對單表</h1>
       <p class="page-subtitle">列印給餐廳，或自己拿著去取餐</p>
     </div>
     <div class="btn-group no-print">
@@ -1417,161 +1427,7 @@ body.role-viewer .fee-control { display: none !important; }
   </div>
 
   <div class="print-sheet" id="print-sheet">
-    <div class="print-header">
-      <div class="print-title">當日訂單對單表</div>
-      <div class="print-meta">
-        <span><strong>日期：</strong>2026/05/26（一）</span>
-        <span><strong>大樓：</strong>七期國泰商辦</span>
-        <span><strong>取餐：</strong>12:00 @ 1F 大廳警衛處</span>
-      </div>
-    </div>
-
-    <!-- 阿明便當 -->
-    <div class="restaurant-block">
-      <div class="rb-header">
-        <div class="rb-name"><span>🍱</span>阿明便當</div>
-        <div class="rb-summary">
-          7 筆訂單・<strong>合計 17 份</strong>・11:30 取餐
-        </div>
-      </div>
-      <div class="rb-items">
-        <div class="rb-item"><span class="rb-item-name">排骨便當</span><span class="rb-item-qty">× 8</span></div>
-        <div class="rb-item"><span class="rb-item-name">雞腿便當</span><span class="rb-item-qty">× 3</span></div>
-        <div class="rb-item"><span class="rb-item-name">魚排便當</span><span class="rb-item-qty">× 2</span></div>
-        <div class="rb-item"><span class="rb-item-name">滷肉飯</span><span class="rb-item-qty">× 0</span></div>
-        <div class="rb-item"><span class="rb-item-name">燙青菜</span><span class="rb-item-qty">× 0</span></div>
-        <div class="rb-item"><span class="rb-item-name">味噌湯</span><span class="rb-item-qty">× 4</span></div>
-      </div>
-
-      <div class="individual-list">
-        <div class="individual-list-title">個別訂單明細（給配送用）</div>
-        <div class="individual-item">
-          <span class="order-num-small">#001</span>
-          <span><strong>王小明</strong> 0912-345-678</span>
-          <span>排骨便當×1、味噌湯×1</span>
-          <span class="cell-amount">$135</span>
-        </div>
-        <div class="individual-item">
-          <span class="order-num-small">#002</span>
-          <span><strong>李美麗</strong> 0922-333-444（不要香菜）</span>
-          <span>雞腿便當×1</span>
-          <span class="cell-amount">$130</span>
-        </div>
-        <div class="individual-item">
-          <span class="order-num-small">#003</span>
-          <span><strong>陳大為</strong> 0933-555-666</span>
-          <span>排骨便當×2、味噌湯×1</span>
-          <span class="cell-amount">$245</span>
-        </div>
-        <div class="individual-item">
-          <span class="order-num-small">#005</span>
-          <span><strong>林志強</strong> 0911-222-333</span>
-          <span>排骨便當×1、雞腿便當×1、味噌湯×1</span>
-          <span class="cell-amount">$265</span>
-        </div>
-        <div class="individual-item">
-          <span class="order-num-small">#006</span>
-          <span><strong>張雅婷</strong> 0966-777-888</span>
-          <span>魚排便當×1</span>
-          <span class="cell-amount">$120</span>
-        </div>
-        <div class="individual-item">
-          <span class="order-num-small">#008</span>
-          <span><strong>劉建宏</strong> 0988-111-222</span>
-          <span>排骨便當×2</span>
-          <span class="cell-amount">$220</span>
-        </div>
-        <div class="individual-item">
-          <span class="order-num-small">#011</span>
-          <span><strong>吳佩玲</strong> 0955-888-999</span>
-          <span>魚排便當×1、味噌湯×1</span>
-          <span class="cell-amount">$145</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 青田輕食 -->
-    <div class="restaurant-block">
-      <div class="rb-header">
-        <div class="rb-name"><span>🥗</span>青田輕食</div>
-        <div class="rb-summary">
-          3 筆訂單・<strong>合計 5 份</strong>・11:30 取餐
-        </div>
-      </div>
-      <div class="rb-items">
-        <div class="rb-item"><span class="rb-item-name">香煎雞胸沙拉</span><span class="rb-item-qty">× 2</span></div>
-        <div class="rb-item"><span class="rb-item-name">鮮蝦凱薩沙拉</span><span class="rb-item-qty">× 1</span></div>
-        <div class="rb-item"><span class="rb-item-name">青醬雞肉義大利麵</span><span class="rb-item-qty">× 2</span></div>
-        <div class="rb-item"><span class="rb-item-name">無糖鮮奶茶</span><span class="rb-item-qty">× 0</span></div>
-      </div>
-      <div class="individual-list">
-        <div class="individual-list-title">個別訂單明細</div>
-        <div class="individual-item">
-          <span class="order-num-small">#004</span>
-          <span><strong>黃文琪</strong> 0900-123-456</span>
-          <span>香煎雞胸沙拉×1、青醬雞肉麵×1</span>
-          <span class="cell-amount">$330</span>
-        </div>
-        <div class="individual-item">
-          <span class="order-num-small">#007</span>
-          <span><strong>蔡明儒</strong> 0977-555-444</span>
-          <span>鮮蝦凱薩沙拉×1、青醬雞肉麵×1</span>
-          <span class="cell-amount">$350</span>
-        </div>
-        <div class="individual-item">
-          <span class="order-num-small">#010</span>
-          <span><strong>許安琪</strong> 0933-222-111</span>
-          <span>香煎雞胸沙拉×1</span>
-          <span class="cell-amount">$160</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 日麵屋 -->
-    <div class="restaurant-block">
-      <div class="rb-header">
-        <div class="rb-name"><span>🍜</span>日麵屋拉麵</div>
-        <div class="rb-summary">
-          2 筆訂單・<strong>合計 3 份</strong>・11:40 取餐
-        </div>
-      </div>
-      <div class="rb-items">
-        <div class="rb-item"><span class="rb-item-name">豚骨拉麵</span><span class="rb-item-qty">× 2</span></div>
-        <div class="rb-item"><span class="rb-item-name">親子丼</span><span class="rb-item-qty">× 1</span></div>
-        <div class="rb-item"><span class="rb-item-name">炸雞丼</span><span class="rb-item-qty">× 0</span></div>
-      </div>
-      <div class="individual-list">
-        <div class="individual-list-title">個別訂單明細</div>
-        <div class="individual-item">
-          <span class="order-num-small">#009</span>
-          <span><strong>周怡君</strong> 0922-666-777</span>
-          <span>豚骨拉麵×2</span>
-          <span class="cell-amount">$360</span>
-        </div>
-        <div class="individual-item">
-          <span class="order-num-small">#012</span>
-          <span><strong>謝俊賢</strong> 0911-888-999</span>
-          <span>親子丼×1</span>
-          <span class="cell-amount">$150</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 結算 -->
-    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--ink); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
-      <div>
-        <div style="font-size: 0.78rem; color: var(--ink-light); margin-bottom: 0.3rem;">總訂單數</div>
-        <div style="font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1.8rem;">12 單</div>
-      </div>
-      <div>
-        <div style="font-size: 0.78rem; color: var(--ink-light); margin-bottom: 0.3rem;">總餐點數</div>
-        <div style="font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1.8rem;">25 份</div>
-      </div>
-      <div>
-        <div style="font-size: 0.78rem; color: var(--ink-light); margin-bottom: 0.3rem;">總營業額</div>
-        <div style="font-family: 'Noto Serif TC', serif; font-weight: 700; font-size: 1.8rem; color: var(--persimmon);">$2,160</div>
-      </div>
-    </div>
+    <!-- 由 renderPrintSheet() 動態產生 -->
   </div>
 </div>
 <!-- ===== 月報表 ===== -->
@@ -1990,21 +1846,21 @@ function renderPrintSheet() {
     return;
   }
 
-  // ===== 備餐單（依餐廳）：可傳給該餐廳。餐廳篩選時忽略大樓；全部=每家一頁；只含該家訂單(資料隔離) =====
-  // 先把每家餐廳的「聚合份數 + 個別明細」算好（跨所有大樓）
+  // ===== 備餐單（依餐廳）：餐廳做幾份、送到哪棟樓的地址。無個資明細。全部=每家一頁，資料隔離 =====
+  // 大樓名稱 → 地址/取餐點（從 buildingsData 帶）
+  const bldInfo = {};
+  for (const b of (buildingsData || [])) bldInfo[b.name] = { address: b.address || '', pickup: b.pickup_location || '', manager: b.manager_name || '', managerPhone: b.manager_phone || '' };
+
+  // byRest[rest].byBld[bldName].agg[itemName] = qty
   const byRest = {};
   for (const o of orders) {
-    const perRest = {};
+    const bld = o.building || '未指定大樓';
     for (const it of (o.items || [])) {
       const rest = it.restaurant || '其他';
-      byRest[rest] ||= { agg: {}, individuals: [] };
-      byRest[rest].agg[it.name] = (byRest[rest].agg[it.name] || 0) + it.quantity;
-      perRest[rest] ||= { items: [], amount: 0 };
-      perRest[rest].items.push(`${it.name}×${it.quantity}`);
-      perRest[rest].amount += it.subtotal;
-    }
-    for (const rest in perRest) {
-      byRest[rest].individuals.push({ num: o.num, name: o.name, phone: o.phone, building: o.building, itemsText: perRest[rest].items.join('、'), amount: perRest[rest].amount });
+      byRest[rest] ||= { byBld: {}, total: 0 };
+      byRest[rest].byBld[bld] ||= {};
+      byRest[rest].byBld[bld][it.name] = (byRest[rest].byBld[bld][it.name] || 0) + it.quantity;
+      byRest[rest].total += it.quantity;
     }
   }
 
@@ -2013,28 +1869,36 @@ function renderPrintSheet() {
 
   let html = '';
   showRests.forEach((rest, idx) => {
-    const { agg, individuals } = byRest[rest];
-    const qty = Object.values(agg).reduce((a, b) => a + b, 0);
+    const data = byRest[rest];
     const notLast = idx < showRests.length - 1;
+    const bldNames = Object.keys(data.byBld);
     html += `
       <div class="restaurant-block"${notLast ? ' style="page-break-after:always;"' : ''}>
         <div class="print-header">
           <div class="print-title">備餐單 — ${rest}</div>
-          <div class="print-meta"><span><strong>日期：</strong>${today}</span><span><strong>${individuals.length} 筆訂單・合計 ${qty} 份</strong></span></div>
+          <div class="print-meta"><span><strong>日期：</strong>${today}</span><span><strong>合計 ${data.total} 份</strong></span></div>
         </div>
-        <div class="rb-items">
-          ${Object.entries(agg).map(([name, q]) => `<div class="rb-item"><span class="rb-item-name">${name}</span><span class="rb-item-qty">× ${q}</span></div>`).join('')}
-        </div>
-        <div class="individual-list">
-          <div class="individual-list-title">個別訂單明細（給配送用）</div>
-          ${individuals.map(ind =>
-            `<div class="individual-item">
-              <span class="order-num-small">#${(ind.num || '').split('-')[1] || ind.num}</span>
-              <span><strong>${ind.name}</strong> ${ind.phone}</span>
-              <span>${ind.itemsText}</span>
-              <span class="cell-amount">$${ind.amount}</span>
-            </div>`).join('')}
-        </div>
+        ${bldNames.map(bld => {
+          const agg = data.byBld[bld];
+          const qty = Object.values(agg).reduce((a, b) => a + b, 0);
+          const info = bldInfo[bld] || {};
+          const addrLine = (info.address || info.pickup)
+            ? `<div class="bld-addr">${info.address || ''}${info.pickup ? `・${info.pickup}` : ''}</div>` : '';
+          const mgrLine = (info.manager || info.managerPhone)
+            ? `<div class="bld-addr">負責人：${info.manager || ''}${info.managerPhone ? ` <span class="mono">${info.managerPhone}</span>` : ''}</div>` : '';
+          return `
+            <div class="bld-section">
+              <div class="bld-section-head">
+                <div class="bld-section-name">🏢 ${bld}</div>
+                <div class="bld-section-qty"><strong>${qty} 份</strong></div>
+              </div>
+              ${addrLine}
+              ${mgrLine}
+              <div class="rb-items">
+                ${Object.entries(agg).map(([name, q]) => `<div class="rb-item"><span class="rb-item-name">${name}</span><span class="rb-item-qty">× ${q}</span></div>`).join('')}
+              </div>
+            </div>`;
+        }).join('')}
       </div>`;
   });
   sheet.innerHTML = html;
@@ -3009,7 +2873,7 @@ function goToPage(page) {
   event.target.closest('.nav-item')?.classList.add('active');
   closeMobileNav(); // 手機上選完頁自動收起側欄
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (page === 'printsheet') renderPrintSheet();
+  if (page === 'printsheet') { renderPrintSheet(); ensureBuildings().then(renderPrintSheet); }
   if (page === 'menu') loadMenu();
   if (page === 'buildings') loadBuildings();
   if (page === 'report') {
