@@ -84,6 +84,17 @@ export default async function handler(req, res) {
       }
     } catch (_) { adActive = false; }
 
+    // 2d) #7 分類手續費（分開查；表沒建 / 失敗 → feesByRest 空 → 全部回退餐廳 service_fee，價格不變）
+    const feesByRest = {};
+    try {
+      const cfResp = await fetch(`${URL}/rest/v1/category_fees?select=restaurant_id,category,fee`, { headers });
+      if (cfResp.ok) {
+        for (const x of await cfResp.json()) {
+          (feesByRest[x.restaurant_id] ||= {})[(x.category || '').trim()] = x.fee;
+        }
+      }
+    } catch (_) { /* 表沒建就當沒有分類費，全回退餐廳費 */ }
+
     // 3) 菜單（只取供應中，一次撈全部；不 embed 圖片，改下一步分開撈）
     const mResp = await fetch(
       `${URL}/rest/v1/menu_items?is_available=eq.true&select=id,restaurant_id,name,description,price,category,sort_order,image_url&order=sort_order.desc`,
@@ -133,14 +144,19 @@ export default async function handler(req, res) {
 
     // 4) 組成前端要的「胖」物件
     const restaurants = restaurantsRaw.map((r, i) => {
-      const fee = r.service_fee ?? 0;
-      // 把該餐廳的服務費灌進每道菜：顯示價 = 店內價 + 服務費
-      const menu = (menuByRest[r.id] || []).map(m => ({
-        ...m,
-        base_price: m.price,            // 保留店內原價（之後對帳/給餐廳用）
-        service_fee: fee,               // 這道菜含的服務費
-        price: m.price + fee,           // 客人看到、要付的價（含服務費）
-      }));
+      const restFee = r.service_fee ?? 0; // 保底費（沒設分類費時回退用）
+      // #7：每道菜的服務費 = 該分類的手續費；沒設 → 回退餐廳 service_fee（fallback A）
+      const menu = (menuByRest[r.id] || []).map(m => {
+        const cat = (m.category || '').trim();
+        const cf = (feesByRest[r.id] || {})[cat];
+        const itemFee = (cf === undefined || cf === null) ? restFee : Number(cf);
+        return {
+          ...m,
+          base_price: m.price,            // 保留店內原價（對帳/給餐廳用）
+          service_fee: itemFee,           // 這道菜含的服務費（分類費 or 回退餐廳費）
+          price: m.price + itemFee,       // 客人看到、要付的價（含服務費）
+        };
+      });
       const prices = menu.map(x => x.price);
       const priceRange = prices.length
         ? `$${Math.min(...prices)}-${Math.max(...prices)}`
@@ -153,7 +169,7 @@ export default async function handler(req, res) {
         emoji: look.emoji,
         thumbClass: look.thumbClass,
         description: r.description || '',
-        service_fee: fee,
+        service_fee: restFee,
         priceRange,
         itemCount: menu.length,
         categories,
