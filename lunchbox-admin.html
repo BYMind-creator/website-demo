@@ -2287,6 +2287,7 @@ function renderMenu() {
             <input type="number" value="${r.service_fee ?? 25}" onchange="changeServiceFee('${r.id}', this.value)" class="rest-fee">
           </label>
           <button class="btn-ghost rest-additem" onclick="openRestaurantBuildings('${r.id}')">🏢 出現設定</button>
+          <button class="btn-ghost rest-additem" onclick="openCategoryFees('${r.id}')">💵 分類手續費</button>
           <button class="btn-ghost rest-additem" onclick="openAddItem('${r.id}','${escName}')">+ 加餐點</button>
         </div>
       </div>
@@ -2599,6 +2600,39 @@ function dayCheckboxes(selectedDays = []) {
 }
 function getCheckedDays() {
   return [...document.querySelectorAll('.ad-check:checked')].map(el => Number(el.value));
+}
+
+// #7：設定某餐廳「每個分類的手續費」（不填=沿用餐廳費；填0=該類免費）
+function openCategoryFees(restaurantId) {
+  const rest = menuData.find(r => r.id === restaurantId);
+  if (!rest) return;
+  const cats = [...new Set((rest.menu_items || []).map(m => (m.category || '其他').trim()))];
+  const curFees = rest.category_fees || {};
+  const restFee = rest.service_fee ?? 25;
+  const body = cats.length
+    ? `<p style="font-size:0.82rem;color:var(--ink-light);margin-bottom:0.6rem;line-height:1.6;">不填 = 沿用餐廳服務費 <b>$${restFee}</b>；填 <b>0</b> = 這類免服務費。</p>` +
+      cats.map(c => `
+        <div class="form-field">
+          <label>${c} 手續費 $</label>
+          <input class="form-input cf-input" data-cat="${c.replace(/"/g, '&quot;')}" type="number"
+            value="${curFees[c] !== undefined ? curFees[c] : ''}" placeholder="沿用 ${restFee}">
+        </div>`).join('')
+    : '<div class="form-field" style="color:var(--ink-light);">這家還沒有餐點分類，先加餐點</div>';
+  openModal(`「${rest.name}」分類手續費`, body, async () => {
+    const fees = [...document.querySelectorAll('.cf-input')]
+      .map(el => ({ category: el.dataset.cat, fee: el.value }))
+      .filter(x => x.fee !== ''); // 空 = 不設 = 沿用餐廳費
+    try {
+      const resp = await fetch('/api/manage-restaurant', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'set-category-fees', restaurant_id: restaurantId, fees,
+          _user: currentUser?._u, _pass: currentUser?._p }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || '儲存失敗');
+      toast('分類手續費已更新'); closeModal(); loadMenu();
+    } catch (e) { toast(e.message || '儲存失敗'); }
+  });
 }
 
 async function openAddRestaurant() {
