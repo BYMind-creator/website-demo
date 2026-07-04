@@ -1046,9 +1046,13 @@ tbody tr:last-child td { border-bottom: none; }
 
 /* 桌機專用：餐點列收攏靠左，消除中間大片留白。手機（<=768px）完全不受影響 */
 @media (min-width: 769px) {
-  .mi-top { max-width: 640px; }
-  .mi-info { flex: 0 1 auto; margin-right: 1.5rem; }
+  /* 價格靠卡片最右，每列對齊成一直排（像表格）*/
+  .mi-top { max-width: none; }
+  .mi-info { flex: 1; margin-right: 1.5rem; }
   .mi-price { margin-left: auto; }
+  .mi-price .price-input { width: 90px; }
+  /* ↑ ↓ 供應 刪 排成整齊一列、不換行 */
+  .mi-actions { flex-wrap: nowrap; }
 }
 
 /* Toggle switch */
