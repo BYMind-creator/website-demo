@@ -60,7 +60,7 @@ export default async function handler(req, res) {
 
     // 3) 菜單（只取供應中，一次撈全部，再依餐廳分組）
     const mResp = await fetch(
-      `${URL}/rest/v1/menu_items?is_available=eq.true&order=sort_order.desc`,
+      `${URL}/rest/v1/menu_items?is_available=eq.true&select=id,name,description,price,category,sort_order,image_url,menu_item_images(url,sort_order)&order=sort_order.desc`,
       { headers }
     );
     if (!mResp.ok) {
@@ -72,13 +72,15 @@ export default async function handler(req, res) {
     // 把菜單依 restaurant_id 分組
     const menuByRest = {};
     for (const m of menuRaw) {
+      const imgs = (m.menu_item_images || []).slice().sort((a,b)=>a.sort_order-b.sort_order).map(x=>x.url);
       (menuByRest[m.restaurant_id] ||= []).push({
-        id: m.id,                 // 真 UUID（下一關寫 order_items 會用到）
+        id: m.id,
         name: m.name,
         desc: m.description || '',
         price: m.price,
         category: m.category || '其他',
-        image_url: m.image_url || null,
+        images: imgs,                             // 多圖陣列
+        image_url: imgs[0] || m.image_url || null, // 封面（相容）
       });
     }
 
