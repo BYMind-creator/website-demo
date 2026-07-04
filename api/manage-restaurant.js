@@ -31,6 +31,8 @@ export default async function handler(req, res) {
       const row = {
         name: b.name,
         description: b.description || '',
+        address: b.address || null,
+        sort_order: b.sort_order !== undefined ? parseInt(b.sort_order, 10) : 0,
         is_active: b.is_active !== undefined ? !!b.is_active : true,
       };
       const resp = await fetch(`${URL}/rest/v1/restaurants`,
@@ -45,7 +47,8 @@ export default async function handler(req, res) {
       if (b.name !== undefined) patch.name = b.name;
       if (b.description !== undefined) patch.description = b.description;
       if (b.is_active !== undefined) patch.is_active = !!b.is_active;
-      if (b.service_fee !== undefined) patch.service_fee = parseInt(b.service_fee, 10);
+      if (b.address !== undefined) patch.address = b.address;
+      if (b.sort_order !== undefined) patch.sort_order = parseInt(b.sort_order, 10);
       if (!Object.keys(patch).length) return res.status(400).json({ error: '沒有要更新的內容' });
       const resp = await fetch(`${URL}/rest/v1/restaurants?id=eq.${encodeURIComponent(b.id)}`,
         { method: 'PATCH', headers: { ...headers, Prefer: 'return=representation' }, body: JSON.stringify(patch) });
@@ -55,6 +58,7 @@ export default async function handler(req, res) {
 
     return res.status(400).json({ error: '未知的 action（要 create 或 update）' });
   } catch (e) {
+    console.error('[manage-restaurant]', e);
     return res.status(500).json({ error: e.message || '未知錯誤' });
   }
 }
