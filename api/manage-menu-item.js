@@ -46,6 +46,32 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, url: `${URL}/storage/v1/object/public/menu-images/${path}` });
     }
 
+    if (action === 'add-image') {
+      if (!b.menu_item_id || !b.url) return res.status(400).json({ error: '缺少 menu_item_id 或 url' });
+      const imgRow = { menu_item_id: b.menu_item_id, url: b.url, sort_order: b.sort_order ?? 0 };
+      const resp = await fetch(`${URL}/rest/v1/menu_item_images`,
+        { method: 'POST', headers: { ...headers, Prefer: 'return=representation' }, body: JSON.stringify(imgRow) });
+      if (!resp.ok) return res.status(500).json({ error: '加圖失敗', detail: await resp.text() });
+      return res.status(200).json({ ok: true, image: (await resp.json())[0] || null });
+    }
+
+    if (action === 'delete-image') {
+      if (!b.image_id) return res.status(400).json({ error: '缺少 image_id' });
+      const resp = await fetch(`${URL}/rest/v1/menu_item_images?id=eq.${encodeURIComponent(b.image_id)}`,
+        { method: 'DELETE', headers });
+      if (!resp.ok) return res.status(500).json({ error: '刪圖失敗', detail: await resp.text() });
+      return res.status(200).json({ ok: true });
+    }
+
+    if (action === 'reorder') {
+      if (!Array.isArray(b.items)) return res.status(400).json({ error: '缺少 items 陣列' });
+      for (const it of b.items) {
+        await fetch(`${URL}/rest/v1/menu_items?id=eq.${encodeURIComponent(it.id)}`,
+          { method: 'PATCH', headers, body: JSON.stringify({ sort_order: parseInt(it.sort_order, 10) }) });
+      }
+      return res.status(200).json({ ok: true });
+    }
+    
     if (action === 'delete') {
       if (!b.id) return res.status(400).json({ error: '缺少餐點 id' });
       const resp = await fetch(`${URL}/rest/v1/menu_items?id=eq.${encodeURIComponent(b.id)}`,
@@ -60,25 +86,33 @@ export default async function handler(req, res) {
       }
       const price = Number(b.price);
       if (!Number.isFinite(price) || price < 0) return res.status(400).json({ error: '價格不合法' });
-
+      const urls = Array.isArray(b.image_urls) ? b.image_urls.filter(Boolean) : [];
       const row = {
         restaurant_id: b.restaurant_id,
         name: b.name,
         price,
         category: b.category || '其他',
         description: b.description || '',
-        image_url: b.image_url || null,
+        image_url: urls[0] || b.image_url || null, // 封面（相容舊單圖顯示）
+        sort_order: b.sort_order !== undefined ? parseInt(b.sort_order, 10) : 0,
         is_available: true,
       };
       const resp = await fetch(`${URL}/rest/v1/menu_items`,
         { method: 'POST', headers: { ...headers, Prefer: 'return=representation' }, body: JSON.stringify(row) });
       if (!resp.ok) return res.status(500).json({ error: '新增失敗', detail: await resp.text() });
-      const created = await resp.json();
-      return res.status(200).json({ ok: true, item: created[0] || null });
+      const created = (await resp.json())[0] || null;
+      if (created && urls.length) {
+        const imgRows = urls.map((url, i) => ({ menu_item_id: created.id, url, sort_order: i }));
+        const imgResp = await fetch(`${URL}/rest/v1/menu_item_images`,
+          { method: 'POST', headers, body: JSON.stringify(imgRows) });
+        if (!imgResp.ok) return res.status(500).json({ error: '餐點建立了、但圖片存檔失敗', detail: await imgResp.text() });
+      }
+      return res.status(200).json({ ok: true, item: created });
     }
 
     return res.status(400).json({ error: '未知的 action（要 create 或 delete）' });
   } catch (e) {
+    console.error('[manage-menu-item]', e);
     return res.status(500).json({ error: e.message || '未知錯誤' });
   }
 }
