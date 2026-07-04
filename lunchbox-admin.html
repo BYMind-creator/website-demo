@@ -943,6 +943,35 @@ tbody tr:last-child td { border-bottom: none; }
   .sidebar, .page-header, .filter-bar, .no-print { display: none !important; }
   .main-content { padding: 0; max-width: none; }
   .print-sheet { border: none; padding: 0; }
+  .dispatch-block { page-break-inside: auto; }
+}
+
+/* ===== 派餐單（依大樓）===== */
+.dispatch-head, .dispatch-row {
+  display: grid;
+  grid-template-columns: 56px 1.1fr 1.3fr 2.2fr;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.55rem 0;
+}
+.dispatch-head {
+  border-bottom: 2px solid var(--ink);
+  font-size: 0.8rem;
+  color: var(--ink-light);
+  font-weight: 700;
+}
+.dispatch-row { border-bottom: 1px dashed var(--line); font-size: 0.95rem; }
+.dispatch-row .d-num { font-family: monospace; color: var(--ink-light); }
+.dispatch-row .d-phone { color: var(--ink-light); font-size: 0.85rem; }
+.dispatch-block + .dispatch-block { margin-top: 2.5rem; }
+@media (max-width: 768px) {
+  .dispatch-head { display: none; }
+  .dispatch-row {
+    grid-template-columns: 46px 1fr;
+    row-gap: 0.15rem;
+  }
+  .dispatch-row .d-phone { grid-column: 2; }
+  .dispatch-row .d-items { grid-column: 1 / -1; padding-top: 0.15rem; }
 }
 
 /* ============== MENU MANAGEMENT ============== */
@@ -1875,6 +1904,7 @@ function updateFilterCounts() {
 }  
   
 let printsheetBuilding = 'all';
+let printsheetMode = 'restaurant'; // 'restaurant'=備餐單(依餐廳) | 'building'=派餐單(依大樓)
 
 function renderPrintSheet() {
   const sheet = $('print-sheet');
@@ -1884,23 +1914,69 @@ function renderPrintSheet() {
     return;
   }
 
-  // 畫大樓篩選按鈕（從訂單裡有的大樓動態產生）
+  // 大樓計數
   const buildingCounts = {};
   for (const o of orders) buildingCounts[o.building] = (buildingCounts[o.building] || 0) + 1;
   const buildings = Object.keys(buildingCounts);
+
+  // 篩選/切換列（模式 + 大樓）
   $('printsheet-building-filter').innerHTML =
-    '<span style="color:var(--ink-light);font-size:0.85rem;">大樓：</span>' +
-    `<button class="filter-chip ${printsheetBuilding === 'all' ? 'active' : ''}" onclick="setPrintBuilding('all')">全部 <span class="chip-count">${orders.length}</span></button>` +
-    buildings.map(b =>
-      `<button class="filter-chip ${printsheetBuilding === b ? 'active' : ''}" onclick="setPrintBuilding('${b.replace(/'/g, "\\'")}')">${b} <span class="chip-count">${buildingCounts[b]}</span></button>`
-    ).join('');
+    `<div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+       <button class="filter-chip ${printsheetMode === 'restaurant' ? 'active' : ''}" onclick="setPrintMode('restaurant')">備餐單（依餐廳）</button>
+       <button class="filter-chip ${printsheetMode === 'building' ? 'active' : ''}" onclick="setPrintMode('building')">派餐單（依大樓）</button>
+     </div>
+     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+       <span style="color:var(--ink-light);font-size:0.85rem;">大樓：</span>` +
+       `<button class="filter-chip ${printsheetBuilding === 'all' ? 'active' : ''}" onclick="setPrintBuilding('all')">全部 <span class="chip-count">${orders.length}</span></button>` +
+       buildings.map(b =>
+         `<button class="filter-chip ${printsheetBuilding === b ? 'active' : ''}" onclick="setPrintBuilding('${b.replace(/'/g, "\\'")}')">${b} <span class="chip-count">${buildingCounts[b]}</span></button>`
+       ).join('') +
+     `</div>`;
 
-  // 只算被選中的大樓（all = 全部）
   const useOrders = printsheetBuilding === 'all' ? orders : orders.filter(o => o.building === printsheetBuilding);
+  const today = new Date().toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: 'long', day: 'numeric' });
 
+  // ===== 派餐單（依大樓）：給營運去大樓發餐用。每棟一頁（page-break）=====
+  if (printsheetMode === 'building') {
+    const byBuilding = {};
+    for (const o of useOrders) (byBuilding[o.building || '未指定大樓'] ||= []).push(o);
+    const blds = Object.keys(byBuilding);
+    if (!blds.length) { sheet.innerHTML = '<div class="empty"><div class="empty-text">這個大樓今天沒有訂單</div></div>'; return; }
+    let html = '';
+    blds.forEach((bld, idx) => {
+      const list = byBuilding[bld];
+      const notLast = idx < blds.length - 1;
+      const dishes = list.reduce((s, o) => s + (o.items || []).reduce((a, it) => a + it.quantity, 0), 0);
+      html += `
+        <div class="dispatch-block"${notLast ? ' style="page-break-after:always;"' : ''}>
+          <div class="print-header">
+            <div class="print-title">派餐單 — ${bld}</div>
+            <div class="print-meta">
+              <span><strong>日期：</strong>${today}</span>
+              <span><strong>${list.length} 筆・${dishes} 份</strong></span>
+            </div>
+          </div>
+          <div class="dispatch-head">
+            <span class="d-num">編號</span><span class="d-name">姓名</span><span class="d-phone">電話</span><span class="d-items">餐點</span>
+          </div>
+          <div class="dispatch-list">
+            ${list.map(o => `
+              <div class="dispatch-row">
+                <span class="d-num">#${(o.num || '').split('-')[1] || o.num}</span>
+                <span class="d-name"><strong>${o.name}</strong></span>
+                <span class="d-phone mono">${o.phone || ''}</span>
+                <span class="d-items">${(o.items || []).map(it => `${it.name}×${it.quantity}`).join('、')}</span>
+              </div>`).join('')}
+          </div>
+        </div>`;
+    });
+    sheet.innerHTML = html;
+    return;
+  }
+
+  // ===== 備餐單（依餐廳）：給餐廳備餐用（原本的）=====
   const byRest = {};
   let totalOrders = useOrders.length, totalDishes = 0, totalRevenue = 0;
-
   for (const o of useOrders) {
     totalRevenue += o.amount || 0;
     const thisOrder = {};
@@ -1921,8 +1997,6 @@ function renderPrintSheet() {
       });
     }
   }
-
-  const today = new Date().toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: 'long', day: 'numeric' });
 
   const buildingLabel = printsheetBuilding === 'all' ? '全部大樓' : printsheetBuilding;
   let html = `
@@ -1968,10 +2042,14 @@ function renderPrintSheet() {
     </div>`;
 
   sheet.innerHTML = html;
-} 
+}
 
 function setPrintBuilding(b) {
   printsheetBuilding = b;
+  renderPrintSheet();
+}
+function setPrintMode(m) {
+  printsheetMode = m;
   renderPrintSheet();
 }  
   
