@@ -78,6 +78,7 @@ export default async function handler(req, res) {
         desc: m.description || '',
         price: m.price,
         category: m.category || '其他',
+        image_url: m.image_url || null,
       });
     }
 
