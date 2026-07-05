@@ -46,6 +46,7 @@ export default async function handler(req, res) {
         address: b.address || null,
         sort_order: b.sort_order !== undefined ? parseInt(b.sort_order, 10) : 0,
         active_days,
+        cover_url: b.cover_url || null,
         is_active: b.is_active !== undefined ? !!b.is_active : true,
       };
       const resp = await fetch(`${URL}/rest/v1/restaurants`,
@@ -67,6 +68,7 @@ export default async function handler(req, res) {
       if (b.is_active !== undefined) patch.is_active = !!b.is_active;
       if (b.address !== undefined) patch.address = b.address;
       if (b.sort_order !== undefined) patch.sort_order = parseInt(b.sort_order, 10);
+      if (b.cover_url !== undefined) patch.cover_url = b.cover_url;
 
       // #4：有帶 active_days 才動（必填、存進 restaurants.active_days）
       if (Array.isArray(b.active_days)) {
