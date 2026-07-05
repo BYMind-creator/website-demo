@@ -1059,6 +1059,18 @@ textarea.form-input { resize: vertical; min-height: 70px; }
 .rest-info { flex: none !important; padding: 0.85rem 1rem 1.05rem !important; padding-right: 1rem !important; }
 .rest-info h3 { font-size: 1.05rem; }
 .rest-info .desc { -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+/* 菜單頁 hero 封面：跟首頁同套（有圖顯圖、沒圖橘色第N條）*/
+.restaurant-hero .hero-cover,
+.restaurant-hero .hero-fallback {
+  width: 88px; height: 88px; border-radius: 16px; flex-shrink: 0;
+}
+.restaurant-hero .hero-cover { background-size: cover; background-position: center; }
+.restaurant-hero .hero-fallback {
+  background: linear-gradient(135deg, #F3A24E, #DE761E) !important;
+  color: #fff !important; transform: none !important;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Noto Serif TC', serif; font-weight: 800; font-size: 0.95rem;
+}
 </style>
 </head>
 <body>
@@ -1242,14 +1254,6 @@ textarea.form-input { resize: vertical; min-height: 70px; }
       </div>
     </div>
 
-    <div class="line-notice">
-      <div class="line-icon">L</div>
-      <div>
-        <strong>已在 LINE 推播通知</strong><br>
-        <span style="opacity: 0.7; font-size: 0.82rem;">取餐前 10 分鐘會再提醒你</span>
-      </div>
-    </div>
-
     <button class="btn-primary" onclick="goToPage('restaurants'); resetCart();">
       <span>再點一份</span>
     </button>
@@ -1379,7 +1383,9 @@ function renderMenu() {
   if (!r) return;
 
   $('rest-hero').innerHTML = `
-    <div class="rest-thumb law-article">${r._article || ''}</div>
+    ${r.cover_url
+      ? `<div class="hero-cover" style="background-image:url('${r.cover_url}')"></div>`
+      : `<div class="rest-thumb law-article hero-fallback">${r._article || ''}</div>`}
     <div>
       <h2>${r.name}</h2>
       <p class="desc">${r.description}</p>
