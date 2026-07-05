@@ -52,7 +52,7 @@ export default async function handler(req, res) {
 
     // 2) 餐廳（只取上架，sort_order 大的在前）
     const rResp = await fetch(
-      `${URL}/rest/v1/restaurants?is_active=eq.true&select=id,name,description,sort_order,service_fee&order=sort_order.desc`,
+      `${URL}/rest/v1/restaurants?is_active=eq.true&select=id,name,description,sort_order,service_fee,cover_url&order=sort_order.desc`,
       { headers }
     );
     if (!rResp.ok) {
@@ -169,6 +169,7 @@ export default async function handler(req, res) {
         emoji: look.emoji,
         thumbClass: look.thumbClass,
         description: r.description || '',
+        cover_url: r.cover_url || null,
         service_fee: restFee,
         priceRange,
         itemCount: menu.length,
