@@ -211,13 +211,16 @@ input, select, textarea { font-family: inherit; font-size: 1rem; color: var(--in
 /* 手機版導覽：漢堡鈕 + 遮罩（桌機隱藏，只在 max-width:768px 顯示）*/
 .mobile-navbtn {
   display: none;
-  position: fixed; top: 12px; left: 12px; z-index: 210;
-  width: 42px; height: 42px; border-radius: 12px;
-  background: rgba(255,255,255,0.95); color: var(--ink);
+  position: fixed; top: 14px; left: 14px; z-index: 210;
+  width: 44px; height: 44px; border-radius: 14px;
+  background: rgba(255,255,255,0.96); color: var(--moss);
   border: 1px solid var(--line); align-items: center; justify-content: center;
-  font-size: 1.2rem; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-  backdrop-filter: blur(6px);
+  font-size: 1.25rem; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+  backdrop-filter: blur(8px);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
+.mobile-navbtn:active { transform: scale(0.94); box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
 .mobile-nav-backdrop {
   display: none; position: fixed; inset: 0; z-index: 190;
   background: rgba(0,0,0,0.45);
@@ -1189,6 +1192,27 @@ tbody tr:last-child td { border-bottom: none; }
   table { font-size: 0.85rem; }
   th, td { padding: 0.7rem 0.6rem; }
   .drawer { width: 100vw; }
+
+  /* #1 訂單列表：手機改卡片式（8 欄表格塞不下，大樓欄會一字一行）*/
+  #page-orders thead { display: none; }
+  #page-orders table, #page-orders tbody, #page-orders tr, #page-orders td { display: block; width: auto; }
+  #page-orders tbody tr {
+    border: 1px solid var(--line); border-radius: 12px;
+    margin-bottom: 0.75rem; padding: 0.35rem 0.9rem;
+    background: var(--white); box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  #page-orders tbody td {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; padding: 0.4rem 0; border: none !important; text-align: right;
+  }
+  #page-orders tbody td::before {
+    content: attr(data-label); font-weight: 600; color: var(--ink-light);
+    font-size: 0.82rem; text-align: left; flex-shrink: 0;
+  }
+  #page-orders tbody td.td-check { justify-content: flex-start; padding-bottom: 0.15rem; }
+  #page-orders tbody td.td-check::before { content: ""; }
+  #page-orders tbody td .cell-meta,
+  #page-orders tbody td .cell-strong { text-align: right; }
 }
 /* viewer 唯讀：藏掉改狀態按鈕 */
 body.role-viewer .status-actions,
@@ -2015,23 +2039,23 @@ function renderOrders(filter = 'all') {
     const st = STATUS_MAP[o.status];
     return `
       <tr onclick="openOrder('${o.num}')">
-        <td onclick="event.stopPropagation()"><input type="checkbox" class="order-check" data-num="${o.num}" onchange="toggleOrderSelect('${o.num}', this)"></td>
-        <td><span class="order-num">${o.num.split('-')[1]}</span></td>
-        <td>
+        <td class="td-check" onclick="event.stopPropagation()"><input type="checkbox" class="order-check" data-num="${o.num}" onchange="toggleOrderSelect('${o.num}', this)"></td>
+        <td data-label="訂單號"><span class="order-num">${o.num.split('-')[1]}</span></td>
+        <td data-label="客人">
           <div class="cell-strong">${o.name}</div>
           <div class="cell-meta mono">${o.phone}</div>
         </td>
-        <td>
+        <td data-label="餐點">
           <div class="cell-meta">${
             (o.items && o.items.length)
               ? o.items.map(it => `${it.name}×${it.quantity}`).join('、')
               : (o.note || '—')
           }</div>
         </td>
-        <td>${o.building}</td>
-        <td style="text-align: right;" class="cell-amount">$${o.amount}</td>
-        <td><span class="status-badge ${st.class}">${st.label}</span></td>
-        <td class="mono" style="color: var(--ink-light); font-size: 0.85rem;">${o.time}</td>
+        <td data-label="大樓">${o.building}</td>
+        <td data-label="金額" style="text-align: right;" class="cell-amount">$${o.amount}</td>
+        <td data-label="狀態"><span class="status-badge ${st.class}">${st.label}</span></td>
+        <td data-label="時間" class="mono" style="color: var(--ink-light); font-size: 0.85rem;">${o.time}</td>
       </tr>
     `;
   }).join('');
