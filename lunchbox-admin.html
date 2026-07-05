@@ -212,10 +212,11 @@ input, select, textarea { font-family: inherit; font-size: 1rem; color: var(--in
 .mobile-navbtn {
   display: none;
   position: fixed; top: 12px; left: 12px; z-index: 210;
-  width: 44px; height: 44px; border-radius: 10px;
-  background: var(--moss-deep); color: var(--rice);
-  border: none; align-items: center; justify-content: center;
-  font-size: 1.35rem; cursor: pointer; box-shadow: var(--shadow-md);
+  width: 42px; height: 42px; border-radius: 12px;
+  background: rgba(255,255,255,0.95); color: var(--ink);
+  border: 1px solid var(--line); align-items: center; justify-content: center;
+  font-size: 1.2rem; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  backdrop-filter: blur(6px);
 }
 .mobile-nav-backdrop {
   display: none; position: fixed; inset: 0; z-index: 190;
@@ -941,7 +942,15 @@ tbody tr:last-child td { border-bottom: none; }
 
 @media print {
   body { background: white; }
-  .sidebar, .page-header, .filter-bar, .no-print { display: none !important; }
+  /* 已知要藏的 UI（移出流程，幫助分頁）*/
+  .sidebar, .page-header, .filter-bar, .no-print,
+  .drawer, .drawer-backdrop, .mobile-navbtn, .mobile-nav-backdrop { display: none !important; }
+  /* iOS Safari 保險：列印時全部隱藏，只留對單表，避免 drawer/漢堡鈕被印出來擠爆版面 */
+  body * { visibility: hidden; }
+  #page-printsheet, #page-printsheet * { visibility: visible; }
+  #page-printsheet .no-print,
+  #page-printsheet .page-header,
+  #page-printsheet .filter-bar { display: none !important; }
   .main-content { padding: 0; max-width: none; }
   .print-sheet { border: none; padding: 0; }
   .dispatch-block { page-break-inside: auto; }
