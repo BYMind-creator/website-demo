@@ -943,6 +943,20 @@ tbody tr:last-child td { border-bottom: none; }
   color: var(--ink-light);
 }
 
+/* 第3批：全域日期列 */
+.date-bar {
+  display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+  padding: 0.7rem 1rem; margin-bottom: 1.25rem;
+  background: var(--white); border: 1px solid var(--line); border-radius: 12px;
+}
+.date-bar-label { font-weight: 600; font-size: 0.9rem; }
+.date-bar input[type="date"] {
+  padding: 0.4rem 0.65rem; border: 1px solid var(--line); border-radius: 8px;
+  font-size: 0.9rem; font-family: inherit; color: var(--ink); background: var(--rice);
+}
+.date-today-btn { padding: 0.4rem 0.9rem; font-size: 0.85rem; }
+.date-bar-hint { font-size: 0.82rem; color: var(--ink-light); }
+
 @media print {
   body { background: white; }
   /* 已知要藏的 UI（移出流程，幫助分頁）*/
@@ -1309,6 +1323,14 @@ body.role-viewer .fee-control { display: none !important; }
 
 <!-- 主內容 -->
 <main class="main-content">
+
+<!-- ===== 第3批：全域日期選擇（總覽/對單表/訂單列表共用，最近 30 天）===== -->
+<div class="date-bar no-print" id="global-date-bar">
+  <span class="date-bar-label">📅 檢視日期</span>
+  <input type="date" id="global-date" onchange="changeDate(this.value)">
+  <button class="btn-ghost date-today-btn" onclick="resetDateToday()">今天</button>
+  <span class="date-bar-hint" id="date-bar-hint">（今天）</span>
+</div>
 
 <!-- ===== Dashboard ===== -->
 <div class="page active" id="page-dashboard">
@@ -1741,6 +1763,7 @@ function applyRolePermissions() {
 }
 
 async function loadOrders() {
+  initGlobalDate();
   const tbody = $('orders-tbody');
   tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--ink-light);">載入訂單中…</td></tr>';
   try {
@@ -1965,6 +1988,39 @@ function viewOrders() {
   return (orders || []).filter(o => o.date === d);
 }
 
+// ===== 第3批：全域日期選擇（最近 30 天，純前端過濾，不重撈後端）=====
+function fmtISO(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function initGlobalDate() {
+  const el = $('global-date');
+  if (!el) return;
+  const today = new Date();
+  const min = new Date(); min.setDate(min.getDate() - 30);
+  el.max = fmtISO(today);
+  el.min = fmtISO(min);
+  if (!el.value) el.value = fmtISO(today);
+}
+function changeDate(iso) {
+  selectedDate = iso ? iso.replaceAll('-', '/') : null; // 空=今天；YYYY-MM-DD → YYYY/MM/DD 對齊 o.date
+  refreshDateViews();
+}
+function resetDateToday() {
+  selectedDate = null;
+  const el = $('global-date'); if (el) el.value = fmtISO(new Date());
+  refreshDateViews();
+}
+function refreshDateViews() {
+  const hint = $('date-bar-hint');
+  if (hint) hint.textContent = ((selectedDate || todayStr()) === todayStr()) ? '（今天）' : '（歷史）';
+  renderDashboard();
+  updateFilterCounts();
+  renderOrders();
+  if ($('page-printsheet') && $('page-printsheet').classList.contains('active')) {
+    ensureBuildings().then(renderPrintSheet);
+  } else {
+    renderPrintSheet();
+  }
+}
+
 // ===== #1/#2 勾選 + 批次改狀態 =====
 let selectedOrders = new Set();
 function toggleOrderSelect(num, cb) {
@@ -2030,7 +2086,7 @@ function renderOrders(filter = 'all') {
   const filtered = filter === 'all' ? orders : orders.filter(o => o.status === filter);
 
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--ink-light);">今天沒有這個狀態的訂單</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--ink-light);">這天沒有這個狀態的訂單</td></tr>';
     updateBatchBar();
     return;
   }
@@ -3036,6 +3092,9 @@ function goToPage(page) {
   event.target.closest('.nav-item')?.classList.add('active');
   closeMobileNav(); // 手機上選完頁自動收起側欄
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  // 第3批：日期列只在總覽/對單表/訂單列表顯示
+  const db = $('global-date-bar');
+  if (db) { initGlobalDate(); db.style.display = ['dashboard','printsheet','orders'].includes(page) ? 'flex' : 'none'; }
   if (page === 'printsheet') { renderPrintSheet(); ensureBuildings().then(renderPrintSheet); }
   if (page === 'menu') loadMenu();
   if (page === 'buildings') loadBuildings();
