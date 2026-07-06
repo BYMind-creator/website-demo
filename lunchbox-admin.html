@@ -2326,9 +2326,9 @@ function updateHeaderTexts() {
   const dateStr = now.toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   const dateShort = now.toLocaleDateString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit' });
 
-  // Dashboard 副標：日期 + 倒數（倒數那段由 updateCountdown 維護，這裡只換日期前綴）
+  // Dashboard 副標：只顯示日期（截單為每棟大樓各自設定，總覽不放單一倒數）
   const dash = $('today-date');
-  if (dash) dash.innerHTML = `${dateStr}・截單剩 <span id="cutoff-countdown" style="color: var(--persimmon); font-weight: 600;">—</span>`;
+  if (dash) dash.innerHTML = dateStr;
 
   // 訂單列表副標：日期 + 真筆數
   const ordSub = document.querySelector('#page-orders .page-subtitle');
@@ -2338,7 +2338,7 @@ function updateHeaderTexts() {
   const badge = $('nav-order-count');
   if (badge) badge.textContent = orders.length;
 
-  updateCountdown(); // 換完日期立刻補上倒數數字
+
 }  
   
 function filterOrders(status, elem) {
@@ -2907,6 +2907,22 @@ function openEditBuilding(id) {
 async function saveBuilding() {
   const name = $('b-name').value.trim();
   if (!name) { toast('請填大樓名稱'); return; }
+  // 防呆：截單時間必須早於取餐時間（避免設出「取餐後才截單」的矛盾值）
+  const cutoffV = $('b-cutoff').value;
+  const pickupV = $('b-ptime').value;
+  if (cutoffV && pickupV) {
+    const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + (m || 0); };
+    if (toMin(cutoffV) >= toMin(pickupV)) {
+      toast('截單時間要早於取餐時間，請重新設定'); return;
+    }
+  }
+  const startV = $('b-start').value;
+  if (startV && cutoffV) {
+    const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + (m || 0); };
+    if (toMin(startV) >= toMin(cutoffV)) {
+      toast('開放點餐時間要早於截單時間'); return;
+    }
+  }
   const payload = {
     action: editingBuildingId ? 'update' : 'create',
     name,
@@ -3108,18 +3124,8 @@ function goToPage(page) {
   }
 }
 
-// 倒數
-function updateCountdown() {
-  const now = new Date();
-  const cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 30);
-  if (now > cutoff) cutoff.setDate(cutoff.getDate() + 1);
-  const diff = cutoff - now;
-  if (diff <= 0) return;
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const el = $('cutoff-countdown');
-  if (el) el.textContent = `${h} 小時 ${m} 分`;
-}
+// 倒數（已移除：截單為每棟大樓各自設定，總覽不顯示單一寫死倒數）
+function updateCountdown() {}
 
 updateCountdown();
 setInterval(updateCountdown, 60000);
