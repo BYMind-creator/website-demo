@@ -1760,23 +1760,31 @@ function closeModalIfBackdrop(e) {
   }
 }
 
-// ============== 倒數計時 ==============
-function parseTimeToday(hhmm) {
+// ============== 倒數計時（一律用台灣時區 Asia/Taipei，不受客人手機時區影響）==============
+function nowTaipeiMinutes() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit', hour12: false
+  }).formatToParts(new Date());
+  let h = 0, m = 0;
+  for (const p of parts) { if (p.type === 'hour') h = +p.value; if (p.type === 'minute') m = +p.value; }
+  if (h === 24) h = 0; // 少數環境午夜回傳 24
+  return h * 60 + m;
+}
+function hhmmToMinutes(hhmm) {
   if (!hhmm) return null;
-  const [h, m] = hhmm.split(':').map(Number);
-  const d = new Date();
-  d.setHours(h, m || 0, 0, 0);
-  return d;
+  const [h, m] = String(hhmm).split(':').map(Number);
+  if (Number.isNaN(h)) return null;
+  return h * 60 + (m || 0);
 }
 
 function isOrderingOpen() {
   const b = state.selectedBuilding;
   if (!b) return true; // 資料還沒到，先不擋
-  const now = new Date();
-  const start = parseTimeToday(b.order_start_time); // 沒設=不限開始
-  const end = parseTimeToday(b.cutoff_time);         // 沒設=不擋截止
-  if (start && now < start) return false;
-  if (end && now > end) return false;
+  const now = nowTaipeiMinutes();
+  const start = hhmmToMinutes(b.order_start_time); // 沒設=不限開始
+  const end = hhmmToMinutes(b.cutoff_time);         // 沒設=不擋截止
+  if (start != null && now < start) return false;
+  if (end != null && now > end) return false;
   return true;
 }
 
@@ -1784,19 +1792,19 @@ function updateCountdown() {
   const b = state.selectedBuilding;
   const line = $('order-line');
   if (!b || !line) return;
-  const now = new Date();
-  const start = parseTimeToday(b.order_start_time);
-  const end = parseTimeToday(b.cutoff_time);
+  const now = nowTaipeiMinutes();
+  const start = hhmmToMinutes(b.order_start_time);
+  const end = hhmmToMinutes(b.cutoff_time);
   const pk = b.pickup_time ? `・<span class="countdown">${b.pickup_time}</span> 取餐` : '';
   let status;
-  if (start && now < start) {
+  if (start != null && now < start) {
     status = `<span class="countdown">${b.order_start_time}</span> 開放點餐`;
-  } else if (end && now > end) {
+  } else if (end != null && now > end) {
     status = `今日已截單`;
-  } else if (end) {
-    const diff = end - now;
-    const h = Math.floor(diff / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
+  } else if (end != null) {
+    const diff = end - now; // 分鐘
+    const h = Math.floor(diff / 60);
+    const m = diff % 60;
     status = `今日截單剩 <span class="countdown">${h} 小時 ${m} 分</span>`;
   } else {
     status = `開放點餐中`;
