@@ -1688,7 +1688,9 @@ async function submitOrder() {
     $('receipt-phone').textContent = phone;
     $('receipt-payment').textContent = '現場付現';
     $('receipt-total').textContent = formatPrice(total);
-    $('receipt-pickup-time').textContent = state.selectedBuilding.pickup_time;
+    $('receipt-pickup-time').textContent = state.selectedBuilding.pickup_end_time
+      ? `${state.selectedBuilding.pickup_time}–${state.selectedBuilding.pickup_end_time}`
+      : state.selectedBuilding.pickup_time;
     $('receipt-pickup-location').textContent =
       `${state.selectedBuilding.name}・${state.selectedBuilding.pickup_location}`;
 
@@ -1781,11 +1783,21 @@ function isOrderingOpen() {
   const b = state.selectedBuilding;
   if (!b) return true; // 資料還沒到，先不擋
   const now = nowTaipeiMinutes();
-  const start = hhmmToMinutes(b.order_start_time); // 沒設=不限開始
-  const end = hhmmToMinutes(b.cutoff_time);         // 沒設=不擋截止
-  if (start != null && now < start) return false;
-  if (end != null && now > end) return false;
-  return true;
+  const start = hhmmToMinutes(b.order_start_time);
+  const end = hhmmToMinutes(b.cutoff_time);
+  if (start == null && end == null) return true;
+  if (start == null) return now <= end;   // 只有截單
+  if (end == null) return now >= start;   // 只有開放
+  // 開放 ≥ 截單 → 跨天（開放是前一天）：現在 ≥ 開放 或 ≤ 截單
+  if (start >= end) return now >= start || now <= end;
+  // 開放 < 截單 → 同天：現在 ≥ 開放 且 ≤ 截單
+  return now >= start && now <= end;
+}
+// 取餐時間顯示（有結束時間就顯示區間 12:00–13:00）
+function pickupText(b) {
+  if (!b || !b.pickup_time) return '';
+  const range = b.pickup_end_time ? `${b.pickup_time}–${b.pickup_end_time}` : b.pickup_time;
+  return `・<span class="countdown">${range}</span> 取餐`;
 }
 
 function updateCountdown() {
@@ -1795,14 +1807,18 @@ function updateCountdown() {
   const now = nowTaipeiMinutes();
   const start = hhmmToMinutes(b.order_start_time);
   const end = hhmmToMinutes(b.cutoff_time);
-  const pk = b.pickup_time ? `・<span class="countdown">${b.pickup_time}</span> 取餐` : '';
+  const pk = pickupText(b);
   let status;
-  if (start != null && now < start) {
-    status = `<span class="countdown">${b.order_start_time}</span> 開放點餐`;
-  } else if (end != null && now > end) {
-    status = `今日已截單`;
+  if (!isOrderingOpen()) {
+    // 不在下單區間：區分「還沒開放」還是「已截單」
+    if (start != null && now < start && (end == null || start < end)) {
+      status = `<span class="countdown">${b.order_start_time}</span> 開放點餐`;
+    } else {
+      status = `今日已截單`;
+    }
   } else if (end != null) {
-    const diff = end - now; // 分鐘
+    let diff = end - now;
+    if (diff < 0) diff += 24 * 60; // 跨天：截單在隔天
     const h = Math.floor(diff / 60);
     const m = diff % 60;
     status = `今日截單剩 <span class="countdown">${h} 小時 ${m} 分</span>`;
