@@ -43,6 +43,7 @@ export default async function handler(req, res) {
       address: b.address,
       pickup_location: b.pickup_location,
       pickup_time: (b.pickup_time || '').slice(0, 5),   // "12:00:00" → "12:00"
+      pickup_end_time: (b.pickup_end_time || '').slice(0, 5),
       cutoff_time: (b.cutoff_time || '').slice(0, 5),
       order_start_time: (b.order_start_time || '').slice(0, 5),
       manager_name: b.manager_name || null,
