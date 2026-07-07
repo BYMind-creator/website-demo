@@ -26,11 +26,19 @@ export default async function handler(req, res) {
   ];
 
   try {
-    // 1) 大樓（依取餐時間排序；停用與否交給前端過濾）
-    const bResp = await fetch(
-      `${URL}/rest/v1/buildings?order=pickup_time.asc`,
-      { headers }
-    );
+    const q = (path) => fetch(`${URL}/rest/v1/${path}`, { headers });
+    // 一次並行發出所有查詢（原本 7 支序列 ~3.5s → 並行 ~0.5s）
+    const [bResp, rResp, rbResp, adResp, cfResp, mResp, imgResp] = await Promise.all([
+      q('buildings?order=pickup_time.asc'),
+      q('restaurants?is_active=eq.true&select=id,name,description,sort_order,service_fee,cover_url&order=sort_order.desc'),
+      q('restaurant_buildings?select=restaurant_id,building_id').catch(() => null),
+      q('restaurants?select=id,active_days').catch(() => null),
+      q('category_fees?select=restaurant_id,category,fee').catch(() => null),
+      q('menu_items?is_available=eq.true&select=id,restaurant_id,name,description,price,category,sort_order,image_url&order=sort_order.desc'),
+      q('menu_item_images?select=menu_item_id,url,sort_order&order=sort_order.asc').catch(() => null),
+    ]);
+
+    // ---- 必要查詢：失敗就 500 ----
     if (!bResp.ok) {
       const detail = await bResp.text();
       return res.status(500).json({ error: '讀取大樓失敗', detail });
@@ -51,78 +59,49 @@ export default async function handler(req, res) {
       is_active: b.is_active,
     }));
 
-    // 2) 餐廳（只取上架，sort_order 大的在前）
-    const rResp = await fetch(
-      `${URL}/rest/v1/restaurants?is_active=eq.true&select=id,name,description,sort_order,service_fee,cover_url&order=sort_order.desc`,
-      { headers }
-    );
     if (!rResp.ok) {
       const detail = await rResp.text();
       return res.status(500).json({ error: '讀取餐廳失敗', detail });
     }
     const restaurantsRaw = await rResp.json();
 
-    // 2b) 餐廳↔大樓 關聯（分開查，不用巢狀 embed）
-    //     表還沒建 / 查詢失敗 → rbActive=false → 客人端不過濾（全顯示），避免上線順序踩到開天窗
-    let rbActive = false;
-    const bidsByRest = {};
-    try {
-      const rbResp = await fetch(`${URL}/rest/v1/restaurant_buildings?select=restaurant_id,building_id`, { headers });
-      if (rbResp.ok) {
-        rbActive = true;
-        for (const x of await rbResp.json()) (bidsByRest[x.restaurant_id] ||= []).push(x.building_id);
-      }
-    } catch (_) { rbActive = false; }
-
-    // 2c) #4 餐廳營業日（分開查；欄位還沒建 / 查詢失敗 → adActive=false → 客人端不以星期過濾）
-    let adActive = false;
-    const daysByRest = {};
-    try {
-      const adResp = await fetch(`${URL}/rest/v1/restaurants?select=id,active_days`, { headers });
-      if (adResp.ok) {
-        adActive = true;
-        for (const x of await adResp.json()) daysByRest[x.id] = x.active_days; // 可能是 null 或 [1,3,5]
-      }
-    } catch (_) { adActive = false; }
-
-    // 2d) #7 分類手續費（分開查；表沒建 / 失敗 → feesByRest 空 → 全部回退餐廳 service_fee，價格不變）
-    const feesByRest = {};
-    try {
-      const cfResp = await fetch(`${URL}/rest/v1/category_fees?select=restaurant_id,category,fee`, { headers });
-      if (cfResp.ok) {
-        for (const x of await cfResp.json()) {
-          (feesByRest[x.restaurant_id] ||= {})[(x.category || '').trim()] = x.fee;
-        }
-      }
-    } catch (_) { /* 表沒建就當沒有分類費，全回退餐廳費 */ }
-
-    // 3) 菜單（只取供應中，一次撈全部；不 embed 圖片，改下一步分開撈）
-    const mResp = await fetch(
-      `${URL}/rest/v1/menu_items?is_available=eq.true&select=id,restaurant_id,name,description,price,category,sort_order,image_url&order=sort_order.desc`,
-      { headers }
-    );
     if (!mResp.ok) {
       const detail = await mResp.text();
       return res.status(500).json({ error: '讀取菜單失敗', detail });
     }
     const menuRaw = await mResp.json();
 
-    // 3b) 圖片（單獨撈一次 menu_item_images，再依 menu_item_id 分組）
-    //     用 try 包起來：就算圖片表出問題，菜單照樣出得來，不會整頁空。
-    const imagesByItem = {};
-    try {
-      const imgResp = await fetch(
-        `${URL}/rest/v1/menu_item_images?select=menu_item_id,url,sort_order&order=sort_order.asc`,
-        { headers }
-      );
-      if (imgResp.ok) {
-        const imgRaw = await imgResp.json();
-        for (const img of imgRaw) {
-          (imagesByItem[img.menu_item_id] ||= []).push(img);
-        }
+    // ---- 選配查詢：失敗就降級（不擋畫面）----
+    // 餐廳↔大樓：null/失敗 → rbActive=false → 客人端不過濾（全顯示）
+    let rbActive = false;
+    const bidsByRest = {};
+    if (rbResp && rbResp.ok) {
+      rbActive = true;
+      for (const x of await rbResp.json()) (bidsByRest[x.restaurant_id] ||= []).push(x.building_id);
+    }
+
+    // #4 餐廳營業日：null/失敗 → adActive=false → 不以星期過濾
+    let adActive = false;
+    const daysByRest = {};
+    if (adResp && adResp.ok) {
+      adActive = true;
+      for (const x of await adResp.json()) daysByRest[x.id] = x.active_days;
+    }
+
+    // #7 分類手續費：null/失敗 → 空 → 全回退餐廳 service_fee
+    const feesByRest = {};
+    if (cfResp && cfResp.ok) {
+      for (const x of await cfResp.json()) {
+        (feesByRest[x.restaurant_id] ||= {})[(x.category || '').trim()] = x.fee;
       }
-    } catch (_) {
-      // 圖片撈失敗就當作沒有圖，不影響菜單
+    }
+
+    // 圖片：null/失敗 → 當作沒有圖，不影響菜單
+    const imagesByItem = {};
+    if (imgResp && imgResp.ok) {
+      for (const img of await imgResp.json()) {
+        (imagesByItem[img.menu_item_id] ||= []).push(img);
+      }
     }
 
     // 把菜單依 restaurant_id 分組，並掛上各自的圖片陣列
