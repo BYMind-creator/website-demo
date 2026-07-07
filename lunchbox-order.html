@@ -1585,8 +1585,14 @@ function goToCheckout() {
   goToPage('checkout');
 }
 
+// #2 記住上次選的大樓（localStorage；受限環境存取失敗也不會壞）
+function savedBuildingKey() { return 'laojifa_building_id'; }
+function safeGetSavedBuilding() { try { return localStorage.getItem(savedBuildingKey()); } catch (_) { return null; } }
+function safeSaveBuilding(id) { try { localStorage.setItem(savedBuildingKey(), id); } catch (_) {} }
+
 function selectBuilding(bid, elem) {
   state.selectedBuilding = buildings.find(b => b.id === bid);
+  safeSaveBuilding(bid); // 記住這次選擇，下次自動帶入
   $('current-building-name').textContent = state.selectedBuilding.name;
   $$('.building-option').forEach(o => o.classList.remove('selected'));
   if (elem) elem.classList.add('selected');
@@ -1846,12 +1852,19 @@ async function loadData() {
       return;
     }
 
-    // 預設選第一棟大樓
-    state.selectedBuilding = buildings[0];
+    // #2/#3 進場選大樓：記住上次的就直接用；第一次（沒記住）預設第一棟並自動彈出選單
+    const savedId = safeGetSavedBuilding();
+    const saved = savedId ? buildings.find(b => b.id === savedId) : null;
+    state.selectedBuilding = saved || buildings[0];
     $('current-building-name').textContent = state.selectedBuilding.name;
 
     renderRestaurants();
-    updateCountdown(); // 有大樓資料了，banner 依它顯示（原本寫死 10:30/12:00 的問題就修掉了）
+    updateCountdown();
+
+    if (!saved) {
+      // 沒有記住的大樓（第一次來）→ 自動彈出選單，讓客人確認/選擇
+      openModal('building');
+    }
   } catch (e) {
     listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">${e.message || '載入失敗，請重新整理'}</div></div>`;
   }
