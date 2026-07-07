@@ -1,16 +1,12 @@
 // api/manage-building.js — 後台：新增 / 編輯大樓。只有 superadmin。
 import crypto from 'crypto';
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
   const URL = process.env.SUPABASE_URL;
   const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const SALT = process.env.AUTH_SALT;
   if (!URL || !KEY || !SALT) return res.status(500).json({ error: '伺服器環境變數未設定' });
-
   const headers = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' };
-
   try {
     const b = req.body || {};
     const { _user, _pass } = b;
@@ -23,9 +19,7 @@ export default async function handler(req, res) {
     const u = (await uResp.json())[0];
     if (!u || u.password_hash !== inputHash) return res.status(401).json({ error: '身分驗證失敗' });
     if (u.role !== 'superadmin' && u.role !== 'ops') return res.status(403).json({ error: '權限不足' });
-
     const action = b.action;
-
     if (action === 'create') {
       if (!b.name) return res.status(400).json({ error: '缺少大樓名稱' });
       const row = {
@@ -34,6 +28,7 @@ export default async function handler(req, res) {
         pickup_location: b.pickup_location || '',
         cutoff_time: b.cutoff_time || null,
         pickup_time: b.pickup_time || null,
+        pickup_end_time: b.pickup_end_time || null,
         order_start_time: b.order_start_time || null,
         manager_name: b.manager_name || null,
         manager_phone: b.manager_phone || null,
@@ -44,11 +39,10 @@ export default async function handler(req, res) {
       if (!resp.ok) return res.status(500).json({ error: '新增大樓失敗', detail: await resp.text() });
       return res.status(200).json({ ok: true, building: (await resp.json())[0] || null });
     }
-
     if (action === 'update') {
       if (!b.id) return res.status(400).json({ error: '缺少大樓 id' });
       const patch = {};
-      ['name', 'district', 'pickup_location', 'cutoff_time', 'pickup_time', 'order_start_time', 'manager_name', 'manager_phone'].forEach(k => {
+      ['name', 'district', 'pickup_location', 'cutoff_time', 'pickup_time', 'pickup_end_time', 'order_start_time', 'manager_name', 'manager_phone'].forEach(k => {
         if (b[k] !== undefined) patch[k] = b[k] || null;
       });
       if (b.is_active !== undefined) patch.is_active = !!b.is_active;
@@ -58,7 +52,6 @@ export default async function handler(req, res) {
       if (!resp.ok) return res.status(500).json({ error: '更新大樓失敗', detail: await resp.text() });
       return res.status(200).json({ ok: true, building: (await resp.json())[0] || null });
     }
-
     return res.status(400).json({ error: '未知的 action（要 create 或 update）' });
   } catch (e) {
     return res.status(500).json({ error: e.message || '未知錯誤' });
