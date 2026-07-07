@@ -2870,7 +2870,7 @@ async function loadBuildings() {
         <td>${b.manager_name ? `${b.manager_name}${b.manager_phone ? `<div class="cell-meta mono">${b.manager_phone}</div>` : ''}` : '—'}</td>
         <td>${b.pickup_location || '—'}</td>
         <td class="mono">${(b.order_start_time ? b.order_start_time + '–' : '') + (b.cutoff_time || '—')}</td>
-        <td class="mono">${b.pickup_time || '—'}</td>
+        <td class="mono">${b.pickup_time ? (b.pickup_end_time ? `${b.pickup_time}–${b.pickup_end_time}` : b.pickup_time) : '—'}</td>
         <td><div class="toggle ${b.is_active !== false ? 'on' : ''}" onclick="toggleBuildingActive('${b.id}', this)"></div></td>
         <td><button class="btn-ghost" style="padding:0.35rem 0.8rem;font-size:0.82rem;" onclick="openEditBuilding('${b.id}')">編輯</button></td>
       </tr>`).join('');
@@ -2885,9 +2885,10 @@ function buildingFormHTML(b = {}) {
   return mField('大樓名稱', 'b-name', 'text', b.name || '') +
     mField('區域（如 西屯區）', 'b-district', 'text', b.district || '') +
     mField('取餐地點', 'b-pickup', 'text', b.pickup_location || '') +
-    mField('下單開始時間', 'b-start', 'time', b.order_start_time || '') +
-    mField('下單截止時間（截單）', 'b-cutoff', 'time', b.cutoff_time || '') +
-    mField('取餐時間', 'b-ptime', 'time', b.pickup_time || '') +
+    mField('下單開始時間（可設前一天，如 16:00）', 'b-start', 'time', b.order_start_time || '') +
+    mField('下單截止時間（截單，如 10:30）', 'b-cutoff', 'time', b.cutoff_time || '') +
+    mField('取餐開始時間（如 12:00）', 'b-ptime', 'time', b.pickup_time || '') +
+    mField('取餐結束時間（如 13:00）', 'b-ptime-end', 'time', b.pickup_end_time || '') +
     mField('負責人姓名', 'b-manager', 'text', b.manager_name || '') +
     mField('負責人電話', 'b-manager-phone', 'tel', b.manager_phone || '');
 }
@@ -2907,22 +2908,19 @@ function openEditBuilding(id) {
 async function saveBuilding() {
   const name = $('b-name').value.trim();
   if (!name) { toast('請填大樓名稱'); return; }
-  // 防呆：截單時間必須早於取餐時間（避免設出「取餐後才截單」的矛盾值）
+  const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + (m || 0); };
   const cutoffV = $('b-cutoff').value;
-  const pickupV = $('b-ptime').value;
-  if (cutoffV && pickupV) {
-    const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + (m || 0); };
-    if (toMin(cutoffV) >= toMin(pickupV)) {
-      toast('截單時間要早於取餐時間，請重新設定'); return;
-    }
+  const pStartV = $('b-ptime').value;
+  const pEndV = $('b-ptime-end').value;
+  // 防呆：截單要早於取餐開始（截單 10:30 < 取餐 12:00）
+  if (cutoffV && pStartV && toMin(cutoffV) >= toMin(pStartV)) {
+    toast('截單時間要早於取餐時間，請重新設定'); return;
   }
-  const startV = $('b-start').value;
-  if (startV && cutoffV) {
-    const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + (m || 0); };
-    if (toMin(startV) >= toMin(cutoffV)) {
-      toast('開放點餐時間要早於截單時間'); return;
-    }
+  // 防呆：取餐開始要早於取餐結束（12:00 < 13:00）
+  if (pStartV && pEndV && toMin(pStartV) >= toMin(pEndV)) {
+    toast('取餐開始時間要早於結束時間'); return;
   }
+  // 註：下單開始時間允許 ≥ 截單（代表「前一天開放、當天截單」的跨天設定），不擋
   const payload = {
     action: editingBuildingId ? 'update' : 'create',
     name,
@@ -2931,6 +2929,7 @@ async function saveBuilding() {
     order_start_time: $('b-start').value || null,
     cutoff_time: $('b-cutoff').value || null,
     pickup_time: $('b-ptime').value || null,
+    pickup_end_time: $('b-ptime-end').value || null,
     manager_name: $('b-manager').value.trim() || null,
     manager_phone: $('b-manager-phone').value.trim() || null,
     _user: currentUser?._u, _pass: currentUser?._p,
