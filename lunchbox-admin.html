@@ -2628,10 +2628,10 @@ async function changePrice(id, value) {
   const price = Number(value);
   if (!Number.isFinite(price) || price < 0) { toast('價格不合法'); loadMenu(); return; }
   try {
-    const resp = await fetch('/api/update-menu-item', {
+    const resp = await fetch('/api/manage-menu-item', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, price, _user: currentUser?._u, _pass: currentUser?._p }),
+      body: JSON.stringify({ action: 'update-fields', id, price, _user: currentUser?._u, _pass: currentUser?._p }),
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || '更新失敗');
@@ -2951,10 +2951,10 @@ async function toggleAvailable(id, elem) {
   const turningOn = !elem.classList.contains('on');
   elem.classList.toggle('on'); // 先樂觀切換，失敗再退回
   try {
-    const resp = await fetch('/api/update-menu-item', {
+    const resp = await fetch('/api/manage-menu-item', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, is_available: turningOn, _user: currentUser?._u, _pass: currentUser?._p }),
+      body: JSON.stringify({ action: 'update-fields', id, is_available: turningOn, _user: currentUser?._u, _pass: currentUser?._p }),
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || '更新失敗');
