@@ -1443,7 +1443,8 @@ function findMenuItem(itemId) {
   return null;
 }
 
-function addToCart(itemId) {
+async function addToCart(itemId) {
+  if (!(await ensureLineLogin())) return;   // 加購物車前先確認 LINE 登入（未登入導去 LINE，此時購物車還空的）
   if (!isOrderingOpen()) { toast('今日已截單，暫停點餐'); return; }
   const found = findMenuItem(itemId);
   if (!found) return;
@@ -1555,7 +1556,8 @@ function renderCart() {
 }
 
 // ============== 結帳 ==============
-function goToCheckout() {
+async function goToCheckout() {
+  if (!(await ensureLineLogin())) return;   // 訂餐前先確認 LINE 登入（未登入會導去 LINE）
   if (!isOrderingOpen()) { toast('今日已截單，無法結帳'); return; }
   // 拆分：餐費（給餐廳的店內價）vs 服務費（我們的收入）
   let foodSubtotal = 0;   // 餐費 = Σ 店內價 × 數量
@@ -1609,6 +1611,7 @@ function selectPayment(p) {
 }
 
 async function submitOrder() {
+  if (!(await ensureLineLogin())) return;   // 保險：未登入不得送出
   const name = $('contact-name').value.trim();
   const phone = $('contact-phone').value.trim();
 
@@ -1870,6 +1873,31 @@ async function loadData() {
     listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">${e.message || '載入失敗，請重新整理'}</div></div>`;
   }
 }
+
+// ===== LINE 登入：只在「訂餐」時把關，逛菜單不擋 =====
+let currentUser = null;
+function autofillLineName() {
+  if (currentUser && currentUser.name && $('contact-name') && !$('contact-name').value) {
+    $('contact-name').value = currentUser.name;   // 自動帶入 LINE 名字（仍可手動改）
+  }
+}
+async function ensureLineLogin() {
+  if (currentUser) return true;                   // 已知登入 → 直接放行
+  try {
+    const r = await fetch('/api/auth?action=me'); // 沒把握時即時再問一次（避免載入競速）
+    if (r.ok) { currentUser = (await r.json()).user; autofillLineName(); return true; }
+  } catch (e) {}
+  toast('訂餐前請先用 LINE 登入');
+  setTimeout(() => { window.location.href = '/api/auth?action=login'; }, 900);
+  return false;
+}
+// 進站先靜默確認一次：已登入就完全無感，還能先把名字帶好
+(async () => {
+  try {
+    const r = await fetch('/api/auth?action=me');
+    if (r.ok) { currentUser = (await r.json()).user; autofillLineName(); }
+  } catch (e) {}
+})();
 
 loadData();
 updateCountdown();
