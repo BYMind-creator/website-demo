@@ -104,7 +104,9 @@ export default async function handler(req, res) {
       headers: { ...headers, Prefer: 'return=representation' },
       body: JSON.stringify({
         order_number,
-        user_id: customerId,             // ← 訂單掛在本人底下（追得到人）
+        user_id: customerId,             // ← 訂單掛在本人底下（關聯用，追得到人、可 JOIN users）
+        line_user_id: lineUser.uid,      // ← 訂單上直接存一份 LINE ID（免 JOIN 就看得到）
+        line_name: lineUser.name || null,// ← 訂單上直接存一份 LINE 名字
         building_id: b.building_id,
         pickup_date,
         pickup_time: '12:00',            // 下一關改成依大樓帶入
