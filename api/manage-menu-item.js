@@ -110,6 +110,23 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, item: created });
     }
 
+    if (action === 'update-fields') {
+      // 改價格 / 上下架（原 update-menu-item.js 的功能，合併進來省一支 function）
+      if (!b.id) return res.status(400).json({ error: '缺少餐點 id' });
+      const patch = {};
+      if (b.price !== undefined) {
+        const price = Number(b.price);
+        if (!Number.isFinite(price) || price < 0) return res.status(400).json({ error: '價格不合法' });
+        patch.price = price;
+      }
+      if (b.is_available !== undefined) patch.is_available = !!b.is_available;
+      if (!Object.keys(patch).length) return res.status(400).json({ error: '沒有要更新的內容' });
+      const resp = await fetch(`${URL}/rest/v1/menu_items?id=eq.${encodeURIComponent(b.id)}`,
+        { method: 'PATCH', headers: { ...headers, Prefer: 'return=representation' }, body: JSON.stringify(patch) });
+      if (!resp.ok) return res.status(500).json({ error: '更新失敗', detail: await resp.text() });
+      return res.status(200).json({ ok: true, item: (await resp.json())[0] || null });
+    }
+
     return res.status(400).json({ error: '未知的 action（要 create 或 delete）' });
   } catch (e) {
     console.error('[manage-menu-item]', e);
