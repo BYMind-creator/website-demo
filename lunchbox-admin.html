@@ -1097,6 +1097,17 @@ tbody tr:last-child td { border-bottom: none; }
 
 /* 下排：排序箭頭 + 供應開關 + 刪 */
 .mi-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.drag-handle {
+  cursor: grab; touch-action: none; user-select: none;
+  width: 34px; height: 34px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; color: var(--ink-light);
+  background: var(--rice); border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.drag-handle:active { cursor: grabbing; background: #efe9dd; }
+.sortable-ghost { opacity: 0.4; }
+.sortable-chosen { background: #fff7ec; }
 .mi-move {
   width: 34px; height: 34px; border-radius: 8px;
   border: 1.5px solid var(--line); background: var(--white); color: var(--ink);
@@ -1234,6 +1245,7 @@ body.role-viewer .drawer-actions { display: none !important; }
 /* viewer 看不到服務費；ops 已開放可管理 */
 body.role-viewer .fee-control { display: none !important; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 </head>
 <body>
 
@@ -2373,12 +2385,11 @@ function renderMenu() {
     const items = (r.menu_items || []).slice().sort((a, b) => (b.sort_order || 0) - (a.sort_order || 0));
     const escName = r.name.replace(/'/g, "\\'");
     return `
-    <div class="menu-card">
+    <div class="menu-card" data-id="${r.id}">
       <div class="menu-card-header">
         <div class="rest-head-main">
           <div class="rest-move">
-            <button class="mi-move" ${ri === 0 ? 'disabled' : ''} onclick="moveRestaurant('${r.id}','up')">↑</button>
-            <button class="mi-move" ${ri === menuData.length - 1 ? 'disabled' : ''} onclick="moveRestaurant('${r.id}','down')">↓</button>
+            <div class="drag-handle rest-drag" title="拖曳排序餐廳">⠿</div>
           </div>
           <div style="flex:1;min-width:0;">
             <div class="menu-card-title">${r.name}
@@ -2401,11 +2412,12 @@ function renderMenu() {
           <button class="btn-ghost rest-additem" onclick="openAddItem('${r.id}','${escName}')">+ 加餐點</button>
         </div>
       </div>
+      <div class="menu-items-list" data-rest="${r.id}">
       ${items.map((m, ii) => {
         const imgs = (m.menu_item_images || []).slice().sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
         const escItem = m.name.replace(/'/g, "\\'");
         return `
-        <div class="menu-item-row">
+        <div class="menu-item-row" data-id="${m.id}">
           <div class="mi-top">
             <div class="mi-thumbs">
               ${imgs.map(img => `<div class="mi-thumb-wrap"><img class="mi-thumb" src="${img.url}" alt=""><button class="mi-thumb-del" onclick="deleteMenuImage('${img.id}')">×</button></div>`).join('')}
@@ -2419,16 +2431,68 @@ function renderMenu() {
             <div class="mi-price">$<input type="number" class="price-input" value="${m.price}" onchange="changePrice('${m.id}', this.value)"></div>
           </div>
           <div class="mi-actions">
-            <button class="mi-move" ${ii === 0 ? 'disabled' : ''} onclick="moveMenuItem('${r.id}','${m.id}','up')">↑</button>
-            <button class="mi-move" ${ii === items.length - 1 ? 'disabled' : ''} onclick="moveMenuItem('${r.id}','${m.id}','down')">↓</button>
+            <div class="drag-handle mi-drag" title="拖曳排序餐點">⠿</div>
             <label class="mi-avail">供應<div class="toggle ${m.is_available ? 'on' : ''}" onclick="toggleAvailable('${m.id}', this)"></div></label>
             <button class="mi-textbtn danger" onclick="deleteItem('${m.id}','${escItem}')">刪</button>
           </div>
         </div>`;
       }).join('')}
+      </div>
       ${items.length === 0 ? '<div style="padding:0.8rem 0;color:var(--ink-light);font-size:0.85rem;">還沒有餐點，點右上「＋加餐點」</div>' : ''}
     </div>`;
   }).join('');
+  initMenuSortable();
+}
+
+// ===== 拖曳排序（SortableJS，手機＋電腦，拖完立即存）=====
+function initMenuSortable() {
+  if (typeof Sortable === 'undefined') return; // CDN 沒載到就回退（箭頭已移除，但至少不報錯）
+  const menuList = $('menu-list');
+  if (menuList) {
+    if (menuList._sortable) { try { menuList._sortable.destroy(); } catch (_) {} }
+    menuList._sortable = Sortable.create(menuList, {
+      handle: '.rest-drag', draggable: '.menu-card', animation: 150,
+      onEnd: () => {
+        const ids = [...menuList.querySelectorAll(':scope > .menu-card')].map(el => el.dataset.id);
+        saveRestaurantOrder(ids);
+      },
+    });
+  }
+  document.querySelectorAll('.menu-items-list').forEach(list => {
+    list._sortable = Sortable.create(list, {
+      handle: '.mi-drag', draggable: '.menu-item-row', animation: 150,
+      onEnd: () => {
+        const ids = [...list.querySelectorAll(':scope > .menu-item-row')].map(el => el.dataset.id);
+        saveItemOrder(ids);
+      },
+    });
+  });
+}
+async function saveRestaurantOrder(orderedIds) {
+  try {
+    for (let idx = 0; idx < orderedIds.length; idx++) {
+      const resp = await fetch('/api/manage-restaurant', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update', id: orderedIds[idx], sort_order: orderedIds.length - idx,
+          _user: currentUser?._u, _pass: currentUser?._p }),
+      });
+      if (!resp.ok) throw new Error((await resp.json()).error || '排序失敗');
+    }
+    toast('餐廳順序已更新');
+    loadMenu();
+  } catch (e) { toast(e.message || '排序失敗'); loadMenu(); }
+}
+async function saveItemOrder(orderedIds) {
+  try {
+    const payload = orderedIds.map((id, idx) => ({ id, sort_order: orderedIds.length - idx }));
+    const resp = await fetch('/api/manage-menu-item', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'reorder', items: payload, _user: currentUser?._u, _pass: currentUser?._p }),
+    });
+    if (!resp.ok) throw new Error((await resp.json()).error || '排序失敗');
+    toast('餐點順序已更新');
+    loadMenu();
+  } catch (e) { toast(e.message || '排序失敗'); loadMenu(); }
 }
 // ===== 排序 / 多圖管理（Part B）=====
 async function moveRestaurant(restaurantId, dir) {
