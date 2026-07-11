@@ -78,8 +78,8 @@ export default async function handler(req, res) {
         user_id: GUEST,
         // 想記錄「誰用 LINE 下的單」→ 先在 orders 表加兩欄（見對話說明），
         // 再把下面這兩行的註解拿掉即可：
-        // line_user_id: lineUser.uid,
-        // line_name: lineUser.name,
+        line_user_id: lineUser.uid,
+        line_name: lineUser.name,
         building_id: b.building_id,
         pickup_date,
         pickup_time: '12:00',            // 下一關改成依大樓帶入
