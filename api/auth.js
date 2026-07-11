@@ -1,6 +1,38 @@
 import crypto from 'crypto';
-import { parseCookies, signSession, getUser } from '../lib/line-auth.js';
 
+const SECRET = process.env.SESSION_SECRET || '';
+
+// ---- 內建工具（原本在 lib/line-auth.js，現在直接寫在這支裡）----
+function parseCookies(header = '') {
+  return Object.fromEntries(
+    header.split(';').map(v => v.trim()).filter(Boolean).map(v => {
+      const i = v.indexOf('=');
+      return [v.slice(0, i), decodeURIComponent(v.slice(i + 1))];
+    })
+  );
+}
+function signSession(payload) {
+  const data = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const sig = crypto.createHmac('sha256', SECRET).update(data).digest('base64url');
+  return `${data}.${sig}`;
+}
+function verifySession(token) {
+  if (!token || !token.includes('.')) return null;
+  const [data, sig] = token.split('.');
+  const expected = crypto.createHmac('sha256', SECRET).update(data).digest('base64url');
+  const a = Buffer.from(sig), b = Buffer.from(expected);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+  try {
+    const p = JSON.parse(Buffer.from(data, 'base64url').toString());
+    if (p.exp && Date.now() > p.exp) return null;
+    return p;
+  } catch { return null; }
+}
+function getUser(req) {
+  return verifySession(parseCookies(req.headers.cookie).session);
+}
+
+// ---- 主處理：靠 query 分流 ----
 export default async function handler(req, res) {
   const { code, state, action } = req.query;
   const appUrl = process.env.APP_URL;
