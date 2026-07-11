@@ -2,11 +2,10 @@
 // Vercel Serverless Function：安全地把一筆訂單寫進 Supabase。
 // service_role key 只存在這層（環境變數），不會外洩到瀏覽器。
 //
-// 需要在 Vercel 設這三個環境變數：
+// 需要在 Vercel 設這些環境變數：
 //   SUPABASE_URL                你的 Project URL（結尾不要多斜線）
 //   SUPABASE_SERVICE_ROLE_KEY   Supabase 的 service_role key
-//   GUEST_USER_ID               00000000-0000-0000-0000-000000000000
-//   SESSION_SECRET              ← 新增：必須跟 api/auth.js 用同一個值
+//   SESSION_SECRET              ← 必須跟 api/auth.js 用同一個值
 import crypto from 'crypto';
 
 // ===== 內建：驗證 LINE 登入（不 import lib，跟 auth.js 同一套簽章）=====
@@ -41,9 +40,8 @@ export default async function handler(req, res) {
 
   const URL = process.env.SUPABASE_URL;
   const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const GUEST = process.env.GUEST_USER_ID;
-  if (!URL || !KEY || !GUEST) {
-    return res.status(500).json({ error: '伺服器環境變數未設定（SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY / GUEST_USER_ID）' });
+  if (!URL || !KEY) {
+    return res.status(500).json({ error: '伺服器環境變數未設定（SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY）' });
   }
   const headers = {
     apikey: KEY,
@@ -56,6 +54,37 @@ export default async function handler(req, res) {
     if (!b.contact_name || !b.contact_phone || !b.building_id) {
       return res.status(400).json({ error: '缺少必要欄位（姓名 / 電話 / 大樓）' });
     }
+
+    // 0) 記顧客：把這個 LINE 用戶 upsert 進 users 表（有就更新、沒有就新增）
+    //    靠 line_user_id 的 unique 限制去重；on_conflict 指定用它比對。
+    const upsertResp = await fetch(
+      `${URL}/rest/v1/users?on_conflict=line_user_id`,
+      {
+        method: 'POST',
+        headers: {
+          ...headers,
+          Prefer: 'resolution=merge-duplicates,return=representation',
+        },
+        body: JSON.stringify({
+          line_user_id: lineUser.uid,
+          display_name: lineUser.name || null,
+          picture_url: lineUser.pic || null,
+          phone: b.contact_phone,             // 順手把這次填的電話存進顧客檔
+          updated_at: new Date().toISOString(),
+        }),
+      }
+    );
+    if (!upsertResp.ok) {
+      const detail = await upsertResp.text();
+      return res.status(500).json({ error: '寫入用戶檔失敗', detail });
+    }
+    const upserted = await upsertResp.json();
+    const customer = Array.isArray(upserted) ? upserted[0] : upserted;
+    const customerId = customer && customer.id;
+    if (!customerId) {
+      return res.status(500).json({ error: '取得用戶 ID 失敗' });
+    }
+
     // 1) 用資料庫內建函式產生訂單編號（格式 YYYYMMDD-XXX，每日從 001 起算）
     const rpcResp = await fetch(`${URL}/rest/v1/rpc/generate_order_number`, {
       method: 'POST',
@@ -69,17 +98,13 @@ export default async function handler(req, res) {
     const order_number = await rpcResp.json();
     // 2) 取台灣時區的今天日期（YYYY-MM-DD）
     const pickup_date = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Taipei' });
-    // 3) 寫入訂單
+    // 3) 寫入訂單（user_id 指向這位 LINE 用戶本人，不再是 guest）
     const insResp = await fetch(`${URL}/rest/v1/orders`, {
       method: 'POST',
       headers: { ...headers, Prefer: 'return=representation' },
       body: JSON.stringify({
         order_number,
-        user_id: GUEST,
-        // 想記錄「誰用 LINE 下的單」→ 先在 orders 表加兩欄（見對話說明），
-        // 再把下面這兩行的註解拿掉即可：
-        line_user_id: lineUser.uid,
-        line_name: lineUser.name,
+        user_id: customerId,             // ← 訂單掛在本人底下（追得到人）
         building_id: b.building_id,
         pickup_date,
         pickup_time: '12:00',            // 下一關改成依大樓帶入
@@ -98,7 +123,6 @@ export default async function handler(req, res) {
     }
     const inserted = await insResp.json();
     const order = Array.isArray(inserted) ? inserted[0] : inserted;
-    // ↓↓↓ 新增這一段 ↓↓↓
     // 寫入訂單明細 order_items
     const items = Array.isArray(b.items) ? b.items : [];
     if (items.length) {
@@ -121,7 +145,6 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: '寫入訂單明細失敗', detail });
       }
     }
-    // ↑↑↑ 新增結束 ↑↑↑
     return res.status(200).json({
       order_number: order.order_number,
       order_id: order.id,
