@@ -1,10 +1,18 @@
-// api/ecpay-checkout.js — 產生綠界付款表單（測試環境）
+// api/ecpay-checkout.js — 產生綠界付款表單
+// 金鑰改讀環境變數：換公司 / 測試轉正式，只改 Vercel 變數、程式不動。
+//   ECPAY_MERCHANT_ID   綠界商店代號
+//   ECPAY_HASH_KEY      綠界 HashKey（機密！）
+//   ECPAY_HASH_IV       綠界 HashIV（機密！）
+//   ECPAY_URL           結帳網址：
+//                       測試站 https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5
+//                       正式站 https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5
+// ※ 若環境變數沒設，會 fallback 到綠界「公開測試金鑰」，方便你先測，不會真的收錢。
 import crypto from 'crypto';
 
-const MERCHANT_ID = '3002607';
-const HASH_KEY = 'pwFHCqoQZGmho4w6';
-const HASH_IV = 'EkRm7iFT261dpevs';
-const ECPAY_URL = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
+const MERCHANT_ID = process.env.ECPAY_MERCHANT_ID || '3002607';
+const HASH_KEY    = process.env.ECPAY_HASH_KEY    || 'pwFHCqoQZGmho4w6';
+const HASH_IV     = process.env.ECPAY_HASH_IV     || 'EkRm7iFT261dpevs';
+const ECPAY_URL   = process.env.ECPAY_URL || 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
 
 // 綠界檢查碼：照官方規則（自然排序→前後加key/iv→URLencode→小寫→SHA256→大寫）
 function genCheckMacValue(params) {
@@ -19,7 +27,6 @@ function genCheckMacValue(params) {
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
   try {
     const b = req.body || {};
     const amount = parseInt(b.amount, 10);
@@ -27,20 +34,16 @@ export default async function handler(req, res) {
     if (!amount || amount < 1 || !orderNumber) {
       return res.status(400).json({ error: '缺少金額或訂單編號' });
     }
-
     // 綠界交易編號：英數、≤20碼。用訂單號去掉橫線 + 時間尾碼
     const tradeNo = (orderNumber.replace(/-/g, '') + Date.now().toString().slice(-6)).slice(0, 20);
-
     // 用台灣時區組出綠界要的精確格式：yyyy/MM/dd HH:mm:ss
     const tw = new Date(Date.now() + 8 * 3600 * 1000); // UTC+8 台灣時間
     const pad = (n) => String(n).padStart(2, '0');
     const tradeDate =
       `${tw.getUTCFullYear()}/${pad(tw.getUTCMonth() + 1)}/${pad(tw.getUTCDate())} ` +
       `${pad(tw.getUTCHours())}:${pad(tw.getUTCMinutes())}:${pad(tw.getUTCSeconds())}`;
-
     // 回調網址：用你的 Vercel 網域
     const base = `https://${req.headers.host}`;
-
     const params = {
       MerchantID: MERCHANT_ID,
       MerchantTradeNo: tradeNo,
@@ -56,7 +59,6 @@ export default async function handler(req, res) {
       CustomField1: orderNumber,                      // 把我們的訂單號帶著，回調時用
     };
     params.CheckMacValue = genCheckMacValue(params);
-
     // 回傳一張會自動送出的表單，瀏覽器一打開就跳轉到綠界付款頁
     const inputs = Object.entries(params)
       .map(([k, v]) => `<input type="hidden" name="${k}" value="${String(v).replace(/"/g, '&quot;')}">`)
@@ -65,7 +67,6 @@ export default async function handler(req, res) {
       <form method="post" action="${ECPAY_URL}">${inputs}</form>
       <p style="font-family:sans-serif;text-align:center;margin-top:3rem;">正在前往付款頁…</p>
     </body></html>`;
-
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.status(200).send(html);
   } catch (e) {
