@@ -1,8 +1,12 @@
 // api/ecpay-callback.js — 接收綠界付款結果通知（零套件版）
+// 金鑰改讀環境變數，與 ecpay-checkout.js 用「同一組」，換公司/測試轉正式只改 Vercel 變數。
+//   ECPAY_HASH_KEY  綠界 HashKey（機密！需與 checkout 一致）
+//   ECPAY_HASH_IV   綠界 HashIV （機密！需與 checkout 一致）
+// ※ 沒設就 fallback 到綠界公開測試金鑰，維持測試模式。
 import crypto from 'crypto';
 
-const HASH_KEY = 'pwFHCqoQZGmho4w6';
-const HASH_IV = 'EkRm7iFT261dpevs';
+const HASH_KEY = process.env.ECPAY_HASH_KEY || 'pwFHCqoQZGmho4w6';
+const HASH_IV  = process.env.ECPAY_HASH_IV  || 'EkRm7iFT261dpevs';
 
 function genCheckMacValue(params) {
   const sorted = Object.keys(params).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
@@ -21,7 +25,6 @@ export default async function handler(req, res) {
     const params = { ...body };
     delete params.CheckMacValue;
     const calculated = genCheckMacValue(params);
-
     if (received !== calculated) {
       return res.status(200).send('0|FAIL');
     }
